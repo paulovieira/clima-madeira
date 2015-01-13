@@ -1,0 +1,191 @@
+{#  NOTE: lang is a global variable #}
+{% extends "layouts/default.html"          %}
+{% from "macros/sector.html" import sector %}
+{% from "macros/grupo.html"  import grupo  %}
+
+
+
+{% block content %}
+
+
+
+{#############################################################  
+
+LANDING PAGE
+
+The landing page has 3 main sections
+
+1) Header: logo, main menu, search, login button
+
+2) Informações para diferentes grupos: público em geral, técnicos, investigadores
+
+3) Informação sectorial
+
+#############################################################} 
+ 
+
+	{#  ---------------------------------------  HEADER  ---------------------------------------  #} 
+
+	{% include "includes/header_home.html" %}  
+
+
+	{#  ---------------------------------------  /HEADER  ---------------------------------------  #} 
+
+
+
+	{#  ---------------------------------------  INFORMACOES PARA  ---------------------------------------  #} 
+
+{#
+	<div class="row" style="padding: 20px 0px 80px 0px; margin-top: 1px; border-width: 1px 0px 1px 0px; border-style: solid; border-bottom-color: #ddd; border-top-color: #ddd;">
+
+		<div class="col-sm-12 col-md-10 col-md-offset-1" style="margin-bottom: 20px;">
+			<h2 class="text-center">
+				{{ ctx.texts[1][lang] }}
+			</h2>
+		</div>
+
+		<div class="col-sm-4 xcol-sm-offset-2 informacoes-left" style="xborder: 1px solid #c5c5c5; xpadding: 0px 60px 0px 120px;">
+			{{ grupo(
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx) 
+			}}   
+		</div>
+
+		<div class="col-sm-4 xcol-sm-offset-1 informacoes-center" style="xborder: 1px solid #c5c5c5; xpadding: 0px 90px 0px 90px;">
+			{{ grupo(
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx) 
+			}}   
+		</div>
+
+		<div class="col-sm-4 xcol-sm-offset-1 informacoes-right" style="xborder: 1px solid #c5c5c5; xpadding: 0px 120px 0px 60px;">
+			{{ grupo(
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx.texts[1][lang], 
+				ctx) 
+			}}   
+		</div>
+
+	</div>
+#}
+
+	{#  ---------------------------------------  /INFORMACOES PARA  ---------------------------------------  #} 
+
+
+
+	{#  ---------------------------------------  SECTORES  ---------------------------------------  #} 
+
+	<div class="row xblue-triangles" style="margin-top: 1px; xmargin-bottom: 120px; border-width: 0px 0px 1px 0px; border-style: solid; white; border-bottom-color: white;">
+{#
+		<div class="col-sm-12 text-center" style="margin: 30px 0px 30px 0px;">
+			<h1 class="sector-main-title">{{ ctx.texts[1][lang] | upper }}</h1>
+
+		</div>
+#}
+		<div class="col-sm-12" style="margin: 60px 0px 30px 0px; xborder: 1px solid #c5c5c5; xpadding: 0px 200px 0px 200px;">
+
+			<div class="row" style="">
+
+
+				<div class="col-sm-4" style="xborder: 1px solid red; padding: 0px 30px 0px 60px;">
+
+					<div class="row" style="">
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sector(
+		    					ctx.texts[1022][lang], 
+								ctx.texts[1024][lang], 
+		    					"/" + lang + ctx.texts[1025][lang], 
+								ctx.texts[2000][lang], 
+		    					ctx) 
+		    				}} 
+    					</div>
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sector(
+		    					ctx.texts[1037][lang], 
+								ctx.texts[1024][lang], 
+		    					"/" + lang + ctx.texts[1040][lang], 
+								ctx.texts[2003][lang], 
+		    					ctx) 
+		    				}} 
+    					</div>
+    				</div>
+
+				</div>
+
+
+				<div class="col-sm-4" style="xborder: 1px solid blue; padding: 0px 45px 0px 45px;">
+
+					<div class="row" style="">
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sector(
+		    					ctx.texts[1027][lang], 
+								ctx.texts[1024][lang], 
+		    					"/" + lang + ctx.texts[1030][lang], 
+								ctx.texts[2001][lang], 
+		    					ctx) 
+		    				}} 
+    					</div>
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sector(
+		    					ctx.texts[1042][lang], 
+								ctx.texts[1024][lang], 
+		    					"/" + lang + ctx.texts[1045][lang], 
+								ctx.texts[2004][lang], 
+		    					ctx) 
+		    				}} 
+
+    					</div>
+    				</div>
+    				
+				</div>
+
+
+				<div class="col-sm-4" style="xborder: 1px solid orange; padding: 0px 60px 0px 30px;">
+
+					<div class="row" style="">
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sector(
+		    					ctx.texts[1032][lang], 
+								ctx.texts[1024][lang], 
+		    					"/" + lang + ctx.texts[1035][lang], 
+								ctx.texts[2002][lang], 
+		    					ctx) 
+		    				}} 
+    					</div>
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sector(
+		    					ctx.texts[1047][lang], 
+								ctx.texts[1024][lang], 
+		    					"/" + lang + ctx.texts[1050][lang], 
+								ctx.texts[2005][lang], 
+		    					ctx) 
+		    				}} 
+
+    					</div>
+    				</div>
+
+				</div>
+
+
+			</div>
+
+
+		</div>
+	</div>
+
+	{#  ---------------------------------------  /SECTORES  ---------------------------------------  #} 
+
+
+
+
+
+
+{% endblock %}

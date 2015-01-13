@@ -1,0 +1,149 @@
+
+<div class="row header header-bg">
+	<div class="col-xs-12">
+
+		<div class="row">
+
+			<div class="col-xs-12 col-sm-6 col-md-5 col-lg-5" style="xborder: 1px solid green; padding-left: 20px;">
+
+				<h1 class="text-title text-centerx" style="">
+					{{ ctx.texts[1001][lang] | upper }}
+				</h1>
+
+			</div>
+
+			<div class="col-xs-6 col-xs-offset-6 col-sm-5 col-sm-offset-1 col-md-4 col-md-offset-3 col-lg-3 col-lg-offset-4" style="xborder: 1px solid red;">
+
+				<div class="row">
+					<div class="col-xs-8  col-sm-8" style="xborder: 1px solid blue; padding-left: 0px; padding-right: 7px;">
+
+					  	{% if ctx.isAuthenticated %}
+
+						<div class="row">
+							<div class="col-xs-8" style="padding-right: 7px;">
+
+								<a href="/{{ lang }}/dashboard" class="login">
+									<div class="text-center loginx">
+										{{ ctx.texts[4][lang] }} {{ ctx.credentials.firstName }}! 
+									</div>
+								</a>
+
+							</div>
+							<div class="col-xs-4" style="padding-left: 0px;">
+
+
+								<a href="/{{ lang }}/logout" class="btn btn-warning btn-block button-top" style="">
+									{{ ctx.texts[3][lang] }} &nbsp;
+										<span class="glyphicon glyphicon-log-out"></span>
+								</a>
+
+							</div>
+						</div>
+
+						{% else %}
+
+						<a href="/{{ lang }}/login" class="login">
+							<div class="text-center loginx">
+								{{ ctx.texts[2][lang] }} &nbsp; &nbsp;
+								<span class="glyphicon glyphicon-log-in"></span> 
+							</div>
+						</a>
+{##}
+						{% endif %}
+
+
+					</div>
+					<div class="col-xs-4 col-sm-4" style="padding-left: 0px; xborder: 1px solid orange;">
+
+					  	{% if lang == "pt" %}
+						<a href="/en" class="btn btn-primary btn-block button-top" xstyle="margin: 0px 0px 4px 10px; padding: 7px 15px; height: 35px;" style="">
+							English
+						</a>
+						{% else %}
+						<a href="/pt" class="btn btn-primary btn-block button-top" xstyle="margin: 0px 0px 4px 10px; padding: 7px 15px;  height: 35px;" style="">
+							Português
+						</a>
+						{% endif %}
+
+					</div>
+				</div>
+
+				<div class="row" style="margin-top: 15px;">
+					<div class="col-xs-12" style="xborder: 1px solid yellow; padding-left: 0px;">
+
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="{{ ctx.texts[5][lang] }}">
+							<span class="input-group-addon search-box"><span class="glyphicon glyphicon-search"></span></span>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+{#
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-3">
+
+				<div class="jumbotron jumbo-shadow" style="margin-top: 30px; padding: 20px 30px; border: 1px solid #888;">
+					<p>
+						{{ ctx.texts[1][lang] }}
+					</p>
+					<div class="text-center" style="margin-top: -10px;">
+						<a href="/{{ lang }}/introducao" class="btn btn-sm btn-info" style="xmargin-left: 15px; padding: 5px 20px; letter-spacing: 1px; word-spacing: 2px;" role="button">
+							{{ ctx.texts[1][lang] | upper }}
+						</a>
+					</div>
+					<h6 class="text-center"><em>[Usar este espaço para descrever o CLIMA-MADEIRA em 50 palavras] </em></h6>
+				</div>
+		
+			</div>
+		</div>
+#}
+
+		<div class="row">
+			<div class="col-sm-12 col-md-12 col-lg-12 col-xlg-10 col-xlg-offset-1" style="margin-top: 270px; xborder: 1px solid blue;">
+
+				<ul class="nav nav-pills nav-justified" style="margin-top: 75px; margin-bottom: 45px;">
+					<li>
+						<a href="/{{ lang }}/" class="main-menu-text 
+							main-menu{% if(ctx.page != 'index') %}-not{% endif %}-active">
+							<i class="icon-home-outline"></i> &nbsp;
+							{{ ctx.texts[1004][lang] }}
+						</a>
+					</li> 
+					<li>
+						<a href="/{{ lang }}/introducao" class="main-menu-text 
+							main-menu{% if(ctx.page != 'introducao') %}-not{% endif %}-active">
+							<i class="icon-lightbulb"></i> &nbsp;
+							{{ ctx.texts[1003][lang] }}
+						</a>
+					</li>
+					<li>
+						<a href="/{{ lang }}/vulnerabilidades" class="main-menu-text 
+							main-menu{% if(ctx.page != 'vulnerabilidades') %}-not{% endif %}-active">
+							<i class="icon-map"></i> &nbsp;
+							{{ ctx.texts[1005][lang] }}
+						</a>
+					</li>
+					<li>
+						<a href="/{{ lang }}/adaptacao" class="main-menu-text 
+							main-menu{% if(ctx.page != 'adaptacao') %}-not{% endif %}-active">
+							<i class="icon-cubes"></i> &nbsp;
+							{{ ctx.texts[1006][lang] }}
+						</a>
+					</li>
+					<li>
+						<a href="/{{ lang }}/equipa" class="main-menu-text 
+							main-menu{% if(ctx.page != 'equipa') %}-not{% endif %}-active">
+							<i class="icon-users"></i> &nbsp;
+							{{ ctx.texts[1007][lang] }}
+						</a>
+					</li>
+				</ul>
+
+			</div>
+		</div>
+	</div>
+</div>

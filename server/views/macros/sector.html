@@ -1,0 +1,15 @@
+
+{% macro sector(sectorTitle, sectorDesc, sectorPath, sectorImg, ctx) %}
+
+<div class="sector-box">
+	<h4 class="text-center sector-title">{{ sectorTitle | upper }}</h4>
+	<img src="{{ sectorImg }}" class="img-responsive img-thumbnail center-block" alt="Responsive image">
+	<p>{{ sectorDesc }}</p>
+	<div class="text-center">
+		<a href="{{ sectorPath }}" class="btn btn-info" style="padding: 4px 30px; letter-spacing: 1px;" role="button">
+			{{ ctx.texts[6][lang] }}
+		</a>
+	</div>
+</div>
+
+{% endmacro %}

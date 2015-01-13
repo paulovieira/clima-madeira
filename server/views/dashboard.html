@@ -1,0 +1,84 @@
+{% extends './layouts/default.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block custom_css %}
+    <link href="/dashboard/css/dashboard.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+
+
+
+    <div class="row">
+        <div class="col-sm-12" id="main-region" >
+
+
+
+
+{#
+
+
+    Hello {{ ctx.credentials.firstName }}
+
+    <h2>{{ ctx.title }}</h2>
+    <p>This is the dashboard page.</p>
+
+
+    Navigation
+    <ul class="menu">
+        <li><a href="/{{ lang }}">Home</a></li>
+        {% if ctx.isAuthenticated %}
+        <li><a href="/{{ lang }}/logout">Logout</a></li>
+        {% endif %}
+    </ul>
+
+
+    <form role="form">
+        <div class="form-group">
+            <textarea class="form-control" id="fixed-texts-json" rows="20">{{ ctx.fixedTextsJson }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <textarea class="form-control" id="home-texts-json" rows="20">{{ ctx.homeTextsJson }}</textarea>
+        </div>
+
+        <button  id="save-json" class="btn btn-primary">Save</button>
+    </form>
+#}
+
+
+
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script src="/common/js/jquery.js"></script>
+    <script src="/common/js/underscore.js"></script>
+    <script src="/common/js/backbone.js"></script>
+    <script src="/common/js/backbone.radio.js"></script>
+    <script src="/common/js/backbone.marionette.js"></script>
+    <script src="/common/js/backbone.stickit.js"></script>
+    <script src="/common/js/json2.js"></script>
+    <script src="/common/js/q.js"></script>
+    <script src="/common/js/nunjucks-slim.js"></script>
+    <script src="/common/js/bootstrap.js"></script>
+
+    <script type="text/javascript">
+        var Clima = {};
+        Clima.lang = "{{ lang }}";
+        Clima.texts = {{ ctx["texts"] }};
+    </script>
+
+    <script src="/dashboard/templates.js"></script>
+    <script src="/dashboard/backbone_override.js"></script>
+    <script src="/dashboard/index.js"></script>
+
+
+{% endblock %}

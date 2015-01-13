@@ -1,0 +1,83 @@
+{% extends "layouts/default.html"          %}
+
+{% block title %}{{ ctx.websiteTitle }}{% endblock %}
+
+
+{% block content %}
+
+
+	<div class="row" style="margin-top: 100px; margin-bottom: 40px;">
+		<div class="col-sm-4 col-sm-offset-4">
+
+			<div class="row">
+				<div class="col-sm-offset-3 col-sm-9 col-md-offset-2 col-md-10">
+
+{# After the username/pw have been submitted, if there are errors, it will redirect to the login page again 
+, showing the form + error message
+
+Possible errors:
+
+	2 - "missing username or password" (won't even connect to the DB)
+	3 - "username does not exist" 
+	4 - "wrong password" (username exists but password doesn't match)
+
+The error can verifies with ctx.lfr ("login fail reason")
+#}	
+
+					{% if ctx.lfr == 2 %}
+						<div class="alert alert-danger text-center" style="margin-bottom: 30px;" role="alert">
+							<strong>status: {{ ctx.lfr }}</strong>
+						</div>
+					{% elif ctx.lfr == 3 %}
+						<div class="alert alert-danger text-center" style="margin-bottom: 30px;" role="alert">
+							<strong>status: {{ ctx.lfr }}</strong>
+						</div>
+					{% elif ctx.lfr == 4 %}
+						<div class="alert alert-danger text-center" style="margin-bottom: 30px;" role="alert">
+							<strong>status: {{ ctx.lfr }}</strong>
+						</div>
+					{% endif %}
+
+					<h4 class="text-center">Área reservada da Plataforma CLIMA</h4>	 	
+
+				 </div>
+			</div>
+			
+
+			<!-- .form-horizontal will align labels and groups of form controls in a horizontal layout  -->
+			<form class="form-horizontal" style="margin-top: 30px;" role="form" method="post" action="/{{ lang }}/loginAuthenticate">
+
+  				<div class="form-group">
+    				<label for="inputEmail" class="col-sm-3 col-lg-2 control-label">Email</label>
+    				<div class="col-sm-9 col-lg-10">
+      					<input type="email" class="form-control" id="inputEmail" name="username" placeholder="">
+    				</div>
+  				</div>
+
+
+				<div class="form-group">
+					<label for="inputPassword" class="col-sm-3 col-lg-2 control-label">Password</label>
+					<div class="col-sm-9 col-lg-10">
+						<input type="password" class="form-control" id="inputPassword" name="password" placeholder="">
+					</div>
+				</div>
+
+				<div class="form-group" style="margin-top: 30px;">
+					<div class="col-sm-offset-3 col-sm-9 col-lg-offset-2 col-lg-10">
+						<input type="submit" class="btn btn-primary btn-block" value="Login" xstyle="padding-left: 25px; padding-right: 25px;">
+					</div>
+				</div>
+
+			</form>
+
+			<div class="row" style="margin: 20px 0px 50px 0px;">
+				<div class="col-sm-offset-3 col-sm-9 col-md-offset-2 col-md-10 text-center">	
+					<small><a href="#">Clique aqui para recuperar a password</a></small>
+				</div>
+	 		</div>
+
+		</div>
+	</div>
+
+
+{% endblock %}

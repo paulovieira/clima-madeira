@@ -1,0 +1,13 @@
+{% extends './layouts/default.html' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+lang: {{global_lang}}
+    <ul class="menu">
+        <li><a href="/{{ global_lang }}">Home</a></li>
+    </ul>
+
+    <h1>{{title}}</h1>
+    <p>zYou found a missing page, but won the 404 error!</p>
+{% endblock %}
