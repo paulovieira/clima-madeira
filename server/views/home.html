@@ -4,6 +4,13 @@
 {% from "macros/grupo.html"  import grupo  %}
 
 
+{% block custom_css %}
+    <link href="/common/css/kendo/kendo.common-bootstrap.min.css" rel="stylesheet">
+    <link href="/common/css/kendo/kendo.default.min.css" rel="stylesheet">
+    <link href="/common/css/kendo/kendo_override.css" rel="stylesheet">
+{% endblock %}
+
+
 
 {% block content %}
 
@@ -186,6 +193,24 @@ The landing page has 3 main sections
 
 
 
+
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script src="/common/js/jquery.js"></script>
+    <script src="/common/js/underscore.js"></script>
+    <script src="/common/js/backbone.js"></script>
+    <script src="/common/js/json2.js"></script>
+    <script src="/common/js/q.js"></script>
+
+
+    <script src="/common/js/kendo/kendo.core.min.js"></script>
+    <script src="/common/js/kendo/kendo.web.min.js"></script>
+    <script src="/common/js/kendo/kendo.editor.min.js"></script>
+
+    <script src="/common/js/editor.js"></script> 
 
 
 {% endblock %}

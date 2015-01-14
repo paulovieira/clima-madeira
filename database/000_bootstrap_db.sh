@@ -6,6 +6,6 @@ do
 	echo "		***********************************************************"
 	echo "			Executing " $file
 	echo "		***********************************************************"
-	psql --dbname test_150111 --username clima --file="$file"
+	psql --dbname test_150111 --username pvieira --file="$file"
 
 done

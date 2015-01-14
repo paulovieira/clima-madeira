@@ -3,6 +3,7 @@
 // TV is a simple web page in which developers can view server logs for their requests.
 // https://github.com/hapijs/tv
 
+/*
 var settings = require("../config/settings.js");
 
 module.exports = function registerTv(server){
@@ -21,3 +22,4 @@ module.exports = function registerTv(server){
         }
     );
 };
+*/

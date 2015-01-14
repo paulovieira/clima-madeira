@@ -113,3 +113,6 @@ server.start(function() {
         "    address:".blue + " " + server.info.address);
 
 });
+
+var ent = require("ent");
+console.log(ent.decode("OBSERVAT&Oacute;RIO DE CLIMA E CEN&Aacute;RIOS CLIM&Aacute;TICOSzz fwefw&otilde;&nbsp;"));

@@ -44,27 +44,6 @@ debugger;
         return reply.view('home', {
             ctx: context
         });
-/*///
-        var textsC = new BaseC();
-        textsC
-            .execute({
-                query: {
-                    command: "select * from texts_read()"
-                },
-                parse: utils.parseTextsArray
-            })
-            .done(
-                function() {
-                    context.texts = textsC.at(0).toJSON();
-                    return reply.view('home', {
-                        ctx: context
-                    });
-                },
-                function() {
-                    return reply(Boom.badImplementation());
-                }
-	        );
-*/  
     },
 
 
@@ -81,35 +60,12 @@ debugger;
 
         var context = {
             texts: texts,
-//            page: "login",
             lfr: request.query.lfr || "" // login fail reason
         }
 
         return reply.view('login', {
             ctx: context
         });
-
-/*
-        var textsC = new BaseC();
-        textsC
-            .execute({
-                query: {
-                    command: "select * from texts_read()"
-                },
-                parse: utils.parseTextsArray
-            })
-            .done(
-                function() {
-                    context.texts = textsC.at(0).toJSON();
-                    return reply.view('login', {
-                        ctx: context
-                    });
-                },
-                function() {
-                    return reply(Boom.badImplementation());
-                }
-	        );
-*/
     },
 
 
@@ -250,29 +206,7 @@ console.log("IMPORTANT: REMOVE COMMENTS IN THE DASHBOARD HANDLER");
         return reply.view('dashboard', {
             ctx: context
         });
-/*///
-        var textsC = new BaseC();
-        textsC
-            .execute({
-                query: {
-                    command: "select * from texts_read()"
-                },
-                parse: utils.parseTextsArray2
-            })
-            .done(
-                function() {
-//console.log(textsC.at(0).toJSON());
-                    //context.texts = JSON.stringify( textsC.at(0).toJSON() );
-                    context.texts = JSON.stringify( textsC.toJSON() );
-                    return reply.view('dashboard', {
-                        ctx: context
-                    });
-                },
-                function() {
-                    return reply(Boom.badImplementation());
-                }
-	        );
-*/
+
     },
 
     logout: function(request, reply){
