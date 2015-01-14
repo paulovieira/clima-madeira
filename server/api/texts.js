@@ -3,7 +3,7 @@ var Joi = require('joi');
 var _ = require('underscore');
 var _s = require('underscore.string');
 var TextsC = require("../models/baseModel.js").collection;
-var utils = require('../config/utils.js');
+var utils = require('../common/utils.js');
 
 
 var internals = {};

@@ -1,7 +1,7 @@
 var Hapi = require('hapi'),
     Path = require('path'),
-    config = require('./server/config/settings'),
-    utils = require('./server/config/utils.js'),
+    settings = require('./server/config/settings'),
+    utils = require('./server/common/utils.js'),
     Nunjucks = require('hapi-nunjucks'),
     _ = require('underscore');
 
@@ -10,16 +10,16 @@ require('colors');
 
 
 // 1. Create a server with the host, port, and options defined in the main server's settings file
-var server = new Hapi.Server(config.serverOptions);
+var server = new Hapi.Server(settings.serverOptions);
 server.connection({
-    host: config.host,
-    port: config.port
+    host: settings.host,
+    port: settings.port
 });
 
 // 2. Configure views
-server.views(config.viewsOptions);
+server.views(settings.viewsOptions);
 
-Nunjucks.configure(Path.join(config.rootPath, 'server/views'), {
+Nunjucks.configure(Path.join(settings.rootPath, 'server/views'), {
     watch: true
     //    autoescape: true 
 });

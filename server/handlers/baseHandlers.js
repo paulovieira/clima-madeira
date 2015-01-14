@@ -2,18 +2,28 @@ var Boom = require('boom');
 var _ = require('underscore');
 var UUID = require('node-uuid');
 var Bcrypt = require("bcrypt");
-var config = require('../config/settings.js');
-var utils = require('../config/utils.js');
-
+var Q = require("q");
+var settings = require('../config/settings.js');
+var utils = require('../common/utils.js');
 var BaseC = require("../models/baseModel.js").collection;
 
 var handlers = {
+
+    testpre: function(request, reply) {
+        utils.logHandlerInfo("testpre", request);
+debugger;
+
+        var users = request.pre.usersC.toJSON();
+        utils.deleteProps(users, "userTexts", "userGroups", "pwHash");
+        return reply(users);
+    },
+
 
     index: function(request, reply) {
         utils.logHandlerInfo("index", request);
 debugger;
 
-        return reply.redirect("/" + config.allowedLanguages[0]);
+        return reply.redirect("/" + settings.allowedLanguages[0]);
     },
 
     home: function(request, reply) {
@@ -23,11 +33,18 @@ debugger;
         // if the request is not authenticated, request.auth.credentials will be null
         request.auth.credentials = request.auth.credentials || {};
 
+        var texts = utils.parseTextsArray(request.pre.textsC.toJSON());
+
         var context = {
+            texts: texts,
             isAuthenticated: request.auth.isAuthenticated,
-            credentials: request.auth.credentials
+            credentials: request.auth.credentials,
         };
 
+        return reply.view('home', {
+            ctx: context
+        });
+/*///
         var textsC = new BaseC();
         textsC
             .execute({
@@ -47,6 +64,7 @@ debugger;
                     return reply(Boom.badImplementation());
                 }
 	        );
+*/  
     },
 
 
@@ -59,11 +77,19 @@ debugger;
             return reply.redirect("/" + request.params.lang + "/dashboard");
         }
 
+        var texts = utils.parseTextsArray(request.pre.textsC.toJSON());
+
         var context = {
-            page: "login",
+            texts: texts,
+//            page: "login",
             lfr: request.query.lfr || "" // login fail reason
         }
 
+        return reply.view('login', {
+            ctx: context
+        });
+
+/*
         var textsC = new BaseC();
         textsC
             .execute({
@@ -83,6 +109,7 @@ debugger;
                     return reply(Boom.badImplementation());
                 }
 	        );
+*/
     },
 
 
@@ -182,8 +209,9 @@ debugger;
         utils.logHandlerInfo("missing", request);
         debugger;
 
+        var texts = utils.parseTextsArray(request.pre.textsC.toJSON());
         var context = {
-            title: 'Missing',
+            texts: texts
         }
 
         return reply.view('404', {
@@ -202,21 +230,27 @@ debugger;
     dashboard: function(request, reply){
         utils.logHandlerInfo("dashboard", request);
 debugger;
-console.log("REMOVE COMMENTS IN THE DASHBOARD HANDLER");
+
+console.log("IMPORTANT: REMOVE COMMENTS IN THE DASHBOARD HANDLER");
 /*
         if (!request.auth.isAuthenticated) {
             console.log("    not authenticated, will now redirect to /lang/login");
             return reply.redirect("/" + request.params.lang + "/login");
         }
 */
-		request.auth.credentials = request.auth.credentials || {};
+
+        var texts = utils.parseTextsArray(request.pre.textsC.toJSON());
 
         var context = {
-            title: 'Dashboard Page',
+            texts: JSON.stringify(texts),
             isAuthenticated: request.auth.isAuthenticated,
-            credentials: request.auth.credentials
+            credentials: request.auth.credentials || {}
         };
 
+        return reply.view('dashboard', {
+            ctx: context
+        });
+/*///
         var textsC = new BaseC();
         textsC
             .execute({
@@ -238,6 +272,7 @@ console.log("REMOVE COMMENTS IN THE DASHBOARD HANDLER");
                     return reply(Boom.badImplementation());
                 }
 	        );
+*/
     },
 
     logout: function(request, reply){

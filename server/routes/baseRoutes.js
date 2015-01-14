@@ -1,8 +1,49 @@
-var config = require('../config/settings.js');
-var utils = require('../config/utils.js');
+//var settings = require('../config/settings.js');
+var utils = require('../common/utils.js');
+var pre = require('../common/pre.js');
+var validate = require('../common/validate.js');
 var baseHandlers = require('../handlers/baseHandlers.js');
 
 var routes = [
+
+    {
+        method: "GET",
+        path: "/{lang}/testpre",
+        handler: baseHandlers.testpre,
+
+        config: {
+            auth: {
+                mode: "try"
+            },
+            validate: {
+                params: validate.params.lang
+            },
+            pre: [
+                // running the pre method in parallel is equivalent to using only 1 pre method
+                // taking care of several promises and using Q.all([promise1, promise2]);
+                // the route handler will only execute when ALL the pre-handlers have called reply()
+                //[pre.read_texts, pre.read_users],  
+                [pre.read_users],
+//                utils.pre.read_texts,
+  //              utils.pre.read_users
+            ]
+        }
+    },
+
+    // if lang param is not given, direct immediately to the default laguage
+    {
+        path: "/",
+        method: "GET",
+        handler: baseHandlers.index,
+        config: {
+            auth: false,
+/*            
+            auth: {
+                mode: "try"
+            },
+*/
+        }
+    },
 
     {
         path: "/{lang}",
@@ -14,23 +55,13 @@ var routes = [
                 mode: "try"
             },
             validate: {
-                params: utils.validate.params.lang
-            }
-        }
-
-    },
-
-    // if lang param is not given, direct immediately to the default laguage
-    {
-        path: "/",
-        method: "GET",
-        handler: baseHandlers.index,
-        config: {
-            auth: {
-                mode: "try"
+                params: validate.params.lang
             },
-            /*            app: { lang: false } */
+            pre: [
+                [pre.read_texts]
+            ]
         }
+
     },
 
     {
@@ -41,8 +72,11 @@ var routes = [
         config: {
             auth: false,
             validate: {
-                params: utils.validate.params.lang
-            }
+                params: validate.params.lang
+            },
+            pre: [
+                [pre.read_texts]
+            ]
         }
 
     },
@@ -57,8 +91,11 @@ var routes = [
                 mode: "try"
             },
             validate: {
-                params: utils.validate.params.lang
-            }
+                params: validate.params.lang
+            },
+            pre: [
+                [pre.read_texts]
+            ]
         }
     },
 
@@ -72,7 +109,7 @@ var routes = [
                 mode: "try"
             },
             validate: {
-                params: utils.validate.params.lang
+                params: validate.params.lang
             }
         }
     },
@@ -84,7 +121,7 @@ var routes = [
         config: {
             auth: false,
             validate: {
-                params: utils.validate.params.lang
+                params: validate.params.lang
             }
         }
     },
@@ -102,8 +139,11 @@ var routes = [
 
 //            auth: false,
             validate: {
-                params: utils.validate.params.lang
-            }
+                params: validate.params.lang
+            },
+            pre: [
+                [pre.read_texts]
+            ]
         },
     },
 
@@ -118,7 +158,7 @@ var routes = [
                 mode: "try"
             },
             validate: {
-                params: utils.validate.params.lang
+                params: validate.params.lang
             }
         }
     },
@@ -132,7 +172,7 @@ routes
     .filter(function(routeObj) {
         if (routeObj.config &&
             routeObj.config.validate &&
-            routeObj.config.validate.params === utils.validate.params.lang) {
+            routeObj.config.validate.params === validate.params.lang) {
             return true;
         }
 
@@ -141,7 +181,7 @@ routes
     })
     .forEach(function(routeObj) {
         routeObj.config.pre = routeObj.config.pre || [];
-        routeObj.config.pre.push(utils.preRequisites.redirectOnInvalidLang);
+        routeObj.config.pre.unshift(pre.redirectOnInvalidLang);
     });
 
 module.exports = routes;
