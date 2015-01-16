@@ -1,11 +1,15 @@
 var Boom = require('boom');
+var Hoek = require('hoek');
 var _ = require('underscore');
 var UUID = require('node-uuid');
 var Bcrypt = require("bcrypt");
 var Q = require("q");
 var settings = require('../config/settings.js');
 var utils = require('../common/utils.js');
+var transforms = require('../common/transforms.js');
 var BaseC = require("../models/baseModel.js").collection;
+
+var jsonFormat = require("json-format");
 
 var handlers = {
 
@@ -17,7 +21,6 @@ debugger;
         utils.deleteProps(users, "userTexts", "userGroups", "pwHash");
         return reply(users);
     },
-
 
     index: function(request, reply) {
         utils.logHandlerInfo("index", request);
@@ -33,19 +36,17 @@ debugger;
         // if the request is not authenticated, request.auth.credentials will be null
         request.auth.credentials = request.auth.credentials || {};
 
-        var texts = utils.parseTextsArray(request.pre.textsC.toJSON());
-
         var context = {
-            texts: texts,
+            texts:           request.pre.texts,
+            textsJson:       JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
             isAuthenticated: request.auth.isAuthenticated,
-            credentials: request.auth.credentials,
+            credentials:     request.auth.credentials,
         };
 
         return reply.view('home', {
             ctx: context
         });
     },
-
 
     login: function(request, reply) {
         utils.logHandlerInfo("login", request);
@@ -56,10 +57,8 @@ debugger;
             return reply.redirect("/" + request.params.lang + "/dashboard");
         }
 
-        var texts = utils.parseTextsArray(request.pre.textsC.toJSON());
-
         var context = {
-            texts: texts,
+            texts: request.pre.texts,
             lfr: request.query.lfr || "" // login fail reason
         }
 
@@ -165,9 +164,8 @@ debugger;
         utils.logHandlerInfo("missing", request);
         debugger;
 
-        var texts = utils.parseTextsArray(request.pre.textsC.toJSON());
         var context = {
-            texts: texts
+            texts: request.pre.texts
         }
 
         return reply.view('404', {
@@ -195,10 +193,8 @@ console.log("IMPORTANT: REMOVE COMMENTS IN THE DASHBOARD HANDLER");
         }
 */
 
-        var texts = utils.parseTextsArray(request.pre.textsC.toJSON());
-
         var context = {
-            texts: JSON.stringify(texts),
+            textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
             isAuthenticated: request.auth.isAuthenticated,
             credentials: request.auth.credentials || {}
         };

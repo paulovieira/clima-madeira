@@ -22,10 +22,10 @@ var routes = [
                 // running the pre method in parallel is equivalent to using only 1 pre method
                 // taking care of several promises and using Q.all([promise1, promise2]);
                 // the route handler will only execute when ALL the pre-handlers have called reply()
-                //[pre.read_texts, pre.read_users],  
-                [pre.read_users],
-//                utils.pre.read_texts,
-  //              utils.pre.read_users
+                //[pre.db.read_texts, pre.db.read_users],  
+                [pre.db.read_users],
+//                utils.pre.db.read_texts,
+  //              utils.pre.db.read_users
             ]
         }
     },
@@ -58,7 +58,8 @@ var routes = [
                 params: validate.params.lang
             },
             pre: [
-                [pre.read_texts]
+                [pre.db.read_texts],
+                pre.transform_texts
             ]
         }
 
@@ -75,7 +76,8 @@ var routes = [
                 params: validate.params.lang
             },
             pre: [
-                [pre.read_texts]
+                [pre.db.read_texts],
+                pre.transform_texts
             ]
         }
 
@@ -94,7 +96,8 @@ var routes = [
                 params: validate.params.lang
             },
             pre: [
-                [pre.read_texts]
+                [pre.db.read_texts],
+                pre.transform_texts
             ]
         }
     },
@@ -142,7 +145,8 @@ var routes = [
                 params: validate.params.lang
             },
             pre: [
-                [pre.read_texts]
+                [pre.db.read_texts],
+                pre.transform_texts
             ]
         },
     },

@@ -1,12 +1,24 @@
 var Hapi = require('hapi'),
+    Hoek = require('hoek'),
     Path = require('path'),
     settings = require('./server/config/settings'),
     utils = require('./server/common/utils.js'),
     Nunjucks = require('hapi-nunjucks'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    utils = require("./server/common/utils.js");
+
 
 require('pretty-error').start();
 require('colors');
+
+
+
+
+/*
+console.log( utils.flattenObj(obj, "contents") );
+delete obj["contents"];
+console.log(obj)
+*/
 
 
 // 1. Create a server with the host, port, and options defined in the main server's settings file

@@ -1,60 +1,71 @@
 var Boom = require('boom');
+var _ = require('underscore');
+//var changeCaseKeys = require('change-case-keys');
 var BaseC = require("../models/baseModel.js").collection;
 var settings = require('../config/settings.js');
-//var utils = require("./utils.js");
+var utils = require("../common/utils.js");
+var transforms = require("../common/transforms.js");
 
 var preRequisites = {
 
-	read_users: {
-		method: function(request, reply){
-			console.log("pre: read users");
-	        var usersC = new BaseC();
+	db: {
+		read_users: {
+			method: function(request, reply){
+				console.log("pre: read users");
+		        var usersC = new BaseC();
 
-	        usersC
-	            .execute({
-	                query: {
-	                    command: "select * from users_read()",
-	                },
-	            })
-	            .done(
-	                function() {
-	                	return reply(usersC);
-	                },
-	                function(err) {
-	                	console.log(err);
-	                    return reply(Boom.badImplementation());
-	                }
-		        );
+		        usersC
+		            .execute({
+		                query: {
+		                    command: "select * from users_read()",
+		                },
+		            })
+		            .done(
+		                function() {
+		                	return reply(usersC);
+		                },
+		                function(err) {
+		                	console.log(err);
+		                    return reply(Boom.badImplementation());
+		                }
+			        );
+			},
+			assign: "usersC"
 		},
-		assign: "usersC"
+
+		read_texts: {
+			method: function(request, reply){
+				console.log("pre: read texts");
+		        var textsC = new BaseC();
+
+		        textsC
+		            .execute({
+		                query: {
+		                    command: "select * from texts_read()"
+		                },
+		            })
+		            .done(
+		                function() {
+		                	return reply(textsC);
+		                },
+		                function(err) {
+		                	console.log(err);
+		                    return reply(err);
+		                }
+			        );
+			},
+			assign: "textsC",
+	//		failAction: "log"
+		},
 	},
 
-	read_texts: {
+	transform_texts: {
 		method: function(request, reply){
-			console.log("pre: read texts");
-	        var textsC = new BaseC();
-
-	        textsC
-	            .execute({
-	                query: {
-	                    command: "select * from texts_read()"
-	                },
-	                //parse: utils.parseTextsArray
-	            })
-	            .done(
-	                function() {
-	                	return reply(textsC);
-	                },
-	                function(err) {
-	                	console.log(err);
-	                    return reply(err);
-	                }
-		        );
+			var texts = utils.transform(request.pre.textsC.toJSON(), transforms.text);
+			reply(_.indexBy(texts, "id"));
 		},
-		assign: "textsC",
-//		failAction: "log"
+		assign: "texts"
 	},
-
 
 	// route pre-requisite to be added to all routes that have the lang param validation
 	redirectOnInvalidLang: function(request, reply){

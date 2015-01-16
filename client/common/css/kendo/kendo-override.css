@@ -1,0 +1,10 @@
+.is-editable {
+	background-color: transparent;
+	border-style: dashed;
+	border-color: #191919;
+	border-radius: 6px;
+}
+
+.k-state-active:hover {
+	border-color: #191919;
+}

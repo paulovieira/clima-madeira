@@ -228,13 +228,13 @@ FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)
 	IF input_row.contents IS NOT NULL THEN
 		command = format(command || 'contents = %L, ', input_row.contents);
 	END IF;
-/*
 	IF input_row.contents_desc IS NOT NULL THEN
 		command = format(command || 'contents_desc = %L, ', input_row.contents_desc);
 	END IF;
 	IF input_row.author_id IS NOT NULL THEN
 		command = format(command || 'author_id = %L, ', input_row.author_id);
 	END IF;
+/*
 	IF input_row.active IS NOT NULL THEN
 		command = format(command || 'active = %L, ', input_row.active);
 	END IF;

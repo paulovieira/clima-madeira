@@ -31,6 +31,21 @@ module.exports = {
         engines: {
             "html": Nunjucks
         }
+    },
+
+    // documentation: https://github.com/hapijs/joi#validatevalue-schema-options-callback
+    joiOptions: {
+        abortEarly: false,  // returns all the errors found (does not stop on the first error)
+/*
+        allowUnknown: true, // allows object to contain unknown keys (will be ignored)
+
+        convert: ...
+        skipFunctions: ...
+        stripUnknown: ...
+        language: ...
+        presence: ...
+        context: ...
+*/
     }
 
 };

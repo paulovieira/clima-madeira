@@ -1,0 +1,13 @@
+{
+  "extends": "../.jshintrc",
+  "browser"       : true,     // Web Browser (window, document, etc)
+  "jquery"        : true,    // jQuery
+  "globals"       : { 
+  	"_": true,
+  	"Backbone": true,
+  	"Mn": true,
+  	"Q": true,
+  	"Clima": true
+  }        // additional predefined global variables
+}
+

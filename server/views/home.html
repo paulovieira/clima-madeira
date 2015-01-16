@@ -7,7 +7,7 @@
 {% block custom_css %}
     <link href="/common/css/kendo/kendo.common-bootstrap.min.css" rel="stylesheet">
     <link href="/common/css/kendo/kendo.default.min.css" rel="stylesheet">
-    <link href="/common/css/kendo/kendo_override.css" rel="stylesheet">
+    <link href="/common/css/kendo/kendo-override.css" rel="stylesheet">
 {% endblock %}
 
 
@@ -107,19 +107,19 @@ The landing page has 3 main sections
 					<div class="row" style="">
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					ctx.texts[1022][lang], 
-								ctx.texts[1024][lang], 
-		    					"/" + lang + ctx.texts[1025][lang], 
-								ctx.texts[2000][lang], 
+		    					1022, 
+								1024, 
+		    					1025, 
+								2000, 
 		    					ctx) 
 		    				}} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					ctx.texts[1037][lang], 
-								ctx.texts[1024][lang], 
-		    					"/" + lang + ctx.texts[1040][lang], 
-								ctx.texts[2003][lang], 
+		    					1037, 
+								1024, 
+		    					1040, 
+								2003, 
 		    					ctx) 
 		    				}} 
     					</div>
@@ -133,19 +133,19 @@ The landing page has 3 main sections
 					<div class="row" style="">
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					ctx.texts[1027][lang], 
-								ctx.texts[1024][lang], 
-		    					"/" + lang + ctx.texts[1030][lang], 
-								ctx.texts[2001][lang], 
+		    					1027, 
+								1024, 
+		    					1030, 
+								2001, 
 		    					ctx) 
 		    				}} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					ctx.texts[1042][lang], 
-								ctx.texts[1024][lang], 
-		    					"/" + lang + ctx.texts[1045][lang], 
-								ctx.texts[2004][lang], 
+		    					1042, 
+								1024, 
+		    					1045, 
+								2004, 
 		    					ctx) 
 		    				}} 
 
@@ -160,19 +160,19 @@ The landing page has 3 main sections
 					<div class="row" style="">
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					ctx.texts[1032][lang], 
-								ctx.texts[1024][lang], 
-		    					"/" + lang + ctx.texts[1035][lang], 
-								ctx.texts[2002][lang], 
+		    					1032, 
+								1024, 
+		    					1035, 
+								2002, 
 		    					ctx) 
 		    				}} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					ctx.texts[1047][lang], 
-								ctx.texts[1024][lang], 
-		    					"/" + lang + ctx.texts[1050][lang], 
-								ctx.texts[2005][lang], 
+		    					1047, 
+								1024, 
+		    					1050, 
+								2005, 
 		    					ctx) 
 		    				}} 
 
@@ -213,10 +213,11 @@ The landing page has 3 main sections
     <script type="text/javascript">
         var Clima = {};
         Clima.lang = "{{ lang }}";
+        Clima.texts = {{ ctx["textsJson"] }};
     </script>
 
 
-    <script src="/common/js/editor.js"></script> 
+    <script src="/common/js/kendo_editor.js"></script> 
 
 
 {% endblock %}

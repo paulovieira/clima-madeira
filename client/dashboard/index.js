@@ -91,9 +91,11 @@ var menuLeftC = new Backbone.Collection([
 
 var TextM = Backbone.Model.extend({
 	defaults: {
+
 		"pt": "",
 		"en": "",
-		"contents": {pt: "", en: ""}
+		"contents": {pt: "", en: ""},
+		"tags": []
 	},
 
 	url: "/api/texts",

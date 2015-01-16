@@ -1,9 +1,15 @@
 var Boom = require('boom');
 var Joi = require('joi');
+var ent = require("ent");
 var _ = require('underscore');
 var _s = require('underscore.string');
+
 var TextsC = require("../models/baseModel.js").collection;
 var utils = require('../common/utils.js');
+var transforms = require('../common/transforms.js');
+var settings = require("../config/settings.js");
+var pre = require('../common/pre.js');
+var changeCaseKeys = require('change-case-keys');
 
 
 var internals = {};
@@ -12,24 +18,19 @@ var internals = {};
 internals.resourceName = "texts";
 internals.resourcePath = "/texts";
 
+// decode and trim white spaces
+internals.decodeHtmlEntities = function(array){
+    var i,l;
+    for(i=0, l=array.length; i<l; i++){
+        if(array[i].contents){
+            array[i].contents["pt"] = _s.trim( ent.decode(array[i].contents["pt"]) );
+            array[i].contents["en"] = _s.trim( ent.decode(array[i].contents["en"]) );
+        }
+    }
 
-internals.schemas = {};
+    return array;
+};
 
-internals.schemas.baseModel = Joi.object().keys({
-    first: Joi.string().allow("").required(),
-    last: Joi.string().allow("").required(),
-    email: Joi.string().required()
-});
-
-internals.schemas.idSchema = Joi.number().integer().min(0);
-
-internals.schemas.schemaUpdateUser = internals.schemas.baseModel.keys({
-    id: internals.schemas.idSchema.required(),
-});
-
-internals.schemas.schemaCreateUser = internals.schemas.baseModel.keys({
-    pwHash: Joi.string().required()
-});
 
 internals.isDbError = function (err){
     return !!err.sqlState;
@@ -55,77 +56,92 @@ internals.parseError = function(err){
     return Boom.badImplementation(err.message);  
 };
 
-internals.parseTextsArray2 = function(resp){
-    // 1. flatten each row: for each object we want to place the properties in the "contents" object
-    // directly to the main object (that is, instead of "obj.contents.pt" we want "obj.pt")
-    resp.forEach(function(obj){
-        Object.keys(obj.contents).forEach(function(key){
-            obj[key] = obj.contents[key];
-        });
-
-        delete obj.contentsDesc;
-        delete obj.authorId;
-        delete obj.active;
-    });
-
-    return resp;
-};
-/*
-internals.deleteProps = function(array){
-    var args = Array.prototype.slice.call(arguments);
-    if(!_.isArray(array)){ array = [array]; }
-
-    var key, i, j, li, lj;
-
-    for(var i=1, li=args.length; i<li; i++){
-        key = args[i];
-        for(var j=0, lj=array.length; j<lj; j++){ 
-            delete (array[j])[key];
-        }
-    }
-}
-*/
 
 // validate the ids param in the URL
 internals.validateIds = function(value, options, next){
 debugger;
-//return next(undefined, value);
-
 
     value.ids = _s.trim(value.ids, ",").split(",");
 
-    var idSchema = internals.schemas.idSchema;
+
+    var idSchema = Joi.number().integer().min(0);
+
+    // must be an objet like this: { ids: [3,5,7] }
     var schema = Joi.object().keys({
         ids: Joi.array().unique().includes(idSchema)
     });
 
-    var validation = Joi.validate(value, schema);
+    var validation = Joi.validate(value, schema, settings.joiOptions);
 
     if(validation.error){  return next(validation.error);  }
 
     return next(undefined, validation.value);
 };
 
-// validate incoming payload
-internals.validatePayload = function(value, options, next){
+
+internals.validatePayloadForCreate = function(value, options, next){
+
+    var schemaCreate = Joi.object().keys({
+        id: Joi.number().integer().min(0),
+
+        tags: Joi.array().unique().includes(Joi.string()).required(),
+
+        contents: Joi.object().keys({
+            pt: Joi.string().required(),
+            en: Joi.string().required()
+        }).required(),
+
+        contentsDesc: Joi.object().keys({
+            pt: Joi.string().required(),
+            en: Joi.string().required()
+        }),
+
+        active: Joi.boolean()
+    });
+
+    return internals.validatePayload(value, options, next, schemaCreate);
+};
+
+
+internals.validatePayloadForUpdate = function(value, options, next){
+
+    var schemaUpdate = Joi.object().keys({
+        id: Joi.number().integer().min(0).required(),
+
+        tags: Joi.array().unique().includes(Joi.string()),
+
+        contents: Joi.object().keys({
+            pt: Joi.string().allow("").required(),
+            en: Joi.string().allow("").required()
+        }),
+
+        contentsDesc: Joi.object().keys({
+            pt: Joi.string().required(),
+            en: Joi.string().required()
+        }),
+
+        active: Joi.boolean()
+    });
+
+    return internals.validatePayload(value, options, next, schemaUpdate);
+};
+
+
+
+
+internals.validatePayload = function(value, options, next, schema){
 debugger;
 
-
     if(_.isObject(value) && !_.isArray(value)){  value = [value];  }
-    return next(undefined, value);
 
-    // validateIds was executed before this one; the ids param (if it defined) is now an array of integers
-    var ids = options.context.params.ids;
-
-    // if the ids param in the URL is defined (<=> we are at the PUT route), use the model schema that requires the id;
-    // otherwise, use mode schema that requires the pw_hash
-    var modelSchema = ids ? internals.schemas.schemaUpdateUser : internals.schemas.schemaCreateUser;
-
-    var payloadSchema = Joi.array().includes(modelSchema);
-
-    var validation = Joi.validate(value, payloadSchema);
+    // validate the elements of the array using the given schema
+    var validation = Joi.validate(value, Joi.array().includes(schema), settings.joiOptions);
 
     if(validation.error){  return next(validation.error); }
+
+
+    // validateIds was executed before this one; the ids param (if defined) is now an array of integers
+    var ids = options.context.params.ids;
 
     // finally, if the ids param is defined, make sure that the ids in the param and the ids in the payload are consistent
     if(ids){
@@ -137,9 +153,11 @@ debugger;
         }
     }
 
-    return next(undefined, validation.value);
+    // update the value that will be available in request.payload when the handler executes;
+    // there are 2 differences: a) Joi has coerced the values to the type defined in the schemas;
+    // b) the keys will be in underscored case (ready to be used by the postgres functions)
+    return next(undefined, changeCaseKeys(validation.value, "underscored"));
 };
-
 
 /*** END OF RESOURCE CONFIGURATION ***/
 
@@ -158,28 +176,27 @@ debugger;
         	var textsC = new TextsC();
 
         	textsC.execute({
-        		// read data using the following postgres function/view; we could use a different
-        		// function/view if we wanted
 				query: {
                     command: "select * from texts_read()"
-				},
-                parse: internals.parseTextsArray2
-
+				}
         	})
         	.done(
         		function(){
-	        		reply(textsC.toJSON());
+                    var resp      = textsC.toJSON();
+                    var transform = transforms.text;
+
+                    return reply(utils.transform(resp, transform));
         		},
                 function(err){
 debugger;
-
                     var boomErr = internals.parseError(err);
-                    reply(boomErr);
+                    return reply(boomErr);
                 }
         	);
 
 
         },
+
         config: {
 			description: 'Get all the resources',
 			notes: 'Returns all the resources (full collection)',
@@ -209,20 +226,20 @@ debugger;
                 query: {
                     command: "select * from texts_read($1)",
                     arguments: [queryOptions]
-                },
-                parse: internals.parseTextsArray2
-
-
+                }
             })
             .done(
                 function(){
 debugger;
-                    reply(textsC.toJSON());
+                    var resp      = textsC.toJSON();
+                    var transform = transforms.text;
+
+                    return reply(utils.transform(resp, transform));
                 },
                 function(err){
 debugger;
                     var boomErr = internals.parseError(err);
-                    reply(boomErr);
+                    return reply(boomErr);
                 }
             );
 
@@ -249,55 +266,58 @@ debugger;
         handler: function (request, reply) {
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
+/* decomment here!
             request.auth.credentials = request.auth.credentials || {};
-            if(!request.auth.credentials.id){
-                request.auth.credentials.id = 8;
-            }
 
+            if(!request.auth.credentials.id){
+                return reply(Boom.unauthorized("To create a new resource you must sign in."));
+            }
+*/
         	var textsC = new TextsC(request.payload);
 
             textsC.forEach(function(model){
-                model.set("author_id", request.auth.credentials.id);
-                model.set("tags", []);
+                model.set("author_id", 8 || request.auth.credentials.id);
             });
 
             var dbData = JSON.stringify(textsC.toJSON());
-            var dbDataOptions = JSON.stringify({eraseFields: true });
 
         	textsC.execute({
 				query: {
-                    command: "select * from texts_create($1, $2);",
-                    arguments: [dbData, dbDataOptions]
-                },
-                parse: internals.parseTextsArray2
-
+                    command: "select * from texts_create($1);",
+                    arguments: [dbData]
+                }
         	})
         	.done(
         		function(){
 debugger;
-	        		reply(textsC.toJSON());
+                    var resp      = textsC.toJSON();
+                    var transform = transforms.text;
+
+                    return reply(utils.transform(resp, transform));
         		},
                 function(err){
 debugger;
 
                     var boomErr = internals.parseError(err);
-                    reply(boomErr);
+                    return reply(boomErr);
                 }
         	);
 
         },
         config: {
         	validate: {
-        		payload: internals.validatePayload
+        		//payload: internals.validatePayload,
+                payload: internals.validatePayloadForCreate
         	},
+
+            auth: {
+                mode: "required"
+            },
+            auth: false,
 
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
 			tags: ['api'],
-            auth: {
-                mode: "required"
-            },
-//            auth: false
         }
     });
 
@@ -306,46 +326,65 @@ debugger;
         method: 'PUT',
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
+
+            utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
-        	var textsC = new TextsC(request.payload);
+/* decomment here!
+            request.auth.credentials = request.auth.credentials || {};
+
+            if(!request.auth.credentials.id){
+                return reply(Boom.unauthorized("To create a new resource you must sign in."));
+            }
+*/
+
+            // we must decode html entities here because the payload might come from 
+            // kendoUI editor (which uses html entities); we also do the trimming;
+            var textsC = new TextsC(internals.decodeHtmlEntities(request.payload));
+
+            textsC.forEach(function(model){
+                model.set("author_id", 8 || request.auth.credentials.id);
+            });
 
             var dbData = JSON.stringify(textsC.toJSON());
-            var dbDataOptions = JSON.stringify({eraseFields: true });
 
         	textsC.execute({
 				query: {
-				  	command: "select * from texts_update($1, $2);",
-                    arguments: [dbData, dbDataOptions]
-				},
-                parse: internals.parseTextsArray2
-
+				  	command: "select * from texts_update($1);",
+                    arguments: [dbData]
+				}
         	})
         	.done(
         		function(){
 debugger;
-	        		reply(textsC.toJSON());
+                    var resp      = textsC.toJSON();
+                    var transform = transforms.text;
+
+                    return reply(utils.transform(resp, transform));
         		},
                 function(err){
 debugger;
 
                     var boomErr = internals.parseError(err);
-                    reply(boomErr);
+                    return reply(boomErr);
                 }   
         	);
         },
         config: {
 			validate: {
 	            params: internals.validateIds,
-        		payload: internals.validatePayload
+        		//payload: internals.validatePayload
+                payload: internals.validatePayloadForUpdate
+
 			},
+
+            auth: {
+                mode: "required"
+            },
+            auth: false,
 
 			description: 'Put (short description)',
 			notes: 'Put (long description)',
 			tags: ['api'],
-            auth: {
-                mode: "required"
-            },
-            auth: false
         }
     });
 
@@ -361,27 +400,22 @@ debugger;
             })
 
             var dbData = JSON.stringify(textsC.toJSON());
-            var dbDataOptions = JSON.stringify({eraseFields: true });
 
             textsC.execute({
                 query: {
-                    command: "select * from texts_delete($1, $2)",
-                    arguments: [dbData, dbDataOptions]
-                },
-                parse: function(resp, options){
-debugger;
-                    return resp;
+                    command: "select * from texts_delete($1)",
+                    arguments: [dbData]
                 }
             })
             .done(
                 function(){
 debugger;
-                    reply(textsC.toJSON());
+                    return reply(textsC.toJSON());
                 },
                 function(err){
 debugger;
                     var boomErr = internals.parseError(err);
-                    reply(boomErr);
+                    return reply(boomErr);
                 }
             );
         },
@@ -418,8 +452,6 @@ exports.register.attributes = {
     name: internals.resourceName,
     version: '1.0.0'
 };
-
-
 
 
 
