@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var Nunjucks = require('hapi-nunjucks');
-var settings = require('../config/settings.js');
+var settings = require(global.rootPath + 'config/server.js');
 
 var validate = {
 	params: {

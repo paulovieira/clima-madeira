@@ -6,10 +6,10 @@ var Bcrypt = require("bcrypt");
 var Q = require("q");
 var Moment = require("moment");
 
-var settings = require('../config/settings.js');
-var utils = require('../common/utils.js');
-var transforms = require('../common/transforms.js');
-var BaseC = require("../models/baseModel.js").collection;
+var settings = require(global.rootPath + 'config/server.js');
+var utils = require(global.rootPath + 'server/common/utils.js');
+var transforms = require(global.rootPath + 'server/common/transforms.js');
+var BaseC = require(global.rootPath + "server/models/baseModel.js").collection;
 
 var jsonFormat = require("json-format");
 

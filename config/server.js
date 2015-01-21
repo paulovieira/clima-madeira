@@ -1,12 +1,5 @@
-var path = require('path'),
-    Nunjucks = require('hapi-nunjucks');
-
-var rootPath = path.normalize(__dirname + '/../..');
-
 
 module.exports = {
-
-    rootPath: rootPath,
 
     host: "localhost",
     port: parseInt(process.env.PORT, 10) || 3000,
@@ -30,9 +23,9 @@ module.exports = {
 
     // options for the views (to be used in the main index.js)
     viewsOptions: {
-        path: path.join(rootPath, 'server/views'),
+        path: global.rootPath + 'server/views',
         engines: {
-            "html": Nunjucks
+            "html": require('hapi-nunjucks')
         }
     },
 

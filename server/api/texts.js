@@ -3,13 +3,15 @@ var Joi = require('joi');
 //var ent = require("ent");
 var _ = require('underscore');
 var _s = require('underscore.string');
-
-var TextsC = require("../models/baseModel.js").collection;
-var utils = require('../common/utils.js');
-var transforms = require('../common/transforms.js');
-var settings = require("../config/settings.js");
-var pre = require('../common/pre.js');
 var changeCaseKeys = require('change-case-keys');
+
+var TextsC = require(global.rootPath + "server/models/baseModel.js").collection;
+var utils = require(global.rootPath + 'server/common/utils.js');
+var transforms = require(global.rootPath + 'server/common/transforms.js');
+var settings = require(global.rootPath + "config/server.js");
+var pre = require(global.rootPath + 'server/common/pre.js');
+
+
 
 
 var internals = {};

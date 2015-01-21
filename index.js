@@ -1,15 +1,17 @@
+var Path = require('path');
+global.rootPath = Path.normalize(__dirname) + "/";
+
 var Hapi = require('hapi'),
     Hoek = require('hoek'),
-    Path = require('path'),
-    settings = require('./config/server.js'),
-    utils = require('./server/common/utils.js'),
     Nunjucks = require('hapi-nunjucks'),
     _ = require('underscore'),
-    utils = require("./server/common/utils.js");
 
+    settings = require(global.rootPath + 'config/server.js'),
+    utils = require(global.rootPath + "server/common/utils.js");
 
 require('pretty-error').start();
 require('colors');
+
 
 
 
@@ -31,7 +33,7 @@ server.connection({
 // 2. Configure views
 server.views(settings.viewsOptions);
 
-Nunjucks.configure(Path.join(settings.rootPath, 'server/views'), {
+Nunjucks.configure(Path.join(global.rootPath, 'server/views'), {
     watch: true
     //    autoescape: true 
 });
@@ -126,5 +128,5 @@ server.start(function() {
 
 });
 
-var ent = require("ent");
-console.log(ent.decode("OBSERVAT&Oacute;RIO DE CLIMA E CEN&Aacute;RIOS CLIM&Aacute;TICOSzz fwefw&otilde;&nbsp;"));
+
+
