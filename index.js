@@ -1,7 +1,7 @@
 var Hapi = require('hapi'),
     Hoek = require('hoek'),
     Path = require('path'),
-    settings = require('./server/config/settings'),
+    settings = require('./config/server.js'),
     utils = require('./server/common/utils.js'),
     Nunjucks = require('hapi-nunjucks'),
     _ = require('underscore'),

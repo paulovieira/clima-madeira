@@ -28,6 +28,5 @@ node_modules
 .lock-wscript
 
 # configuration files (contain passwords)
-database/settings.js
-server/config/email.js
-server/config/database.js
+config/email.js
+config/database.js

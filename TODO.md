@@ -1,5 +1,4 @@
 - create repo at github
-    + create the ignore file: server/config/dbSettings.js
 - create new npm module:
     + backbone-pg DONE
     + change-case-keys DONE
