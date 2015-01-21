@@ -11,6 +11,10 @@
 - install nunjucks globally: sudo npm install nunjucks -g
 
 
+## change server/config/settings.js
+
+uri
+
 ## 2. Start 
 
 node index.js

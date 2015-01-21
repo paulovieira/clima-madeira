@@ -4,7 +4,7 @@ html {
 }
 
 body {
-	padding-top: 0px;
+/*	padding-top: 0px; */
 	margin-bottom: 140px;
 }
 
@@ -72,7 +72,7 @@ body {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	/* Set the fixed height of the footer here */
+	/* height of the footer - must be the same as margin-bottom of body  */
 	height: 140px;
 	background-color: #ddd;
 

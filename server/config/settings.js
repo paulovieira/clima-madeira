@@ -10,7 +10,10 @@ module.exports = {
 
     host: "localhost",
     port: parseInt(process.env.PORT, 10) || 3000,
-    debugEndpoint: "/debug/consol",  // endpoint to be used in the TV module
+    //debugEndpoint: "/debug/consol",  // endpoint to be used in the TV module
+
+    publicUri: "http://localhost",  // the domain name
+    publicPort: 3000,  // probably 80
 
     // the default language is the first in the array below
     allowedLanguages: ["pt", "en"],
@@ -46,6 +49,6 @@ module.exports = {
         presence: ...
         context: ...
 */
-    }
+    },
 
 };

@@ -164,7 +164,7 @@ var data =
 
 
         {
-            id: 1001,
+            id: 15,
             tags: [],
             contents: {
                 pt: "Observatório de Clima e Cenários Climáticos",
@@ -174,7 +174,7 @@ var data =
         },
 
         {
-            id: 1002,
+            id: 16,
             tags: [],
             contents: {
                 pt: "(pt) Lorem ipsum dolor sit amet, ipsum labitur docendi pri an, nam at tollit eripuit, ne eum doming delenit copiosae. Et pro insolens adolescens. Eros homero integre est in, harum altera ei sea, id duo legimus",
@@ -184,7 +184,7 @@ var data =
         },
 
         {
-            id: 1003,
+            id: 17,
             tags: [],
             contents: {
                 pt: "Introdução",
@@ -194,7 +194,7 @@ var data =
         },
 
         {
-            id: 1004,
+            id: 18,
             tags: [],
             contents: {
                 pt: "Home",
@@ -204,7 +204,7 @@ var data =
         },
 
         {
-            id: 1005,
+            id: 19,
             tags: [],
             contents: {
                 pt: "Mapa de Vulnerabilidades",
@@ -214,7 +214,7 @@ var data =
         },
 
         {
-            id: 1006,
+            id: 20,
             tags: [],
             contents: {
                 pt: "Estratégia de Adaptação",
@@ -224,7 +224,7 @@ var data =
         },
 
         {
-            id: 1007,
+            id: 21,
             tags: [],
             contents: {
                 pt: "Equipa",
@@ -234,7 +234,7 @@ var data =
         },
 
         {
-            id: 1008,
+            id: 22,
             tags: [],
             contents: {
                 pt: "Informações para",
@@ -245,7 +245,7 @@ var data =
 
 
         {
-            id: 1009,
+            id: 23,
             tags: [],
             contents: {
                 pt: "Sectores",
@@ -255,7 +255,7 @@ var data =
         },
 
         {
-            id: 1010,
+            id: 24,
             tags: [],
             contents: {
                 pt: "Cidadãos",
@@ -265,7 +265,7 @@ var data =
         },
 
         {
-            id: 1011,
+            id: 25,
             tags: [],
             contents: {
                 pt: "(pt) Discere cotidieque ad est, ius in tamquam alterum alienum. Id vel aliquam repudiare. Vim hinc mandamus persecuti in, et mutat intellegam sit, labores evertitur instructior an sit.",
@@ -275,7 +275,7 @@ var data =
         },
 
         {
-            id: 1012,
+            id: 26,
             tags: [],
             contents: {
                 pt: "/cidadaos",
@@ -285,7 +285,7 @@ var data =
         },
 
         {
-            id: 1014,
+            id: 27,
             tags: [],
             contents: {
                 pt: "Técnicos",
@@ -295,7 +295,7 @@ var data =
         },
 
         {
-            id: 1015,
+            id: 28,
             tags: [],
             contents: {
                 pt: "(pt) Scripta albucius petentium vel ei, id quis lobortis per. Eam cibo aperiam dolorum ad. Aeque debitis id nam, ei mel tamquam torquatos voluptatum. Movet aeterno regione vix eu.",
@@ -305,7 +305,7 @@ var data =
         },
 
         {
-            id: 1016,
+            id: 29,
             tags: [],
             contents: {
                 pt: "/tecnicos",
@@ -316,7 +316,7 @@ var data =
 
 
         {
-            id: 1018,
+            id: 30,
             tags: [],
             contents: {
                 pt: "Investigadores",
@@ -326,7 +326,7 @@ var data =
         },
 
         {
-            id: 1019,
+            id: 31,
             tags: [],
             contents: {
                 pt: "(pt) Quo exerci vocibus constituam te. Idque putant postulant an eum. Eum ad copiosae mnesarchum, duis civibus interpretaris nec eu. Recusabo patrioque laboramus eam ei, no eirmod commodo pericul author_emaila usu, cu sit appetere scribentur.",
@@ -336,7 +336,7 @@ var data =
         },
 
         {
-            id: 1020,
+            id: 32,
             tags: [],
             contents: {
                 pt: "/investigadores",
@@ -347,7 +347,7 @@ var data =
 
 
         {
-            id: 1022,
+            id: 33,
             tags: [],
             contents: {
                 pt: "Biodiversidade",
@@ -357,7 +357,7 @@ var data =
         },
 
         {
-            id: 1023,
+            id: 34,
             tags: [],
             contents: {
                 pt: "(pt) Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore.",
@@ -367,7 +367,7 @@ var data =
         },
 
         {
-            id: 1024,
+            id: 35,
             tags: [],
             contents: {
                 pt: "",
@@ -377,7 +377,7 @@ var data =
         },
 
         {
-            id: 1025,
+            id: 36,
             tags: [],
             contents: {
                 pt: "/biodiversidade",
@@ -388,7 +388,7 @@ var data =
 
 
         {
-            id: 1027,
+            id: 37,
             tags: [],
             contents: {
                 pt: "Recursos Hídricos",
@@ -398,7 +398,7 @@ var data =
         },
 
         {
-            id: 1028,
+            id: 38,
             tags: [],
             contents: {
                 pt: "(pt) Arcu dolor non mi commodo vestibulum, duis habitasse nullam varius quis, eget vitae vitae tempor facilisis aliquam, non bibendum elit volutpat, quisque lorem.  ",
@@ -408,7 +408,7 @@ var data =
         },
 
         {
-            id: 1029,
+            id: 39,
             tags: [],
             contents: {
                 pt: "",
@@ -418,7 +418,7 @@ var data =
         },
 
         {
-            id: 1030,
+            id: 40,
             tags: [],
             contents: {
                 pt: "/recursos_hidricos",
@@ -429,7 +429,7 @@ var data =
 
 
         {
-            id: 1032,
+            id: 41,
             tags: [],
             contents: {
                 pt: "Saúde",
@@ -439,7 +439,7 @@ var data =
         },
 
         {
-            id: 1033,
+            id: 42,
             tags: [],
             contents: {
                 pt: "(pt) Praesent purus fermentum. Aliquet eu viverra vitae sit, blandit gravida a ultricies sint nunc. Ullamcorper euismod donec adipiscing interdum. ",
@@ -449,7 +449,7 @@ var data =
         },
 
         {
-            id: 1034,
+            id: 43,
             tags: [],
             contents: {
                 pt: "",
@@ -459,7 +459,7 @@ var data =
         },
 
         {
-            id: 1035,
+            id: 44,
             tags: [],
             contents: {
                 pt: "/saude",
@@ -470,7 +470,7 @@ var data =
 
 
         {
-            id: 1037,
+            id: 45,
             tags: [],
             contents: {
                 pt: "Turismo",
@@ -480,7 +480,7 @@ var data =
         },
 
         {
-            id: 1038,
+            id: 46,
             tags: [],
             contents: {
                 pt: "(pt) Erat in arcu, dictum erat nunc quisque enim, porttitor libero facilisis enim, sed ac adipiscing nulla elementum. Pretium lorem nisl imperdiet mi orci.",
@@ -490,7 +490,7 @@ var data =
         },
 
         {
-            id: 1039,
+            id: 47,
             tags: [],
             contents: {
                 pt: "",
@@ -500,7 +500,7 @@ var data =
         },
 
         {
-            id: 1040,
+            id: 48,
             tags: [],
             contents: {
                 pt: "/turismo",
@@ -510,7 +510,7 @@ var data =
         },
 
         {
-            id: 1042,
+            id: 49,
             tags: [],
             contents: {
                 pt: "Agricultura e Florestas",
@@ -520,7 +520,7 @@ var data =
         },
 
         {
-            id: 1043,
+            id: 50,
             tags: [],
             contents: {
                 pt: "(pt) Vulputate massa in nec, integer massa cras, nisi ut, euismod vel consequat lacus. Orci viverra, dolor mattis, curabitur amet pellentesque, morbi ut cras erat, sed et habitasse duis.",
@@ -530,7 +530,7 @@ var data =
         },
 
         {
-            id: 1044,
+            id: 51,
             tags: [],
             contents: {
                 pt: "",
@@ -540,7 +540,7 @@ var data =
         },
 
         {
-            id: 1045,
+            id: 52,
             tags: [],
             contents: {
                 pt: "/agricultura",
@@ -550,7 +550,7 @@ var data =
         },
 
         {
-            id: 1047,
+            id: 53,
             tags: [],
             contents: {
                 pt: "Energia",
@@ -560,7 +560,7 @@ var data =
         },
 
         {
-            id: 1048,
+            id: 54,
             tags: [],
             contents: {
                 pt: "(pt) Consequat proin sit tristique quam vitae, incididunt hendrerit eu at elit, hendrerit maecenas habitasse cum aliquam praesent aliquam, in pellentesque nullam sit mauris. ",
@@ -570,7 +570,7 @@ var data =
         },
 
         {
-            id: 1049,
+            id: 55,
             tags: [],
             contents: {
                 pt: "",
@@ -580,7 +580,7 @@ var data =
         },
 
         {
-            id: 1050,
+            id: 56,
             tags: [],
             contents: {
                 pt: "/energia",
@@ -594,7 +594,7 @@ var data =
         // 2000-2999 : URLs
 
         {
-            id: 2000,
+            id: 57,
             tags: [],
             contents: {
                 pt: "/common/images/sectores/biodiversidade_w800.jpg",
@@ -604,7 +604,7 @@ var data =
         },
 
         {
-            id: 2001,
+            id: 58,
             tags: [],
             contents: {
                 pt: "/common/images/sectores/recursos_hidricos_w800.jpg",
@@ -614,7 +614,7 @@ var data =
         },
 
         {
-            id: 2002,
+            id: 59,
             tags: [],
             contents: {
                 pt: "/common/images/sectores/saude_w800.jpg",
@@ -625,7 +625,7 @@ var data =
 
 
         {
-            id: 2003,
+            id: 60,
             tags: [],
             contents: {
                 pt: "/common/images/sectores/turismo_w800.jpg",
@@ -636,7 +636,7 @@ var data =
 
 
         {
-            id: 2004,
+            id: 61,
             tags: [],
             contents: {
                 pt: "/common/images/sectores/agricultura_florestas_w800.jpg",
@@ -647,7 +647,7 @@ var data =
 
 
         {
-            id: 2005,
+            id: 62,
             tags: [],
             contents: {
                 pt: "/common/images/sectores/energia_w800.jpg",
@@ -658,7 +658,7 @@ var data =
 
 
         {
-            id: 2006,
+            id: 63,
             tags: [],
             contents: {
                 pt: "/common/images/logos/logo-drota.jpg",
@@ -668,7 +668,7 @@ var data =
         },
 
         {
-            id: 2007,
+            id: 64,
             tags: [],
             contents: {
                 pt: "/common/images/logos/logo-cciam.jpg",
@@ -678,7 +678,7 @@ var data =
         },
 
         {
-            id: 2008,
+            id: 65,
             tags: [],
             contents: {
                 pt: "/common/images/logos/logo-fcul.jpg",
@@ -688,7 +688,7 @@ var data =
         },
 
         {
-            id: 2009,
+            id: 66,
             tags: [],
             contents: {
                 pt: "/common/images/logos/logo-ffcul.jpg",
@@ -698,7 +698,7 @@ var data =
         },
 
         {
-            id: 2010,
+            id: 67,
             tags: [],
             contents: {
                 pt: "/common/images/placeholders/300x200.gif",
@@ -708,7 +708,7 @@ var data =
         },
 
         {
-            id: 2011,
+            id: 68,
             tags: [],
             contents: {
                 pt: "/common/images/placeholders/300x200.gif",
@@ -718,7 +718,7 @@ var data =
         },
 
         {
-            id: 2012,
+            id: 69,
             tags: [],
             contents: {
                 pt: "/common/images/placeholders/300x200.gif",
@@ -726,6 +726,112 @@ var data =
             },
             author_email: "paulovieira@gmail.com"
         },
+
+        {
+            id: 70,
+            tags: [],
+            contents: {
+                pt: "Área reservada da Plataforma CLIMA",
+                en: "Restricted area of the CLIMA platform"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+        {
+            id: 71,
+            tags: [],
+            contents: {
+                pt: "Email",
+                en: "Email"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+        {
+            id: 72,
+            tags: [],
+            contents: {
+                pt: "Password",
+                en: "Password"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+        {
+            id: 73,
+            tags: [],
+            contents: {
+                pt: "Clique aqui para recuperar a password",
+                en: "Click here to recover the password"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+        {
+            id: 74,
+            tags: [],
+            contents: {
+                pt: "Entrar",
+                en: "Login"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+        {
+            id: 75,
+            tags: [],
+            contents: {
+                pt: "Email ou password em falta",
+                en: "Missing username or password"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+        {
+            id: 76,
+            tags: [],
+            contents: {
+                pt: "O endereço de email não está registado na plataforma",
+                en: "The email address is not registered in the plataform"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+        {
+            id: 77,
+            tags: [],
+            contents: {
+                pt: "A password é inválida",
+                en: "The password is invalid"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+        {
+            id: 78,
+            tags: [],
+            contents: {
+                pt: "Regressar à página inicial",
+                en: "Go back to the home page"
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+
+/*
+        {
+            id: ...,
+            tags: [],
+            contents: {
+                pt: "",
+                en: ""
+            },
+            author_email: "paulovieira@gmail.com"
+        },
+
+*/
+
+
 
     ];
 

@@ -5,14 +5,19 @@
 
 
 {% block custom_css %}
+
+  {% if ctx.isAuthenticated %}
     <link href="/common/css/kendo/kendo.common-bootstrap.min.css" rel="stylesheet">
     <link href="/common/css/kendo/kendo.default.min.css" rel="stylesheet">
     <link href="/common/css/kendo/kendo-override.css" rel="stylesheet">
+  {% endif %}    
+
 {% endblock %}
 
 
 
 {% block content %}
+
 
 
 
@@ -107,19 +112,19 @@ The landing page has 3 main sections
 					<div class="row" style="">
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					1022, 
-								1024, 
-		    					1025, 
-								2000, 
+		    					33,
+								35, 
+		    					36, 
+								57, 
 		    					ctx) 
 		    				}} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					1037, 
-								1024, 
-		    					1040, 
-								2003, 
+		    					45, 
+								47, 
+		    					48, 
+								60, 
 		    					ctx) 
 		    				}} 
     					</div>
@@ -133,19 +138,19 @@ The landing page has 3 main sections
 					<div class="row" style="">
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					1027, 
-								1024, 
-		    					1030, 
-								2001, 
+		    					37, 
+								39, 
+		    					40, 
+								58, 
 		    					ctx) 
 		    				}} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					1042, 
-								1024, 
-		    					1045, 
-								2004, 
+		    					49, 
+								51, 
+		    					52, 
+								61, 
 		    					ctx) 
 		    				}} 
 
@@ -160,19 +165,19 @@ The landing page has 3 main sections
 					<div class="row" style="">
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					1032, 
-								1024, 
-		    					1035, 
-								2002, 
+		    					41, 
+								43, 
+		    					44, 
+								59, 
 		    					ctx) 
 		    				}} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sector(
-		    					1047, 
-								1024, 
-		    					1050, 
-								2005, 
+		    					53, 
+								55, 
+		    					56, 
+								62, 
 		    					ctx) 
 		    				}} 
 
@@ -200,11 +205,10 @@ The landing page has 3 main sections
 {% block scripts %}
 
     <script src="/common/js/jquery.js"></script>
-    <script src="/common/js/underscore.js"></script>
-    <script src="/common/js/backbone.js"></script>
-    <script src="/common/js/json2.js"></script>
-    <script src="/common/js/q.js"></script>
 
+  {% if ctx.isAuthenticated %}
+    <script src="/common/js/underscore.js"></script>
+    <script src="/common/js/q.js"></script>
 
     <script src="/common/js/kendo/kendo.core.min.js"></script>
     <script src="/common/js/kendo/kendo.web.min.js"></script>
@@ -215,9 +219,9 @@ The landing page has 3 main sections
         Clima.lang = "{{ lang }}";
         Clima.texts = {{ ctx["textsJson"] }};
     </script>
-
-
     <script src="/common/js/kendo_editor.js"></script> 
-
+  {% endif %}
 
 {% endblock %}
+
+

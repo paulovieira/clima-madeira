@@ -57,6 +57,7 @@ DECLARE
 	id INT;
 	email TEXT;
 	email_like TEXT;
+	recover TEXT;
 BEGIN
 
 -- NOTE: using a CTE is not good for performance;
@@ -107,6 +108,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	SELECT json_extract_path_text(options_row, 'id')    INTO id;
 	SELECT json_extract_path_text(options_row, 'email') INTO email;
 	SELECT json_extract_path_text(options_row, 'email_like') INTO email_like;
+	SELECT json_extract_path_text(options_row, 'recover') INTO recover;
 
 	number_conditions := 0;
 	
@@ -141,6 +143,16 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 	
+	-- criteria: recover token
+	IF recover IS NOT NULL THEN
+		IF number_conditions = 0 THEN  command = command || ' WHERE';  
+		ELSE                           command = command || ' AND';
+		END IF;
+
+		command = format(command || ' u.recover = %L', recover);
+		number_conditions := number_conditions + 1;
+	END IF;
+
 	command := command || ' ORDER BY u.id;';
 
 	RETURN QUERY EXECUTE command;
@@ -281,11 +293,13 @@ FOR input_row IN (select * from json_populate_recordset(null::users, input_data)
 		command = format(command || 'pw_hash = %L, ', input_row.pw_hash);
 	END IF;
 	IF input_row.recover IS NOT NULL THEN
-		command = format(command || 'recover = %L, ', input_row.recover);
+		command = format(command || 'recover = %L, recover_valid_until = %L, ', input_row.recover, now() + interval '1 day');
 	END IF;
+/*
 	IF input_row.recover_valid_until IS NOT NULL THEN
 		command = format(command || 'recover_valid_until = %L, ', input_row.recover_valid_until);
 	END IF;
+*/
 
 	-- remove the comma and space from the last if
 	command = left(command, -2);
@@ -318,6 +332,8 @@ select * from users order by id desc
 select * from users_update('[{"id": "237", "email": "@237-2"}]');
 select * from users_update('[{"id": "237", "email": "@237-5", "first_name": "237-3"}]');
 select * from users_update('[{"id": "2370", "email": "@237-6", "recover": "zzz"}]');
+
+select * from users_update('[{"id": "8", "recover": "zzz"}]');
 
 select * from users_update('[
 {"id": "400", "email": "@400-#8", "recover": "#8"},

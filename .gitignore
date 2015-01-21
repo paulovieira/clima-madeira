@@ -27,5 +27,7 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
-# Database settings
+# configuration files (contain passwords)
 database/settings.js
+server/config/email.js
+server/config/database.js

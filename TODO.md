@@ -28,3 +28,5 @@
 
 
 -texts rest route: take into account the validations for put and post (we should delete some properties in the client before sending the payload)
+
+-what if the server can't connect to external services? (like mandrill) This can be simulated in the localhost if we don't have internet.

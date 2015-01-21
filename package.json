@@ -19,6 +19,8 @@
     "joi": "^5.0.2",
     "json-format": "0.0.1",
     "lodash": "^2.4.1",
+    "moment": "^2.9.0",
+    "node-mandrill": "^1.0.1",
     "node-uuid": "^1.4.2",
     "npm": "^2.1.18",
     "pg": "^4.1.1",

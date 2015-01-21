@@ -1,6 +1,6 @@
 var Boom = require('boom');
 var Joi = require('joi');
-var ent = require("ent");
+//var ent = require("ent");
 var _ = require('underscore');
 var _s = require('underscore.string');
 
@@ -19,6 +19,7 @@ internals.resourceName = "texts";
 internals.resourcePath = "/texts";
 
 // decode and trim white spaces
+/*
 internals.decodeHtmlEntities = function(array){
     var i,l;
     for(i=0, l=array.length; i<l; i++){
@@ -30,7 +31,7 @@ internals.decodeHtmlEntities = function(array){
 
     return array;
 };
-
+*/
 
 internals.isDbError = function (err){
     return !!err.sqlState;
@@ -339,7 +340,9 @@ debugger;
 
             // we must decode html entities here because the payload might come from 
             // kendoUI editor (which uses html entities); we also do the trimming;
-            var textsC = new TextsC(internals.decodeHtmlEntities(request.payload));
+            //var textsC = new TextsC(internals.decodeHtmlEntities(request.payload));
+
+            var textsC = new TextsC(request.payload);
 
             textsC.forEach(function(model){
                 model.set("author_id", 8 || request.auth.credentials.id);

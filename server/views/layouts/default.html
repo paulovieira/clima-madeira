@@ -6,8 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}{{ ctx.texts[1][lang] }}{% endblock %}</title>
+    <title>{% block title %}{{ ctx.texts[15][lang] }}{% endblock %}</title>
 
+    {# the base .css files (used for all the pages #}
     {% include "includes/stylesheets.html" %}
 
     {% block custom_css %}{% endblock %}
@@ -17,13 +18,14 @@
 <body>
 
 	<div class="container-fluid">
-
 	    {% block content %}{% endblock %}
-
-	    {% include "includes/footer.html" %}
-  
 	</div>
+    <footer class="footer">
+        {% include "includes/footer.html" %}
+    </footer>
 
+    {% block modal %}{% endblock %}
+    
     {% block scripts %}{% endblock %}
 
 </body>

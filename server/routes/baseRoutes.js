@@ -6,29 +6,6 @@ var baseHandlers = require('../handlers/baseHandlers.js');
 
 var routes = [
 
-    {
-        method: "GET",
-        path: "/{lang}/testpre",
-        handler: baseHandlers.testpre,
-
-        config: {
-            auth: {
-                mode: "try"
-            },
-            validate: {
-                params: validate.params.lang
-            },
-            pre: [
-                // running the pre method in parallel is equivalent to using only 1 pre method
-                // taking care of several promises and using Q.all([promise1, promise2]);
-                // the route handler will only execute when ALL the pre-handlers have called reply()
-                //[pre.db.read_texts, pre.db.read_users],  
-                [pre.db.read_users],
-//                utils.pre.db.read_texts,
-  //              utils.pre.db.read_users
-            ]
-        }
-    },
 
     // if lang param is not given, direct immediately to the default laguage
     {
@@ -37,7 +14,7 @@ var routes = [
         handler: baseHandlers.index,
         config: {
             auth: false,
-/*            
+            /*            
             auth: {
                 mode: "try"
             },
@@ -57,6 +34,7 @@ var routes = [
             validate: {
                 params: validate.params.lang
             },
+
             pre: [
                 [pre.db.read_texts],
                 pre.transform_texts
@@ -64,6 +42,26 @@ var routes = [
         }
 
     },
+
+    {
+        method: "GET",
+        path: "/{lang}/recover",
+        handler: baseHandlers.recover,
+
+        config: {
+            auth: false,
+            validate: {
+                params: validate.params.lang,
+                query: validate.query.recoverToken
+            },
+            pre: [
+                [pre.db.read_texts, pre.db.read_user_by_token],
+                pre.transform_texts
+            ]
+        }
+
+    },
+
 
     {
         method: "GET",
@@ -140,7 +138,7 @@ var routes = [
                 mode: "try"
             },
 
-//            auth: false,
+            //            auth: false,
             validate: {
                 params: validate.params.lang
             },
@@ -166,6 +164,44 @@ var routes = [
             }
         }
     },
+
+
+    {
+        method: "GET",
+        path: "/{lang}/testpre",
+        handler: baseHandlers.testpre,
+
+        config: {
+            auth: {
+                mode: "try"
+            },
+            validate: {
+                params: validate.params.lang
+            },
+            pre: [
+                // running the pre method in parallel is equivalent to using only 1 pre method
+                // taking care of several promises and using Q.all([promise1, promise2]);
+                // the route handler will only execute when ALL the pre-handlers have called reply()
+                //[pre.db.read_texts, pre.db.read_users],  
+                [pre.db.read_users],
+                //                utils.pre.db.read_texts,
+                //              utils.pre.db.read_users
+            ]
+        }
+    },
+
+
+    {
+        method: "GET",
+        path: "/test_footer",
+        handler: function(request, reply){
+            return reply.view("test_footer");
+        },
+        config: {
+            auth: false
+        }
+    },
+
 ];
 
 //utils.addPrerequisites(routes);
@@ -180,7 +216,7 @@ routes
             return true;
         }
 
-        console.log("	" + routeObj.path);
+        console.log("   " + routeObj.path);
         return false;
     })
     .forEach(function(routeObj) {

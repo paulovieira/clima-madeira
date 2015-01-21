@@ -20,8 +20,12 @@ var validate = {
 			}
 
 			return next(undefined, value);	
-		},		
+		},	
 	},
+
+	query: {
+
+	}
 };
 
 module.exports = validate;

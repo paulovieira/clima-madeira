@@ -33,6 +33,60 @@ var preRequisites = {
 			assign: "usersC"
 		},
 
+		read_user_by_email: {
+			method: function(request, reply){
+				console.log("pre: read user by email");
+
+				var email = request.params.email || "";
+		        var usersC = new BaseC();
+
+		        usersC
+		            .execute({
+		                query: {
+		                    command: "select * from users_read($1)",
+		                    arguments: JSON.stringify([{email: email}])
+		                },
+		            })
+		            .done(
+		                function() {
+		                	return reply(usersC);
+		                },
+		                function(err) {
+		                	console.log(err);
+		                    return reply(Boom.badImplementation());
+		                }
+			        );
+			},
+			assign: "usersC"
+		},
+
+		read_user_by_token: {
+			method: function(request, reply){
+				console.log("pre: read user by token");
+
+				var recoverToken = request.query.token || request.params.token || "";
+		        var usersC = new BaseC();
+
+		        usersC
+		            .execute({
+		                query: {
+		                    command: "select * from users_read($1)",
+		                    arguments: JSON.stringify([{recover: recoverToken}])
+		                },
+		            })
+		            .done(
+		                function() {
+		                	return reply(usersC);
+		                },
+		                function(err) {
+		                	console.log(err);
+		                    return reply(Boom.badImplementation());
+		                }
+			        );
+			},
+			assign: "usersC"
+		},
+
 		read_texts: {
 			method: function(request, reply){
 				console.log("pre: read texts");
