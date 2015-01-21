@@ -4,7 +4,7 @@ var changeCase = require("change-case-keys");
 
 
 
-var BaseC = require("../../server/models/baseModel.js").collection;
+var BaseC = require("../../server/models/base-model.js").collection;
 var baseC = new BaseC();
 var dbData;
 

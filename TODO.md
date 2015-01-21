@@ -1,8 +1,8 @@
-- create repo at github
 - create new npm module:
     + backbone-pg DONE
     + change-case-keys DONE
-- when saving important fields that will be used to identigy somethiing (such as emails), make sure we use toLowerCase
+- when saving important fields that will be used to identify somethiing (such as emails), make sure we trim and toLowerCase before
+- rename the files in ./client to dash-case (like in the rest of the project)
 
 -the main index.js file shouldn't have any logic from hapi. It should be used to set global configurations, 
 

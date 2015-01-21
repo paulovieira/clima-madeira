@@ -2,7 +2,7 @@
 var utils = require('../common/utils.js');
 var pre = require('../common/pre.js');
 var validate = require('../common/validate.js');
-var baseHandlers = require('../handlers/baseHandlers.js');
+var baseHandlers = require('../handlers/base-handlers.js');
 
 var routes = [
 

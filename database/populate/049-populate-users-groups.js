@@ -1,12 +1,12 @@
 var jsonFormat = require('json-format');
 var _ = require('underscore');
 var changeCase = require("change-case-keys");
-var BaseC = require("../../server/models/baseModel.js").collection;
+var BaseC = require("../../server/models/base-model.js").collection;
 var baseC1 = new BaseC(),
     baseC2 = new BaseC();
 
 // populate users_groups  gerubgiuerbguiiberiugberiubg eribgiuer giue eriu
-var usersGroupsArray = require("./seeds/users_groups.js");
+var usersGroupsArray = require("./seeds/users-groups.js");
 var emailsUniq = _.chain(usersGroupsArray).pluck("email").uniq().value();
 var emailsCriteria = [];
 

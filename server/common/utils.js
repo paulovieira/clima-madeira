@@ -79,7 +79,7 @@ module.exports = {
 	// require and call the modules where the registration of the plugins happens
 	// (that is, where we have the call to server.register + any specific options)
 	registerPlugins: function(server){
-		require("../plugins/hapiAuthCookie.js")(server);
+		require(global.rootPath + "server/plugins/hapi-auth-cookie.js")(server);
 //		require("../plugins/tv.js")(server);
 	},
 

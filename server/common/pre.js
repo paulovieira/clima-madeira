@@ -2,7 +2,7 @@ var Boom = require('boom');
 var _ = require('underscore');
 //var changeCaseKeys = require('change-case-keys');
 
-var BaseC = require(global.rootPath + "server/models/baseModel.js").collection;
+var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 var settings = require(global.rootPath + "config/server.js");
 var utils = require(global.rootPath +  "server/common/utils.js");
 var transforms = require(global.rootPath +  "server/common/transforms.js");

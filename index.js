@@ -33,7 +33,7 @@ server.connection({
 // 2. Configure views
 server.views(settings.viewsOptions);
 
-Nunjucks.configure(Path.join(global.rootPath, 'server/views'), {
+Nunjucks.configure(global.rootPath + 'server/views', {
     watch: true
     //    autoescape: true 
 });
@@ -49,15 +49,15 @@ utils.registerPlugins(server);
 //require('./server/config/addPrerequisites.js')(routeTable);
 
 // add the routes to the server
-server.route(require('./server/routes/assetsRoutes.js'));
-server.route(require('./server/routes/baseRoutes.js'));
+server.route(require(global.rootPath + 'server/routes/assets-routes.js'));
+server.route(require(global.rootPath + 'server/routes/base-routes.js'));
 
 
 // 5. Add the API routes
 
 // read every module in the api directory (in server/api/index.js, require-directory is used to read 
 // all the files in the directory); this will create an object of modules
-var apiRoutesArray = _.values(require("./server/api"));
+var apiRoutesArray = _.values(require(global.rootPath + "server/api"));
 
 // register the API routes (defined in separate modules as hapi plugin objects)
 server.register(

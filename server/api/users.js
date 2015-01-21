@@ -10,7 +10,7 @@ var Bcrypt = require("bcrypt");
 var emailSettings = require(global.rootPath + "config/email.js");
 var settings = require(global.rootPath + "config/server.js");
 
-var UsersC = require(global.rootPath + "server/models/baseModel.js").collection;
+var UsersC = require(global.rootPath + "server/models/base-model.js").collection;
 var utils = require(global.rootPath + 'server/common/utils.js');
 var transforms = require(global.rootPath + 'server/common/transforms.js');
 var pre = require(global.rootPath + 'server/common/pre.js');

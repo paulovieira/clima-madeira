@@ -9,7 +9,7 @@ var Moment = require("moment");
 var settings = require(global.rootPath + 'config/server.js');
 var utils = require(global.rootPath + 'server/common/utils.js');
 var transforms = require(global.rootPath + 'server/common/transforms.js');
-var BaseC = require(global.rootPath + "server/models/baseModel.js").collection;
+var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 
 var jsonFormat = require("json-format");
 
