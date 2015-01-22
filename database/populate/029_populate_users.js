@@ -1,3 +1,4 @@
+var Path = require('path');
 var jsonFormat = require('json-format');
 require("console-stamp")(console, "HH:mm:ss.l");
 //var _ = require('underscore');
@@ -5,7 +6,7 @@ var Bcrypt = require("bcrypt");
 var changeCase = require("change-case-keys");
 
 
-
+global.rootPath = Path.normalize(__dirname + "/../..") + "/";
 var BaseC = require("../../server/models/base-model.js").collection;
 var baseC = new BaseC();
 

@@ -6,7 +6,7 @@
 
 {% block custom_css %}
 
-  {% if ctx.isAuthenticated %}
+  {% if ctx.credentials.isAuthenticated and ctx.credentials.canEditTexts %}
     <link href="/common/css/kendo/kendo.common-bootstrap.min.css" rel="stylesheet">
     <link href="/common/css/kendo/kendo.default.min.css" rel="stylesheet">
     <link href="/common/css/kendo/kendo-override.css" rel="stylesheet">
@@ -215,7 +215,7 @@ The landing page has 3 main sections
 
     <script src="/common/js/jquery.js"></script>
 
-  {% if ctx.isAuthenticated %}
+  {% if ctx.credentials.isAuthenticated and ctx.credentials.canEditTexts %}
     <script src="/common/js/underscore.js"></script>
     <script src="/common/js/q.js"></script>
 

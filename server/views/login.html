@@ -3,7 +3,7 @@
 {% block title %}{{ ctx.texts[15][lang] }} - login{% endblock %} 
 
 {% block custom_css %} 
-	{% if ctx.isAuthenticated %}
+	{% if ctx.credentials.isAuthenticated and ctx.credentials.canEditTexts %}
 	<link href="/common/css/kendo/kendo.common-bootstrap.min.css" rel="stylesheet">
 	<link href="/common/css/kendo/kendo.default.min.css" rel="stylesheet">
 	<link href="/common/css/kendo/kendo-override.css" rel="stylesheet"> 
@@ -162,7 +162,7 @@
 <script src="/common/js/bootstrap_3.3.1.js"></script>
 <script src="/common/js/q.js"></script>
 
-{% if ctx.isAuthenticated %}
+{% if ctx.credentials.isAuthenticated and ctx.credentials.canEditTexts %}
 
 				{# 
 				NOTE: this code will never be included in the html because if we are authenticated, the handler will

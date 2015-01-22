@@ -4,6 +4,10 @@ var data = [
 	name: "admin"
 },
 {
+	code: 98,
+	name: "can_edit_texts"
+},
+{
 	code: 1,
 	name: "energia"
 },

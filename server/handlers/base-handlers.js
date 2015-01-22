@@ -35,15 +35,11 @@ var handlers = {
         utils.logHandlerInfo("home", request);
         debugger;
 
-        // if the request is not authenticated, request.auth.credentials will be null
-        request.auth.credentials = request.auth.credentials || {};
 
         var context = {
             texts: request.pre.texts,
             textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
-            isAuthenticated: request.auth.isAuthenticated,
-            //            isAuthenticated: true,
-            credentials: request.auth.credentials,
+            credentials: _.extend({isAuthenticated: request.auth.isAuthenticated}, request.auth.credentials)
         };
 
         return reply.view('home', {
@@ -62,6 +58,7 @@ var handlers = {
 
         var context = {
             texts: request.pre.texts,
+            credentials: _.extend({isAuthenticated: request.auth.isAuthenticated}, request.auth.credentials),
             lfr: request.query.lfr || "" // login fail reason
         }
 
@@ -94,7 +91,7 @@ var handlers = {
         */
 
         if (!email || !password) {
-            status_code = 2;
+            status_code = 2;  // "missing username or password"
             return reply.redirect("/" + request.params.lang + "/login?lfr=" + status_code);
         }
 
@@ -112,7 +109,7 @@ var handlers = {
                 function() {
                     debugger;
                     if (usersC.length === 0) {
-                        status_code = 3;
+                        status_code = 3;  // "username does not exist" 
                         return reply.redirect("/" + request.params.lang + "/login?lfr=" + status_code);
                     }
 
@@ -123,18 +120,20 @@ var handlers = {
                         }
 
                         if (res === false) {
-                            status_code = 4;
+                            status_code = 4;  // "wrong password"
                             return reply.redirect("/" + request.params.lang + "/login?lfr=" + status_code);
                         }
 
                         // if we get here, the username and password match
                         console.log("    authentication succeeded!".green);
-
+debugger;
                         var credentials = {
-                            id: usersC.at(0).get("id"),
-                            firstName: usersC.at(0).get("firstName"),
-                            lastName: usersC.at(0).get("lastName"),
-                            email: usersC.at(0).get("email")
+                            id:           usersC.at(0).get("id"),
+                            firstName:    usersC.at(0).get("firstName"),
+                            lastName:     usersC.at(0).get("lastName"),
+                            email:        usersC.at(0).get("email"),
+                            isAdmin:      !!_.findWhere(usersC.at(0).get("userGroups"), {code: 99}),  // group "admin"
+                            canEditTexts: !!_.findWhere(usersC.at(0).get("userGroups"), {code: 98})   // group "can_edit_texts"
                         };
 
                         // set the session in the internal cache (Catbox with memory adapter)
@@ -182,11 +181,9 @@ var handlers = {
             }
         }
 
-
         var context = {
             textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
-            isAuthenticated: request.auth.isAuthenticated,
-            credentials: request.auth.credentials || {}
+            credentials: _.extend({isAuthenticated: request.auth.isAuthenticated}, request.auth.credentials)
         };
 
         return reply.view('dashboard', {

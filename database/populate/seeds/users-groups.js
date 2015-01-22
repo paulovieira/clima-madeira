@@ -5,6 +5,10 @@ var data = [
 },
 {
 	email: "paulovieira@gmail.com",
+	groupCode: 98
+},
+{
+	email: "paulovieira@gmail.com",
 	groupCode: 1
 },
 {

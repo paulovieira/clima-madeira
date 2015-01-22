@@ -1,8 +1,11 @@
+var Path = require('path');
 var jsonFormat = require('json-format');
 var _ = require('underscore');
 var changeCase = require("change-case-keys");
 
-var BaseC = require("../../server/models/base-model.js").collection;
+global.rootPath = Path.normalize(__dirname + "/../..") + "/";
+
+var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 var baseC1 = new BaseC(),
     baseC2 = new BaseC();
 
