@@ -1,8 +1,8 @@
 //var settings = require('../config/settings.js');
-var utils = require('../common/utils.js');
-var pre = require('../common/pre.js');
-var validate = require('../common/validate.js');
-var baseHandlers = require('../handlers/base-handlers.js');
+var utils = require(global.rootPath +  'server/common/utils.js');
+var pre = require(global.rootPath +  'server/common/pre.js');
+var validate = require(global.rootPath + 'server/common/validate.js');
+var baseHandlers = require(global.rootPath + 'server/routes/base-handlers.js');
 
 var routes = [
 

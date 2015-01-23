@@ -17,14 +17,14 @@
 				<div class="row">
 					<div class="col-xs-8  col-sm-8" style="xborder: 1px solid blue; padding-left: 0px; padding-right: 7px;">
 
-					  	{% if ctx.isAuthenticated %}
+					  	{% if ctx.auth.isAuthenticated %}
 
 						<div class="row">
 							<div class="col-xs-8" style="padding-right: 7px;">
 
 								<a href="/{{ lang }}/dashboard" class="login">
 									<div class="text-center loginx">
-										<span class="is-editable" data-text-id="4">{{ ctx.texts[4][lang] }}</span> {{ ctx.credentials.firstName }}! 
+										<span class="is-editable" data-text-id="4">{{ ctx.texts[4][lang] }}</span> {{ ctx.auth.credentials.firstName }}! 
 									</div>
 								</a>
 

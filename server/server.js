@@ -56,6 +56,10 @@ server.register(
     }
 );
 
+server.ext("onPostAuth", function(request, reply){
+    request.auth.credentials = request.auth.credentials || {};
+    return reply.continue();
+});
 
 // 6. Start the server
 server.start(function() {

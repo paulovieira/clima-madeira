@@ -6,7 +6,7 @@
 
 {% block custom_css %}
 
-  {% if ctx.credentials.isAuthenticated and ctx.credentials.canEditTexts %}
+  {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
     <link href="/common/css/kendo/kendo.common-bootstrap.min.css" rel="stylesheet">
     <link href="/common/css/kendo/kendo.default.min.css" rel="stylesheet">
     <link href="/common/css/kendo/kendo-override.css" rel="stylesheet">
@@ -215,7 +215,12 @@ The landing page has 3 main sections
 
     <script src="/common/js/jquery.js"></script>
 
-  {% if ctx.credentials.isAuthenticated and ctx.credentials.canEditTexts %}
+    <script type="text/javascript">
+
+    	var auth = {{ ctx["authJson"] }};
+    </script>
+
+  {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
     <script src="/common/js/underscore.js"></script>
     <script src="/common/js/q.js"></script>
 
@@ -224,6 +229,7 @@ The landing page has 3 main sections
     <script src="/common/js/kendo/kendo.editor.min.js"></script>
 
     <script type="text/javascript">
+
         var Clima = {};
         Clima.lang = "{{ lang }}";
         Clima.texts = {{ ctx["textsJson"] }};

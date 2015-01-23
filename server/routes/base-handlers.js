@@ -39,7 +39,7 @@ var handlers = {
         var context = {
             texts: request.pre.texts,
             textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
-            credentials: _.extend({isAuthenticated: request.auth.isAuthenticated}, request.auth.credentials)
+            auth: request.auth,
         };
 
         return reply.view('home', {
@@ -58,7 +58,7 @@ var handlers = {
 
         var context = {
             texts: request.pre.texts,
-            credentials: _.extend({isAuthenticated: request.auth.isAuthenticated}, request.auth.credentials),
+            auth: request.auth,
             lfr: request.query.lfr || "" // login fail reason
         }
 
@@ -183,7 +183,7 @@ debugger;
 
         var context = {
             textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
-            credentials: _.extend({isAuthenticated: request.auth.isAuthenticated}, request.auth.credentials)
+            auth: request.auth
         };
 
         return reply.view('dashboard', {
