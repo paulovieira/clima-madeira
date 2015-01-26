@@ -1,3 +1,5 @@
+-in the dashboard, we are loading the same libraries more than once
+
 - create new npm module:
     + backbone-pg DONE
     + change-case-keys DONE

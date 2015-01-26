@@ -1,38 +1,57 @@
+{# top-level variables - to be used in the pages and includes #}
+{% set jquery_is_loaded     = false %}
+{% set underscore_is_loaded = false %}
+{% set q_is_loaded          = false %}
+
 <!DOCTYPE html>
 <html lang="{{ lang }}">
 
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}{{ ctx.texts[15][lang] }}{% endblock %}</title>
+    <title>
+        {# default title, can be overriden in each page #}
+        {% block title %}{{ ctx.texts[15][lang] }}{% endblock %}
+    </title>
 
-    {# common .css files that are included in all the pages #}
-    {% include "includes/stylesheets.html" %}
+    {# common css (to be included in all pages) #}
+    {% include "common/bootstrap_stylesheets.html" %}
 
-    {% block custom_css %}{% endblock %}
+    {# common css (after authentication and authorization) #}
+    {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
+    {% include "common/kendo_stylesheets.html" %}
+    {% endif %}
+
+    {# custom css (specific for each page) #}
+    {% block css %}{% endblock %}
 
 </head>
 
 <body>
 
 	<div class="container-fluid">
-
         {% block content %}{% endblock %}
-
 	</div>
-    <footer class="footer">
 
-        {% include "includes/footer.html" %}
-{##}    
+    <footer class="footer">
+        {% include "common/footer.html" %}
     </footer>
 
-    {% block modal %}{% endblock %}
-    
+
+    {# common javascript #}
+    {% include "common/texts.js" %}
+
+    {# custom scripts (specific for each page) #}    
     {% block scripts %}{% endblock %}
 
-</body>
+    {# common javascript (after authentication and authorization) #}
+    {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
+    {% include "common/editor.js" %}
+    {% endif %}
 
+</body>
 
 </html>

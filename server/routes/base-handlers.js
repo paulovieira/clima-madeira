@@ -132,8 +132,12 @@ debugger;
                             firstName:    usersC.at(0).get("firstName"),
                             lastName:     usersC.at(0).get("lastName"),
                             email:        usersC.at(0).get("email"),
-                            isAdmin:      !!_.findWhere(usersC.at(0).get("userGroups"), {code: 99}),  // group "admin"
-                            canEditTexts: !!_.findWhere(usersC.at(0).get("userGroups"), {code: 98})   // group "can_edit_texts"
+
+                            // set to true if the user belongs to the group "admin"
+                            isAdmin:      !!_.findWhere(usersC.at(0).get("userGroups"), {code: 99}),  
+
+                            // set to true if the user belongs to the group "can_edit_texts"
+                            canEditTexts: !!_.findWhere(usersC.at(0).get("userGroups"), {code: 98})
                         };
 
                         // set the session in the internal cache (Catbox with memory adapter)

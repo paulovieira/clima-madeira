@@ -4,16 +4,6 @@
 {% from "macros/grupo.html"  import grupo  %}
 
 
-{% block custom_css %}
-
-  {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    <link href="/common/css/kendo/kendo.common-bootstrap.min.css" rel="stylesheet">
-    <link href="/common/css/kendo/kendo.default.min.css" rel="stylesheet">
-    <link href="/common/css/kendo/kendo-override.css" rel="stylesheet">
-  {% endif %}    
-
-{% endblock %}
-
 
 
 {% block content %}
@@ -208,34 +198,6 @@ The landing page has 3 main sections
 
 
 
-
-{% endblock %}
-
-{% block scripts %}
-
-    <script src="/common/js/jquery.js"></script>
-
-    <script type="text/javascript">
-
-    	var auth = {{ ctx["authJson"] }};
-    </script>
-
-  {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    <script src="/common/js/underscore.js"></script>
-    <script src="/common/js/q.js"></script>
-
-    <script src="/common/js/kendo/kendo.core.min.js"></script>
-    <script src="/common/js/kendo/kendo.web.min.js"></script>
-    <script src="/common/js/kendo/kendo.editor.min.js"></script>
-
-    <script type="text/javascript">
-
-        var Clima = {};
-        Clima.lang = "{{ lang }}";
-        Clima.texts = {{ ctx["textsJson"] }};
-    </script>
-    <script src="/common/js/kendo_editor.js"></script> 
-  {% endif %}
 
 {% endblock %}
 

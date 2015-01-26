@@ -2,14 +2,6 @@
 
 {% block title %}{{ ctx.texts[15][lang] }} - login{% endblock %} 
 
-{% block custom_css %} 
-	{% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-	<link href="/common/css/kendo/kendo.common-bootstrap.min.css" rel="stylesheet">
-	<link href="/common/css/kendo/kendo.default.min.css" rel="stylesheet">
-	<link href="/common/css/kendo/kendo-override.css" rel="stylesheet"> 
-	{% endif %} 
-{% endblock %} 
-
 {% block content %}
 
 
@@ -106,10 +98,8 @@
     </div>
 </div>
 
-{% endblock %} 
 
-
-{% block modal %}
+{# TODO - move the modal html to an include? #}
 
 <div class="modal fade" id="modal-recover-pw" tabindex="-1" role="dialog">
     <div class="modal-dialog">
@@ -136,19 +126,14 @@
             </div>
             <div class="modal-footer">
 
-            	<div class="row">
-            		<div class="col-sm-6 col-sm-offset-3" style="text-align: center;">
-            			<button id="btn-recover-pw" class="btn btn-primary btn-block" href="/{{ lang }}" role="button">Recuperar a password</button>
-            		</div>
-            	</div>
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3" style="text-align: center;">
+                        <button id="btn-recover-pw" class="btn btn-primary btn-block" href="/{{ lang }}" role="button">Recuperar a password</button>
+                    </div>
+                </div>
 
-
-{#
-                <button id="btn-link" class="btn btn-primary" href="/{{ lang}}" role="button">Regressar à página inicial</button>
-#}
-
-		        <div id="message-status" style="margin-top: 35px;"></div>
-		        <div id="" style="margin-top: 10px;"><h5 id="message-links"></h5></div>
+                <div id="message-status" style="margin-top: 35px;"></div>
+                <div id="" style="margin-top: 10px;"><h5 id="message-links"></h5></div>
             </div>
         </div>
     </div>
@@ -156,54 +141,27 @@
 
 {% endblock %} 
 
+
 {% block scripts %}
 
 <script src="/common/js/jquery.js"></script>
-<script src="/common/js/bootstrap_3.3.1.js"></script>
 <script src="/common/js/q.js"></script>
+<script src="/common/js/bootstrap_3.3.1.js"></script>
 
-{% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-
-				{# 
-				NOTE: this code will never be included in the html because if we are authenticated, the handler will
-				immediatelly redirect to the dashboard page
-				#}
-				<script src="/common/js/underscore.js"></script>
-				<script src="/common/js/kendo/kendo.core.min.js"></script>
-				<script src="/common/js/kendo/kendo.web.min.js"></script>
-				<script src="/common/js/kendo/kendo.editor.min.js"></script>
-
-				<script type="text/javascript">
-				var Clima = {};
-				Clima.lang = "{{ lang }}";
-				Clima.texts = {
-				    {
-				        ctx["textsJson"]
-				    }
-				};
-				</script>
-				<script src="/common/js/kendo_editor.js"></script>
-{% endif %} 
-
+{% set jquery_is_loaded = true %}
+{% set q_is_loaded      = true %}
 
 
 <script type="text/javascript">
 
-// TODO: 
-// -make ajax call (get) to request the token to be sent by email
-// -show the status in the buttons
-
-
-var Clima = {
-    ajaxOptions: {
-        url: "",
-        type: "GET",
-        //data: {},
-    },
-
-    minCharacters: 3,
-    artificialDelay: 700
+Clima.ajaxOptions = {
+    url: "",
+    type: "GET"
 };
+
+Clima.baseUrl = "/api/users/recover/";
+Clima.minCharacters = 3;
+Clima.artificialDelay = 700;
 
 
 $("#btn-recover-pw").on("click", function(e){
@@ -213,27 +171,15 @@ $("#btn-recover-pw").on("click", function(e){
     var $this = $(this),
     	emailAddress = $("#email").val().trim();
 
-
     if(emailAddress === ""){
         alert("Please insert an email address.");
         return;
     }
 
-    Clima.ajaxOptions.url = "/api/users/recover/" + emailAddress;
+    Clima.ajaxOptions.url = Clima.baseUrl + emailAddress;
 
 
 {#  
-    // function getPromise(){
-    //     var deferred = Q.defer();
-
-    //     setTimeout(function(){
-    //         //deferred.resolve("ok");
-    //         deferred.reject(new Error("xxx"));
-    //     }, 1000);
-
-    //     return deferred.promise;
-    // }
-#}
     function getPromise(){
         var deferred = Q.defer();
 
@@ -244,13 +190,12 @@ $("#btn-recover-pw").on("click", function(e){
 
         return deferred.promise;
     }
-
+#}
     Q.all([$.ajax(Clima.ajaxOptions), Q.delay(Clima.artificialDelay)])
     //Q.all([getPromise()])
     .done(
         function(resp){
-//TUDO: verificar resp[0]status.toLowerCase()
-//se !== "sent", indicar na mensagem que o email pode demorar algum tempo a chegar
+
 			var mandrillstatus = resp[0].status.toLowerCase();
 
         	debugger;
@@ -286,8 +231,10 @@ $("#btn-recover-pw").on("click", function(e){
         }
     );
 
+    // immediately after the button has been clicked, disable the button
     $this.addClass("disabled").html("Aguarde por favor...");
 });
+
 
 $("#modal-recover-pw").on("show.bs.modal", function resetModal(e){
 	// reset the state of the input and button in the modal (it might have been changed if the user opened the modal before)
