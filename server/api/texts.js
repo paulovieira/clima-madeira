@@ -111,12 +111,12 @@ internals.validatePayloadForUpdate = function(value, options, next){
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0).required(),
 
-        tags: Joi.array().unique().includes(Joi.string()),
+        tags: Joi.array().unique().includes(Joi.string()).required(),
 
         contents: Joi.object().keys({
             pt: Joi.string().allow("").required(),
             en: Joi.string().allow("").required()
-        }),
+        }).required(),
 
         contentsDesc: Joi.object().keys({
             pt: Joi.string().required(),
@@ -269,17 +269,15 @@ debugger;
         handler: function (request, reply) {
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
-/* decomment here!
-            request.auth.credentials = request.auth.credentials || {};
 
             if(!request.auth.credentials.id){
                 return reply(Boom.unauthorized("To create a new resource you must sign in."));
             }
-*/
+
         	var textsC = new TextsC(request.payload);
 
             textsC.forEach(function(model){
-                model.set("author_id", 8 || request.auth.credentials.id);
+                model.set("author_id", request.auth.credentials.id || 1);
             });
 
             var dbData = JSON.stringify(textsC.toJSON());
@@ -309,14 +307,13 @@ debugger;
         },
         config: {
         	validate: {
-        		//payload: internals.validatePayload,
                 payload: internals.validatePayloadForCreate
         	},
 
             auth: {
                 mode: "required"
             },
-            auth: false,
+//            auth: false,
 
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
@@ -332,22 +329,16 @@ debugger;
 
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
-/* decomment here!
-            request.auth.credentials = request.auth.credentials || {};
+
 
             if(!request.auth.credentials.id){
                 return reply(Boom.unauthorized("To create a new resource you must sign in."));
             }
-*/
-
-            // we must decode html entities here because the payload might come from 
-            // kendoUI editor (which uses html entities); we also do the trimming;
-            //var textsC = new TextsC(internals.decodeHtmlEntities(request.payload));
 
             var textsC = new TextsC(request.payload);
 
             textsC.forEach(function(model){
-                model.set("author_id", 8 || request.auth.credentials.id);
+                model.set("author_id", request.auth.credentials.id);
             });
 
             var dbData = JSON.stringify(textsC.toJSON());
@@ -377,15 +368,16 @@ debugger;
         config: {
 			validate: {
 	            params: internals.validateIds,
-        		//payload: internals.validatePayload
                 payload: internals.validatePayloadForUpdate
 
 			},
-
+            pre: [
+//                pre.db.read_user_by_email
+            ],
             auth: {
                 mode: "required"
             },
-            auth: false,
+//            auth: false,
 
 			description: 'Put (short description)',
 			notes: 'Put (long description)',

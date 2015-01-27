@@ -43,7 +43,7 @@ var menuLeftC = new Backbone.Collection([
 
 		},
 		{
-			itemCode: "groups-new",
+			itemCode: "users-new",
 			itemTitle: { pt: "Novo utilizador", en: "New user"},
 
 		}
@@ -91,11 +91,11 @@ var menuLeftC = new Backbone.Collection([
 
 var TextM = Backbone.Model.extend({
 	defaults: {
-
+		"tags": [],
+		"contents": {pt: "", en: ""},
 		"pt": "",
 		"en": "",
-		"contents": {pt: "", en: ""},
-		"tags": []
+		"author": ""
 	},
 
 	url: "/api/texts",
@@ -114,6 +114,16 @@ var TextM = Backbone.Model.extend({
 			this.set("contents", contents);
 		});
 	},
+
+	parse: function(resp){
+		if(_.isArray(resp)){ resp = resp[0]; }
+//debugger;
+		resp.author = (resp.authorData.firstName || "") + " " + (resp.authorData.lastName || "");
+		delete resp.authorData;
+
+		resp.lastUpdated = moment(resp.lastUpdated).format('YYYY-MM-DD HH:mm:ss');
+		return resp;
+	}
 });
 
 var TextsC = Backbone.Collection.extend({
@@ -200,6 +210,135 @@ var NewTextLV = Mn.LayoutView.extend({
 		);
 	}
 });
+
+
+
+// USERS
+
+var UserM = Backbone.Model.extend({
+	defaults: {
+/*
+		"tags": [],
+		"contents": {pt: "", en: ""},
+		"pt": "",
+		"en": "",
+		"author": ""
+*/
+	},
+
+	url: "/api/users",
+
+	initialize: function(){
+
+	},
+
+
+	parse: function(resp){
+		if(_.isArray(resp)){ resp = resp[0]; }
+
+		resp.createdAt = moment(resp.createdAt).format('YYYY-MM-DD HH:mm:ss');
+		return resp;
+	}
+});
+
+var UsersC = Backbone.Collection.extend({
+	model: UserM,
+	url: "/api/users",
+});
+
+var usersC = new UsersC();
+
+var UserRowLV = Mn.LayoutView.extend({
+	template: "users/templates/userRow.html",
+	tagName: "tr",
+	
+	bindings: {
+/*
+		".js-pt": {
+			observe: "pt",
+			updateModel: "avoidDuplicateSet"
+		},
+
+		".js-en": {
+			observe: "en",
+			updateModel: "avoidDuplicateSet"
+		}
+*/
+	},
+
+	// for some reason stickit is setting the observed attribute 2 times; the value 
+	// used in the 2nd time is the same to what was set in the 1st time, so when we call
+	// model.hasChanged() we obtain false 
+
+	// if we return false here the model won't be set
+/*
+	avoidDuplicateSet: function(val, event, options){
+		var observedAttr = options.observe;
+		if(val === options.view.model.get(observedAttr)){
+			return false;
+		}
+
+		return true;
+	},
+*/
+	onRender: function(){
+		this.stickit();
+	}
+});
+
+var UsersTableCV = Mn.CompositeView.extend({
+	template: "users/templates/usersTable.html",
+	childView: UserRowLV,
+	childViewContainer: "tbody",
+	events: {
+		"click button#update-users": "updateUsers"
+	},
+	updateUsers: function(){
+		this.collection.save();
+	}
+});
+
+
+var NewUserLV = Mn.LayoutView.extend({
+	template: "users/templates/newUser.html",
+	bindings: {
+/*
+		"#js-new-pt": {
+			observe: "pt"
+		},
+		"#js-new-en": {
+			observe: "en"
+		}
+*/
+	},
+
+	onBeforeDestroy: function(){
+		debugger;
+		this.model.trigger("auto:destroy");
+//		delete this.model;
+//		this.model
+	},
+
+	onRender: function(){
+//		this.stickit();
+	},
+
+	events: {
+		"click button#create-user": "createUser"
+	},
+
+	createUser: function(){
+		Q(this.model.save()).then(
+			function(val){
+				debugger;
+			},
+			function(err){
+				debugger;
+			}
+		);
+	}
+});
+/**/
 
 
 
@@ -343,6 +482,12 @@ var MainLayout = Mn.LayoutView.extend({
 			case "texts-new":
 				this.showNewText();
 				break;
+			case "users-all":
+				this.showAllUsers();
+				break;
+			case "users-new":
+				this.showNewUser();
+				break;
 			default:
 				//return DefaultLV;
 				break;
@@ -377,8 +522,38 @@ var MainLayout = Mn.LayoutView.extend({
 			model: newText
 		});
 		this.mainRightRegion.show(newTextLV); 
-	}
+	},
 
+	showAllUsers: function(){
+debugger;
+		var usersTableCV = new UsersTableCV({
+			collection: usersC
+		});
+
+		var fulfilled = _.bind(
+				function(){ 
+					//console.log(textsC.toJSON()); 
+					this.mainRightRegion.show(usersTableCV); 
+				}, 
+			this);
+
+		Q(usersC.fetch()).then(
+			fulfilled, 
+			function(err){
+				debugger;
+			}
+		);
+	},
+
+	showNewUser: function(){
+		debugger;
+
+		var userM = new UserM();
+		var newUserLV = new NewUserLV({
+			model: userM
+		});
+		this.mainRightRegion.show(newUserLV); 
+	},
 });
 
 var mainLayout = new MainLayout();

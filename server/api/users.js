@@ -169,7 +169,7 @@ exports.register = function(server, options, next) {
 
 
 
-    /*
+
         // READ (all)
         server.route({
             method: 'GET',
@@ -187,7 +187,7 @@ exports.register = function(server, options, next) {
                 .done(
                     function(){
                         var resp      = usersC.toJSON();
-                        var transform = transforms.text;
+                        var transform = transforms.user;
 
                         return reply(utils.transform(resp, transform));
                     },
@@ -212,6 +212,7 @@ exports.register = function(server, options, next) {
             }
         });
 
+    /*
         // READ (one or more, but not all)
         server.route({
             method: 'GET',

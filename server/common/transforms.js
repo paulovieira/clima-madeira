@@ -21,6 +21,19 @@ var transforms = {
 	    //"authorData.email": "authorData.email",
 
 	    // d) deleted properties: "contentsDesc", "authorId", "active"
+	},
+
+	user: {
+	    // a) properties to be maintained
+	    "id": "id",
+	    "email": "email",
+	    "firstName": "firstName",
+	    "lastName": "lastName",
+	    "createdAt": "createdAt",
+	    "userTexts": "userTexts",
+	    "userGroups": "userGroups"
+
+	    // d) deleted properties: "recover", "pwHash", "recoverValidUntil"
 	}
 
 };

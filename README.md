@@ -8,15 +8,30 @@
 - update the configuration settings for the database (user, password and database): config/database.js (see below) 
 - run the initial scripts (update the database): database/000_bootstrap_db.sh
 - insert the initial data: cd database/populate && node index.js
-- install nunjucks globally: sudo npm install nunjucks -g
+- install global package:
+    - nunjucks: sudo npm install nunjucks -g
+    - forever: sudo npm install forever -g
 
 
-## change server/config/settings.js
+## change config/server.js
 
-uri
+publicUri
+publicPort
 
-## 2. Start 
 
-node index.js
+## Start 
+
+nodemon -e html,js index.js
+
+or with forever:
+
+START FOREVER IN "DEAMON MODE"
+sudo forever start -m 50 -l forever_output.log -o server_stdout.log -e server_stderr.log --append --verbose --spinSleepTime 2000 --minUptime 1000  --uid "clima" server.js
+
+LIST ALL THE PROCESSES
+sudo forever list
+
+STOP THE PROCESS WITH THE GIVEN REFERENCE
+sudo forever stop clima
 
 

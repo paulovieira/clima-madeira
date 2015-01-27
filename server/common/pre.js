@@ -34,11 +34,14 @@ var preRequisites = {
 			assign: "usersC"
 		},
 
+		// returns a collection of users with 1 element; first checks if there is a param "email" and uses it;
+		// if not, checks in request.auth.credential.email
 		read_user_by_email: {
 			method: function(request, reply){
 				console.log("pre: read user by email");
 
-				var email = request.params.email || "";
+				var email = request.params.email || request.auth.credentials.email || "";
+				console.log("		w: ", request.auth.credentials);
 		        var usersC = new BaseC();
 
 		        usersC
