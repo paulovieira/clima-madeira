@@ -12,6 +12,7 @@ var routes = [
         path: "/",
         method: "GET",
         handler: baseHandlers.index,
+        
         config: {
             auth: false,
             /*            
@@ -22,15 +23,17 @@ var routes = [
         }
     },
 
+
     {
         path: "/{lang}",
         method: "GET",
-        handler: baseHandlers.home,
+        handler: baseHandlers.generalPage,
 
         config: {
             auth: {
                 mode: "try"
             },
+
             validate: {
                 params: validate.params.lang
             },
@@ -43,6 +46,51 @@ var routes = [
 
     },
 
+
+    {
+        path: "/{lang}/{page1}",
+        method: "GET",
+        handler: baseHandlers.generalPage,
+
+        config: {
+            auth: {
+                mode: "try"
+            },
+
+            validate: {
+                params: validate.params.lang
+            },
+
+            pre: [
+                [pre.db.read_texts],
+                pre.transform_texts
+            ]
+        }
+    },
+
+
+    {
+        path: "/{lang}/{page1}/{page2}",
+        method: "GET",
+        handler: baseHandlers.generalPage,
+
+        config: {
+            auth: {
+                mode: "try"
+            },
+
+            validate: {
+                params: validate.params.lang
+            },
+
+            pre: [
+                [pre.db.read_texts],
+                pre.transform_texts
+            ]
+        }
+    },
+
+
     {
         method: "GET",
         path: "/{lang}/recover",
@@ -50,10 +98,12 @@ var routes = [
 
         config: {
             auth: false,
+
             validate: {
                 params: validate.params.lang,
                 query: validate.query.recoverToken
             },
+
             pre: [
                 [pre.db.read_texts, pre.db.read_user_by_token],
                 pre.transform_texts
@@ -70,9 +120,11 @@ var routes = [
 
         config: {
             auth: false,
+
             validate: {
                 params: validate.params.lang
             },
+
             pre: [
                 [pre.db.read_texts],
                 pre.transform_texts
@@ -90,9 +142,11 @@ var routes = [
             auth: {
                 mode: "try"
             },
+
             validate: {
                 params: validate.params.lang
             },
+
             pre: [
                 [pre.db.read_texts],
                 pre.transform_texts
@@ -109,6 +163,7 @@ var routes = [
             auth: {
                 mode: "try"
             },
+
             validate: {
                 params: validate.params.lang
             }
@@ -121,6 +176,7 @@ var routes = [
         handler: baseHandlers.logout,
         config: {
             auth: false,
+
             validate: {
                 params: validate.params.lang
             }
@@ -142,6 +198,7 @@ var routes = [
             validate: {
                 params: validate.params.lang
             },
+
             pre: [
                 [pre.db.read_texts],
                 pre.transform_texts
@@ -150,6 +207,7 @@ var routes = [
     },
 
     // catch-all route
+
     {
         method: "GET",
         path: "/{lang}/{anyPath*}",
@@ -159,6 +217,7 @@ var routes = [
             auth: {
                 mode: "try"
             },
+
             validate: {
                 params: validate.params.lang
             }
@@ -175,9 +234,11 @@ var routes = [
             auth: {
                 mode: "try"
             },
+
             validate: {
                 params: validate.params.lang
             },
+
             pre: [
                 // running the pre method in parallel is equivalent to using only 1 pre method
                 // taking care of several promises and using Q.all([promise1, promise2]);

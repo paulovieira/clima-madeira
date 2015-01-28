@@ -31,10 +31,32 @@ var handlers = {
         return reply.redirect("/" + settings.allowedLanguages[0]);
     },
 
-    home: function(request, reply) {
-        utils.logHandlerInfo("home", request);
+    // home: function(request, reply) {
+    //     utils.logHandlerInfo("home", request);
+    //     debugger;
+
+
+    //     var context = {
+    //         texts: request.pre.texts,
+    //         textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
+    //         auth: request.auth,
+    //     };
+
+    //     return reply.view('home', {
+    //         ctx: context
+    //     });
+    // },
+
+    generalPage: function(request, reply) {
+        utils.logHandlerInfo("generalPage", request);
         debugger;
 
+        var viewFile = utils.getView(request.params.page1, request.params.page2);
+
+        // if the page param is not recognized, the empty string will be returned
+        if(!viewFile){
+            return reply.redirect("/" + request.params.lang + "/404");
+        }
 
         var context = {
             texts: request.pre.texts,
@@ -42,7 +64,7 @@ var handlers = {
             auth: request.auth,
         };
 
-        return reply.view('home', {
+        return reply.view(viewFile, {
             ctx: context
         });
     },

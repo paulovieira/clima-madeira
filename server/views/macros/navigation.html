@@ -1,0 +1,74 @@
+{% macro navigation(page, ctx) %}
+
+	<nav class="navbar navbar-default">
+	    <div class="container-fluid">
+	        <!-- Brand and toggle get grouped for better mobile display -->
+	        <div class="navbar-header">
+	            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	                <span class="sr-only">Toggle navigation</span>
+	                <span class="icon-bar"></span>
+	                <span class="icon-bar"></span>
+	                <span class="icon-bar"></span>
+	            </button>
+	            <a class="navbar-brand" href="/{{ lang }}">CLIMA</a>
+	        </div>
+
+	        <!-- Collect the nav links, forms, and other content for toggling -->
+	        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	            <ul class="nav navbar-nav">
+	                <li><a href="/{{ lang }}">Home</a>
+	                </li>
+
+	                <li class="{% if page=='introducao' %}active{% endif %}" ><a href="/{{ lang }}/introducao">Introdução</a>
+	                </li>
+
+	                <li class="{% if page=='mapa' %}active{% endif %}"><a href="/{{ lang }}/mapa">Mapa de vulnerabilidades</a>
+	                </li>
+
+	                <li class="dropdown {% if page=='sectores' %}active{% endif %}">
+	                    <a href="/{{ lang }}/sectores" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Sectores <span class="caret"></span></a>
+	                    <ul class="dropdown-menu" role="menu">
+	                        <li><a href="/{{ lang }}/sectores/biodiversidade">Biodiversidade</a>
+	                        </li>
+
+	                        <li><a href="#">Recursos Hídricos</a>
+	                        </li>
+
+	                        <li><a href="#">Saúde</a>
+	                        </li>
+
+	                        <li><a href="#">Turismo</a>
+	                        </li>
+
+	                        <li><a href="#">Agricultura e Florestas</a>
+	                        </li>
+
+	                        <li><a href="#">Energia</a>
+	                        </li>
+	                    </ul>
+	                </li>
+
+	                <li class="{% if page=='adaptacao' %}active{% endif %}"><a href="/{{ lang }}/adaptacao">Estratégia de Adaptação</a>
+	                </li>
+
+	                <li class="{% if page=='equipa' %}active{% endif %}"><a href="/{{ lang }}/equipa">Equipa</a>
+	                </li>
+	            </ul>
+
+	            <form class="navbar-form navbar-right" role="search">
+
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="{{ ctx.texts[5][lang] }}">
+							<span class="input-group-addon search-box"><span class="glyphicon glyphicon-search"></span></span>
+						</div>
+
+	            </form>
+
+           
+	        </div>
+	        <!-- /.navbar-collapse -->
+	    </div>
+	    <!-- /.container-fluid -->
+	</nav>
+
+{% endmacro %}

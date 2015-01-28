@@ -186,12 +186,19 @@ body {
 }
 */
 
+
+/*
 .nav > li {
 	padding: 0px 6px;
 }
 
 .nav > li > a {
   padding: 10px 5px;
+}
+*/
+
+.home-pills {
+  padding: 0px 6px;
 }
 
 .nav > li > a:hover,
@@ -204,6 +211,9 @@ body {
   border-radius: 0px;
   border: 1px solid #333;
 }
+
+/**/
+
 
 /*
 .nav-pills > li.active > a {

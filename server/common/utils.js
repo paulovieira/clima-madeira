@@ -4,6 +4,47 @@ var Hoek = require('hoek');
 
 module.exports = {
 
+	// return the html filename (in server/views) associated with the parameters
+	getView: function(page1, page2){
+
+		var viewFile = "";
+
+		// match "/pt"
+		if(!page1 && !page2){
+			viewFile = "home";
+		}
+
+		// match "/pt/introducao", "/pt/sobre", etc
+		else if(page1 && !page2){
+
+			if(page1 === "introducao"){
+				viewFile = "introducao";
+			}
+			if(page1 === "mapa"){
+				viewFile = "mapa";
+			}
+			else if(page1 === "equipa"){
+				viewFile = "equipa";
+			}
+			else if(page1 === "adaptacao"){
+				viewFile = "adaptacao";
+			}
+
+		}
+
+		// match "/pt/sectores/biodiversidade", "/pt/sectores/energia", etc
+		else if(page1==="sectores" && page2){
+
+			if(page2 === "biodiversidade"){
+				viewFile = "sectores/biodiversidade";
+			}
+
+		}
+
+		// if the params didn't match anything, return the default value (empty string); the route handler will then redirect to the 404 page
+		return viewFile;
+	},
+
 
 	transform: function(array, transform, options){
 	    if(!_.isArray(array)){ array = [array]; }		
