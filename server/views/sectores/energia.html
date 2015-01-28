@@ -1,14 +1,16 @@
-
+{#  NOTE: lang is a global variable #}
 {% extends "layouts/default.html"          %}
 {% from "macros/navigation.html" import navigation %}
-{% set page_name = "" %}
 
-{% block title %}{{ ctx.texts[15][lang] }} - Page not found{% endblock %} 
+{% set page_name = "sectores" %}
+{% set sector_name = "energia" %}
+
+{% block title %}{{ ctx.texts[15][lang] }} - Energia{% endblock %} 
 
 
 {% block navigation %}
 
-{{ navigation(ctx, page_name) }}
+{{ navigation(ctx, page_name, sector_name) }}
 
 {% endblock %}
 
@@ -16,7 +18,7 @@
 
 <div class="row">
     <div class="col-sm-12 text-center">
-		<h1>Página não encontrada!</h1>
+		<h1>Energia</h1>
     </div>
 </div>
 

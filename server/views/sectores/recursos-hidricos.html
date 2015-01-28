@@ -1,14 +1,16 @@
 {#  NOTE: lang is a global variable #}
 {% extends "layouts/default.html"          %}
 {% from "macros/navigation.html" import navigation %}
-{% set page_name = "mapa" %}
 
-{% block title %}{{ ctx.texts[15][lang] }} - mapa de vulnerabilidades{% endblock %} 
+{% set page_name = "sectores" %}
+{% set sector_name = "recursos-hidricos" %}
+
+{% block title %}{{ ctx.texts[15][lang] }} - recursos hídricos{% endblock %} 
 
 
 {% block navigation %}
 
-{{ navigation(ctx, page_name) }}
+{{ navigation(ctx, page_name, sector_name) }}
 
 {% endblock %}
 
@@ -16,7 +18,7 @@
 
 <div class="row">
     <div class="col-sm-12 text-center">
-		<h1>Mapa</h1>
+		<h1>Recursos Hídricos</h1>
     </div>
 </div>
 

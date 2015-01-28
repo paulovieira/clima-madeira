@@ -29,6 +29,12 @@ module.exports = {
 			else if(page1 === "adaptacao"){
 				viewFile = "adaptacao";
 			}
+			else if(page1 === "ferramenta"){
+				viewFile = "ferramenta";
+			}
+			else if(page1 === "sectores"){
+				viewFile = "sectores";
+			}
 
 		}
 
@@ -39,6 +45,25 @@ module.exports = {
 				viewFile = "sectores/biodiversidade";
 			}
 
+			else if(page2 === "recursos-hidricos"){
+				viewFile = "sectores/recursos-hidricos";
+			}
+
+			else if(page2 === "saude"){
+				viewFile = "sectores/saude";
+			}
+
+			else if(page2 === "turismo"){
+				viewFile = "sectores/turismo";
+			}
+
+			else if(page2 === "agricultura-florestas"){
+				viewFile = "sectores/agricultura-florestas";
+			}
+
+			else if(page2 === "energia"){
+				viewFile = "sectores/energia";
+			}
 		}
 
 		// if the params didn't match anything, return the default value (empty string); the route handler will then redirect to the 404 page

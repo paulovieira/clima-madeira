@@ -1,14 +1,16 @@
 {#  NOTE: lang is a global variable #}
 {% extends "layouts/default.html"          %}
 {% from "macros/navigation.html" import navigation %}
-{% set page_name = "biodiversidade" %}
+
+{% set page_name = "sectores" %}
+{% set sector_name = "biodiversidade" %}
 
 {% block title %}{{ ctx.texts[15][lang] }} - biodiversidade{% endblock %} 
 
 
 {% block navigation %}
 
-{{ navigation(page_name, ctx) }}
+{{ navigation(ctx, page_name, sector_name) }}
 
 {% endblock %}
 
@@ -16,7 +18,7 @@
 
 <div class="row">
     <div class="col-sm-12 text-center">
-		<h1>Biodiversidadex</h1>
+		<h1>Biodiversidade</h1>
     </div>
 </div>
 

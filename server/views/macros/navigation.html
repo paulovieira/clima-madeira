@@ -1,4 +1,4 @@
-{% macro navigation(page, ctx) %}
+{% macro navigation(ctx, page_name, sector_name) %}
 
 	<nav class="navbar navbar-default">
 	    <div class="container-fluid">
@@ -19,39 +19,47 @@
 	                <li><a href="/{{ lang }}">Home</a>
 	                </li>
 
-	                <li class="{% if page=='introducao' %}active{% endif %}" ><a href="/{{ lang }}/introducao">Introdução</a>
+	                <li class="{% if page_name=='introducao' %}active{% endif %}" ><a href="/{{ lang }}/introducao">Introdução</a>
 	                </li>
 
-	                <li class="{% if page=='mapa' %}active{% endif %}"><a href="/{{ lang }}/mapa">Mapa de vulnerabilidades</a>
+	                <li class="{% if page_name=='mapa' %}active{% endif %}"><a href="/{{ lang }}/mapa">Mapa de vulnerabilidades</a>
 	                </li>
 
-	                <li class="dropdown {% if page=='sectores' %}active{% endif %}">
-	                    <a href="/{{ lang }}/sectores" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Sectores <span class="caret"></span></a>
+	                <li class="dropdown {% if page_name=='sectores' %}active{% endif %}">
+	                    <a href="/{{ lang }}/sectores" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Informação Sectorial <span class="caret"></span></a>
 	                    <ul class="dropdown-menu" role="menu">
-	                        <li><a href="/{{ lang }}/sectores/biodiversidade">Biodiversidade</a>
+	                        <li class="{% if page_name=='sectores' and not sector_name %}active{% endif %}"><a href="/{{ lang }}/sectores">Introdução</a>
 	                        </li>
 
-	                        <li><a href="#">Recursos Hídricos</a>
+							<li class="divider"></li>
+
+	                        <li class="{% if sector_name=='biodiversidade' %}active{% endif %}"><a href="/{{ lang }}/sectores/biodiversidade">Biodiversidade</a>
 	                        </li>
 
-	                        <li><a href="#">Saúde</a>
+	                        <li class="{% if sector_name=='recursos-hidricos' %}active{% endif %}"><a href="/{{ lang }}/sectores/recursos-hidricos">Recursos Hídricos</a>
 	                        </li>
 
-	                        <li><a href="#">Turismo</a>
+	                        <li class="{% if sector_name=='saude' %}active{% endif %}"><a href="/{{ lang }}/sectores/saude">Saúde</a>
 	                        </li>
 
-	                        <li><a href="#">Agricultura e Florestas</a>
+	                        <li class="{% if sector_name=='turismo' %}active{% endif %}"><a href="/{{ lang }}/sectores/turismo">Turismo</a>
 	                        </li>
 
-	                        <li><a href="#">Energia</a>
+	                        <li class="{% if sector_name=='agricultura-florestas' %}active{% endif %}"><a href="/{{ lang }}/sectores/agricultura-florestas">Agricultura e Florestas</a>
+	                        </li>
+
+	                        <li class="{% if sector_name=='energia' %}active{% endif %}"><a href="/{{ lang }}/sectores/energia">Energia</a>
 	                        </li>
 	                    </ul>
 	                </li>
 
-	                <li class="{% if page=='adaptacao' %}active{% endif %}"><a href="/{{ lang }}/adaptacao">Estratégia de Adaptação</a>
+	                <li class="{% if page_name=='adaptacao' %}active{% endif %}"><a href="/{{ lang }}/adaptacao">Estratégia de Adaptação</a>
 	                </li>
 
-	                <li class="{% if page=='equipa' %}active{% endif %}"><a href="/{{ lang }}/equipa">Equipa</a>
+	                <li class="{% if page_name=='ferramenta' %}active{% endif %}"><a href="/{{ lang }}/ferramenta">Ferramenta de Apoio à Decisão</a>
+	                </li>
+
+	                <li class="{% if page_name=='equipa' %}active{% endif %}"><a href="/{{ lang }}/equipa">Equipa</a>
 	                </li>
 	            </ul>
 
