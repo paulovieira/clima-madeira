@@ -168,3 +168,14 @@ Similar to tableame_read:
 2) loop over the rows
 3) use json_extract_path_text to get the values of the properties we are interested in (usually the id)
 4) execute the DELETE command using the values
+
+
+
+
+
+
+
+
+LOADING SHAPES
+
+shp2pgsql -I -s 4326  climate-madeira.shp  climate_madeira  |  psql --dbname=test_150111

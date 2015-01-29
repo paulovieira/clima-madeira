@@ -21,6 +21,17 @@ var routeTable = [
         config: {
             auth: false,
         }
+    },
+
+    {
+        method: 'GET',
+        path: '/ferramenta/{anyPath*}',
+        handler: {
+            directory: { path: './client/ferramenta' }
+        },
+        config: {
+            auth: false,
+        }
     }
 
 ];

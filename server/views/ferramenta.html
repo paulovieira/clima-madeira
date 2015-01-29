@@ -5,6 +5,10 @@
 
 {% block title %}{{ ctx.texts[15][lang] }} - Ferramenta{% endblock %} 
 
+{% block css %}
+	<link href="/common/js/leaflet-0.7.3/leaflet.css" rel="stylesheet" />
+{% endblock %}
+
 
 {% block navigation %}
 
@@ -18,10 +22,25 @@
     <div class="col-sm-12 text-center">
 		<h1>Ferramenta</h1>
     </div>
+
+
 </div>
 
+<div id="map"></div>
 
 
 {% endblock %}
 
 
+{% block scripts %}
+	<script src="/common/js/leaflet-0.7.3/leaflet-src.js"></script>
+	<script src="/common/js/leaflet-draw/leaflet.draw-src.js"></script>
+	<script src="/common/js/underscore.js"></script>
+	<script src="/common/js/backbone.js"></script>
+	<script src="/common/js/backbone.marionette.js"></script>
+	<script src="/common/js/backbone.stickit.js"></script>
+	<script src="/common/js/json2.js"></script>
+	<script src="/common/js/q.js"></script>
+
+	<script src="/ferramenta/js/ferramenta.js"></script>
+{% endblock %}
