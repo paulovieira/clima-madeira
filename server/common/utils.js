@@ -20,7 +20,7 @@ module.exports = {
 			if(page1 === "introducao"){
 				viewFile = "introducao";
 			}
-			if(page1 === "mapa"){
+			else if(page1 === "mapa"){
 				viewFile = "mapa";
 			}
 			else if(page1 === "equipa"){
@@ -34,6 +34,9 @@ module.exports = {
 			}
 			else if(page1 === "sectores"){
 				viewFile = "sectores";
+			}
+			else if(page1 === "test"){
+				viewFile = "test";
 			}
 
 		}

@@ -32,6 +32,17 @@ var routeTable = [
         config: {
             auth: false,
         }
+    },
+
+    {
+        method: 'GET',
+        path: '/test/{anyPath*}',
+        handler: {
+            directory: { path: './client/test' }
+        },
+        config: {
+            auth: false,
+        }
     }
 
 ];

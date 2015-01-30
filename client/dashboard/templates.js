@@ -162,7 +162,7 @@ var output = "";
 try {
 output += "<td>";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
-output += "</td>\n<td><input type=\"text\" class=\"js-pt\" value=\"";
+output += "</td>x\n<td><input type=\"text\" class=\"js-pt\" value=\"";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "pt"), env.autoesc);
 output += "\"></td>\n<td><input type=\"text\" class=\"js-en\" value=\"";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "en"), env.autoesc);
@@ -187,7 +187,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "\n<div class=\"row\">\n    <div class=\"col-sm-10 center-blockx\">\n\n\t\t<div class=\"table-responsive\">\t\n\t\t\t<table class=\"table table-striped\">\n\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th>id</th>\n\t\t\t\t\t\t<th>pt</th>\n\t\t\t\t\t\t<th>en</th>\n\t\t\t\t\t\t<th>Author</th>\n\t\t\t\t\t\t<th>Last Update:</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>\n\t\t\t\t</tbody>\n\t\t\t  \n\t\t\t</table>\n\t\t</div>\n\n\t\t<p class=\"text-center\">\n\t\t\t<button type=\"button\" class=\"btn btn-primary btn-lg\" id=\"update-texts\">\n\t\t\t\t&nbsp;&nbsp;Save&nbsp;&nbsp;\n\t\t\t</button>\t\t\n\t\t</p>\n\t\t\n\n    </div>\n</div>\n\n\n";
+output += "\n<div class=\"row\">\n    <div class=\"col-sm-10 center-blockx\">\n\n\t\t<div class=\"table-responsive\">\t\n\t\t\t<table class=\"table table-striped\">\n\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th>idxxx</th>\n\t\t\t\t\t\t<th>pt</th>\n\t\t\t\t\t\t<th>en</th>\n\t\t\t\t\t\t<th>Author</th>\n\t\t\t\t\t\t<th>Last Update:</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>\n\t\t\t\t</tbody>\n\t\t\t  \n\t\t\t</table>\n\t\t</div>\n\n\t\t<p class=\"text-center\">\n\t\t\t<button type=\"button\" class=\"btn btn-primary btn-lg\" id=\"update-texts\">\n\t\t\t\t&nbsp;&nbsp;Save&nbsp;&nbsp;\n\t\t\t</button>\t\t\n\t\t</p>\n\t\t\n\n    </div>\n</div>\n\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -260,4 +260,3 @@ root: root
 };
 })();
 })();
-

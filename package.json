@@ -31,5 +31,11 @@
     "underscore": "^1.7.0",
     "underscore.string": "^2.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.3.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-nunjucks": "^0.1.4",
+    "nunjucks": "^1.1.0"
+  }
 }
