@@ -56,7 +56,7 @@ var transforms = {
 
 	// given an array of geoJson features, returns an array of arrays, each one with lat,lon,val,
 	// to be used in Leaflet.Heat plugin; the value is relative to the property whose key given in the 2nd arg
-	heatmap: function(array, key){
+	heatmapArray: function(array, key){
 	    var i, li;
 	    var valueTemp;
         for(i=0, li=array.length; i<li; i++){ 
@@ -66,7 +66,27 @@ var transforms = {
         }
 
         return array;
-	}	
+	},
+
+	// similar to the above; to be used with the heatmap.js plugin
+	// http://www.patrick-wied.at/static/heatmapjs/example-heatmap-leaflet.html
+	heatmapData2: function(array, key){
+	    var i, li;
+	    var arrayValue = [];
+
+        for(i=0, li=array.length; i<li; i++){ 
+        	arrayValue.push({
+        		lat: array[i].geometry.coordinates[1],
+        		lng: array[i].geometry.coordinates[0],
+        		value: array[i].properties[key]
+        	});
+        }
+
+        var maxValue = (_.max(arrayValue, function(obj){ return obj.value; }))["value"],
+    		minValue = (_.min(arrayValue, function(obj){ return obj.value; }))["value"];
+
+        return { max: maxValue, min: minValue, data: arrayValue };
+	}
 };
 
 module.exports = transforms;

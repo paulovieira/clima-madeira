@@ -55,7 +55,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 					climate_madeira
 				INNER JOIN 
 					(SELECT 
-						gid, "long", lat, tmean_ref, pp_ref, dtmean_a2_, dtmean_a_1, dtmean_a_2, dtmean_b2_, dtmean_b_1, 
+						gid, tmean_ref, pp_ref, dtmean_a2_, dtmean_a_1, dtmean_a_2, dtmean_b2_, dtmean_b_1, 
 						dtmean_b_2, dpp_a2_s, dpp_a2_m, dpp_a2_l, dpp_b2_s, dpp_b2_m, dpp_b2_l, tmean_a2_s, tmean_a2_m, 
 						tmean_a2_l, tmean_b2_s, tmean_b2_m, tmean_b2_l, pp_a2_s, pp_a2_m, pp_a2_l, pp_b2_s, pp_b2_m, pp_b2_l 
 					FROM 
