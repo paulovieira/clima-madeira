@@ -42,16 +42,27 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	-- 	INNER JOIN users u
 	-- 	ON t.author_id = u.id';
 			
+
+-- based on: Creating GeoJSON Feature Collections with JSON and PostGIS functions
+-- http://www.postgresonline.com/journal/archives/267-Creating-GeoJSON-Feature-Collections-with-JSON-and-PostGIS-functions.html
+
+-- note: read the article to understand the reason for the self-join
 	command := 'SELECT 
-					''Feature''::text As type, 
+					''Feature''::text as type, 
 					ST_AsGeoJSON(geom)::json as geometry,
-					row_to_json(cm2) As properties
+					row_to_json(data) as properties
 				FROM 
-					climate_madeira As cm1
+					climate_madeira
 				INNER JOIN 
-					(SELECT gid, tmean_ref FROM climate_madeira) As cm2
+					(SELECT 
+						gid, "long", lat, tmean_ref, pp_ref, dtmean_a2_, dtmean_a_1, dtmean_a_2, dtmean_b2_, dtmean_b_1, 
+						dtmean_b_2, dpp_a2_s, dpp_a2_m, dpp_a2_l, dpp_b2_s, dpp_b2_m, dpp_b2_l, tmean_a2_s, tmean_a2_m, 
+						tmean_a2_l, tmean_b2_s, tmean_b2_m, tmean_b2_l, pp_a2_s, pp_a2_m, pp_a2_l, pp_b2_s, pp_b2_m, pp_b2_l 
+					FROM 
+						climate_madeira
+					) as data
 				ON 
-					cm1.gid = cm2.gid';
+					climate_madeira.gid = data.gid';
 
 	-- extract values to be (optionally) used in the WHERE clause
 	-- SELECT json_extract_path_text(options_row, 'id')           INTO id;
