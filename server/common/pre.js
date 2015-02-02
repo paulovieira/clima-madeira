@@ -4,7 +4,7 @@ var _ = require('underscore');
 
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 var settings = require(global.rootPath + "config/server.js");
-var utils = require(global.rootPath +  "server/common/utils.js");
+//var utils = require(global.rootPath +  "server/common/utils.js");
 var transforms = require(global.rootPath +  "server/common/transforms.js");
 
 var preRequisites = {
@@ -109,7 +109,7 @@ var preRequisites = {
 		                function(err) {
 		                	console.log(err);
 		                    return reply(err);
-		                }
+f		                }
 			        );
 			},
 			assign: "textsC",
@@ -119,7 +119,11 @@ var preRequisites = {
 
 	transform_texts: {
 		method: function(request, reply){
-			var texts = utils.transform(request.pre.textsC.toJSON(), transforms.text);
+
+            var transformMap = transforms.maps.text;
+            var transform    = transforms.baseTransform;
+
+			var texts = transform(request.pre.textsC.toJSON(), transformMap);
 			reply(_.indexBy(texts, "id"));
 		},
 		assign: "texts"

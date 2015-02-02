@@ -49,20 +49,16 @@ getData()
 	.then(function(data){
 		console.log("data: ", data);
 		debugger;
+/*
 		L.geoJson(data, {
 			pointToLayer: function pointToLayer(feature, latlng) {
 				return L.circleMarker(latlng, geojsonMarkerOptions);
 			},
-			onEachFeature: function onEachFeature(feature, layer) {
-			    // does this feature have a property named popupContent?
-/*
-	    		if (feature.properties) {
-	    			var str = "<b>Freguesia:</b> " + feature.properties.freguesia || "";
-	    			str += "<br><b>Municipio:</b> " + feature.properties.municipio || "";
-	        		layer.bindPopup(str);
-	    		}
+		}).addTo(map);
 */
-			}
+		var heat = L.heatLayer(data, {
+			radius: 30,
+			blur: 30
 		}).addTo(map);
 	})
 	.catch(function(err){

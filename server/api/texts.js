@@ -185,10 +185,11 @@ debugger;
         	})
         	.done(
         		function(){
-                    var resp      = textsC.toJSON();
-                    var transform = transforms.text;
+                    var resp         = textsC.toJSON();
+                    var transformMap = transforms.maps.text;
+                    var transform    = transforms.baseTransform;
 
-                    return reply(utils.transform(resp, transform));
+                    return reply(transform(resp, transformMap));
         		},
                 function(err){
 debugger;
@@ -234,10 +235,11 @@ debugger;
             .done(
                 function(){
 debugger;
-                    var resp      = textsC.toJSON();
-                    var transform = transforms.text;
+                    var resp         = textsC.toJSON();
+                    var transformMap = transforms.maps.text;
+                    var transform    = transforms.baseTransform;
 
-                    return reply(utils.transform(resp, transform));
+                    return reply(transform(resp, transformMap));
                 },
                 function(err){
 debugger;
@@ -291,10 +293,11 @@ debugger;
         	.done(
         		function(){
 debugger;
-                    var resp      = textsC.toJSON();
-                    var transform = transforms.text;
+                    var resp         = textsC.toJSON();
+                    var transformMap = transforms.maps.text;
+                    var transform    = transforms.baseTransform;
 
-                    return reply(utils.transform(resp, transform));
+                    return reply(transform(resp, transformMap));
         		},
                 function(err){
 debugger;
@@ -352,10 +355,11 @@ debugger;
         	.done(
         		function(){
 debugger;
-                    var resp      = textsC.toJSON();
-                    var transform = transforms.text;
+                    var resp         = textsC.toJSON();
+                    var transformMap = transforms.maps.text;
+                    var transform    = transforms.baseTransform;
 
-                    return reply(utils.transform(resp, transform));
+                    return reply(transform(resp, transformMap));
         		},
                 function(err){
 debugger;
