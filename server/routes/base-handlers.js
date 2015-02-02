@@ -58,9 +58,13 @@ var handlers = {
             return reply.redirect("/" + request.params.lang + "/404");
         }
 
+        var transformMap = transforms.maps.text;
+        var transform    = transforms.baseTransform;
+
         var context = {
             texts: request.pre.texts,
-            textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
+//            textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
+            textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
             auth: request.auth,
         };
 
@@ -207,8 +211,12 @@ debugger;
             }
         }
 
+        var transformMap = transforms.maps.text;
+        var transform    = transforms.baseTransform;
+
         var context = {
-            textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
+//            textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
+            textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
             auth: request.auth
         };
 

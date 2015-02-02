@@ -186,10 +186,12 @@ exports.register = function(server, options, next) {
                 })
                 .done(
                     function(){
-                        var resp      = usersC.toJSON();
-                        var transform = transforms.user;
 
-                        return reply(utils.transform(resp, transform));
+                        var resp         = usersC.toJSON();
+                        var transformMap = transforms.maps.user;
+                        var transform    = transforms.baseTransform;
+
+                        return reply(transform(resp, transformMap));
                     },
                     function(err){
     debugger;

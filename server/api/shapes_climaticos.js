@@ -174,10 +174,9 @@ debugger;
         	.done(
         		function(){
                     var resp      = baseC.toJSON();
-                    //var transform = transforms.text;
+                    //var transform = transforms.featuresToHeatmap;
 
-                    //return reply(utils.transform(resp, transform));
-                    return reply(resp);
+                    return reply(transforms.heatmap(resp, "tmeanRef"));
         		},
                 function(err){
 debugger;
