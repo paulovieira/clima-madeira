@@ -168,7 +168,8 @@ debugger;
         	baseC.execute({
 				query: {
                     command: "select * from shapes_climaticos_read()"
-				}
+				},
+                changeCase: false
         	})
         	.done(
         		function(){
