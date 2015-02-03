@@ -129,7 +129,6 @@ var HeatmapOverlay = L.Layer.extend({
     this._min = data.min || this._min;
     var latField = this.cfg.latField || 'lat';
     var lngField = this.cfg.lngField || 'lng';
-    debugger;
     var valueField = this.cfg.valueField || 'value';
   
     // transform data to latlngs

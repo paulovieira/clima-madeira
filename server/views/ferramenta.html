@@ -6,13 +6,19 @@
 {% block title %}{{ ctx.texts[15][lang] }} - Ferramenta{% endblock %} 
 
 {% block css %}
+	<link href="/common/css/jasny-bootstrap_3.1.3.css" rel="stylesheet" />
 	<link href="/common/js/leaflet-0.7.3/leaflet.css" rel="stylesheet" />
 {% endblock %}
 
 
 {% block navigation %}
 
-{{ navigation(ctx, page_name) }}
+  {{ navigation(ctx, page_name) }}  
+
+
+
+
+
 
 {% endblock %}
 
@@ -22,17 +28,75 @@
     <div class="col-sm-12 text-center">
 		<h1>Ferramenta</h1>
     </div>
-
-
 </div>
 
-<div id="map"></div>
+
+
+
+<div id="xxx" class="row">
+    <div id="" class="col-sm-4">
+		
+xxx
+<div class="xbs-example xbs-navmenu-offcanvas-example">
+    <div id="myNavmenuCanvas" class="canvas-slid" style="left: 300px;">
+        <nav id="myNavmenu" class="navmenu navmenu-default navmenu-fixed-leftx offcanvas in" role="navigation">
+            <a class="navmenu-brand" href="#">Brand</a>
+            <ul class="nav navmenu-nav">
+                <li class="active"><a href="#">Home</a>
+                </li>
+                <li><a href="#">Link</a>
+                </li>
+                <li><a href="#">Link</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#myNavmenu" data-canvas="#myNavmenuCanvas" data-placement="left">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis in aliquet nisl. Praesent sed leo congue, fringilla eros eu, tempus metus. Nam mollis odio ipsum, non vehicula ipsum accumsan sodales. Morbi varius vitae elit euismod cursus. Donec a dapibus justo, in facilisis nisi. Suspendisse ut turpis dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dui risus, tincidunt at odio ut, ultrices dignissim ipsum. Cras ultrices erat nec leo luctus varius. Nulla sollicitudin tincidunt nulla, ut porta mauris volutpat vitae. Suspendisse ornare dolor sit amet massa venenatis pulvinar.</p>
+    </div>
+</div>
+	
+</div>
+
+{#
+<nav class="navmenu navmenu-default" role="navigation">
+  <a class="navmenu-brand" href="#">Brand</a>
+
+  <ul class="nav navmenu-nav">
+    <li class="active"><a href="#">Link</a></li>
+    <li><a href="#">Link</a></li>
+
+  </ul>
+</nav>
+#}
+
+
+    </div>
+    <div class="col-sm-8">
+		<div id="map"></div>
+    </div>
+</div>
+
+
+
+
+<div>
+	
+
+
 
 
 {% endblock %}
 
 
 {% block scripts %}
+	<script src="/common/js/jasny-bootstrap_3.1.3.js"></script>
 	<script src="/common/js/leaflet-0.7.3/leaflet-src.js"></script>
 {#	<script src="/common/js/leaflet-0.7.3/leaflet-heat.js"></script> #}
 	<script src="/common/js/heatmap.js"></script>
@@ -44,5 +108,5 @@
 	<script src="/common/js/json2.js"></script>
 	<script src="/common/js/q.js"></script>
 
-	<script src="/ferramenta/js/ferramenta.js"></script>
+	<script src="/ferramenta/js/ferramenta.js"></script> 
 {% endblock %}

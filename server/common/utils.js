@@ -38,6 +38,9 @@ module.exports = {
 			else if(page1 === "test"){
 				viewFile = "test";
 			}
+			else if(page1 === "menu"){
+				viewFile = "menu";
+			}
 
 		}
 

@@ -35,22 +35,13 @@ function getData(){
 	return deferred.promise;
 };
 
-/*
-var geojsonMarkerOptions = {
-    radius: 4,
-    fillColor: "#ff7800",
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-};
-*/
+
 var heatmapConfig = {
 
-	"blur": 0.7,
+	"blur": 0.8,
 
 	// radius should be small ONLY if scaleRadius is true (or small radius is intended)
-	"radius": 0.012,
+	"radius": 0.013,
 	//"blur": 20,
 	"maxOpacity": 0.8, 
 	"minOpacity": 0.2,
@@ -72,53 +63,17 @@ var heatmapConfig = {
 
 
 getData()
-	.then(function(datax){
-		console.log("datax: ", datax);
+	.then(function(heatData){
+//		console.log("heatData: ", heatData);
 //		debugger;
-/*
-		L.geoJson(data, {
-			pointToLayer: function pointToLayer(feature, latlng) {
-				return L.circleMarker(latlng, geojsonMarkerOptions);
-			},
-		}).addTo(map);
-*/
 
 
-		// code for the official heatmap plugin
-		// var heat = L.heatLayer(data, {
-		// 	radius: 30,
-		// 	blur: 30,
-		// 	gradient: {0.4: 'blue', 0.65: 'lime', 1: 'red'}
-		// }).addTo(map);
+
+		var heatmapLayer = new HeatmapOverlay(heatmapConfig);
+		map.addLayer(heatmapLayer);
 
 
-var heatmapLayer = new HeatmapOverlay(heatmapConfig);
-map.addLayer(heatmapLayer);
-
-// var testData = {
-//   max: 8,
-//   data: [{lat: 32.629, lng: -16.949, value: 3}]
-// };
-
-
-var heatData = {
-  min: _.max(),
-  max: 10,
-  data: [
-			{
-			lat: 32.629,
-			lng: -16.949,
-			value: 9.9
-			},
-			{
-			lat: 32.829,
-			lng: -16.938,
-			value: 7.1
-			}
-		]
-};
-
-heatmapLayer.setData(datax);
+		heatmapLayer.setData(heatData);
 
 
 	})
