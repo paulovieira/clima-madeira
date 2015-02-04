@@ -5,5 +5,4 @@
 </script>
     
 <script src="/common/js/jquery.js"></script>
-<!-- <script src="/common/js/bootstrap_3.3.1.js"></script> -->
-<script src="/common/js/bootstrap_3.2.0.js"></script>
+<script src="/common/js/bootstrap_3.3.2.js"></script>

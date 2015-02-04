@@ -18,7 +18,7 @@
     </title>
 
     {# common css (to be included in all pages) #}
-    {% include "common/bootstrap_stylesheets.html" %}
+    {% include "common/stylesheets.html" %}
 
     {# common css (after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
@@ -48,7 +48,7 @@
 
 
     {# common javascript #}
-    {% include "common/texts.js" %}
+    {% include "common/scripts.js" %}
 
     {# custom scripts (specific for each page) #}    
     {% block scripts %}{% endblock %}

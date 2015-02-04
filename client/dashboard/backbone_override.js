@@ -88,8 +88,9 @@ debugger;
 
 
 Marionette.Renderer = {
-  
+
 	render: function(template, data) {
+  
 		if (!template) {
 			throw new Marionette.Error({
 				name: 'TemplateNotFoundError',

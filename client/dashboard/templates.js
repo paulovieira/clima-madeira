@@ -37,54 +37,6 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-var macro_t_1 = runtime.makeMacro(
-["groupId", "groupTitle", "groupItems"], 
-[], 
-function (l_groupId, l_groupTitle, l_groupItems, kwargs) {
-frame = frame.push();
-kwargs = kwargs || {};
-if (kwargs.hasOwnProperty("caller")) {
-frame.set("caller", kwargs.caller); }
-frame.set("groupId", l_groupId);
-frame.set("groupTitle", l_groupTitle);
-frame.set("groupItems", l_groupItems);
-var t_2 = "";t_2 += "\n\n<div class=\"panel-group\" style=\"margin-bottom: 4px;\">\n  <div class=\"panel panel-default\">\n  \n    <div class=\"panel-heading\">\n      <h4 class=\"panel-title\">\n        <a data-toggle=\"collapse\" href=\"#";
-t_2 += runtime.suppressValue(l_groupId, env.autoesc);
-t_2 += "\">\n          ";
-t_2 += runtime.suppressValue(l_groupTitle, env.autoesc);
-t_2 += "\n        </a>\n      </h4>\n    </div>\n\n\n    <ul id=\"";
-t_2 += runtime.suppressValue(l_groupId, env.autoesc);
-t_2 += "\" class=\"list-group panel-collapse collapse in\">\n        ";
-frame = frame.push();
-var t_5 = l_groupItems;
-if(t_5) {var t_4 = t_5.length;
-for(var t_3=0; t_3 < t_5.length; t_3++) {
-var t_6 = t_5[t_3];
-frame.set("item", t_6);
-frame.set("loop.index", t_3 + 1);
-frame.set("loop.index0", t_3);
-frame.set("loop.revindex", t_4 - t_3);
-frame.set("loop.revindex0", t_4 - t_3 - 1);
-frame.set("loop.first", t_3 === 0);
-frame.set("loop.last", t_3 === t_4 - 1);
-frame.set("loop.length", t_4);
-t_2 += "\n            <li class=\"list-group-item\" id=\"";
-t_2 += runtime.suppressValue(runtime.memberLookup((t_6),"itemId", env.autoesc), env.autoesc);
-t_2 += "\">\n                ";
-t_2 += runtime.suppressValue(runtime.memberLookup((t_6),"itemTitle", env.autoesc), env.autoesc);
-t_2 += "\n            </li>\n        ";
-;
-}
-}
-frame = frame.pop();
-t_2 += "\n    </ul>\n\n\n  </div>\n</div>\n\n";
-;
-frame = frame.pop();
-return new runtime.SafeString(t_2);
-});
-context.addExport("menuGroup");
-context.setVariable("menuGroup", macro_t_1);
-output += "\n\n\n\n";
 cb(null, output);
 ;
 } catch (e) {
