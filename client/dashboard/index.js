@@ -447,9 +447,22 @@ var MenuLeftGroupsCV = Mn.CollectionView.extend({
 	childView: MenuLeftGroupLV,
 });
 
+// new version - using nunjucks instead of collectionView
+var MenuLeftIV = Mn.ItemView.extend({
+	template: "menuLeft/templates/panel.html",
 
+	events: {
+		"click .list-group-item": function(e){
+			var $target   = $(e.target),
+				$anchorEl = $target.is("span") ? $target.parent() : $target;
 
+			$(".arrow-container").removeClass("glyphicon glyphicon-chevron-right");
+			$anchorEl.find(".arrow-container").addClass("glyphicon glyphicon-chevron-right");
 
+			leftMenuChannel.trigger("show:main:right", $anchorEl.data("listItem"));
+		}
+	}
+});
 
 
 // NESTING LEVEL 0
@@ -468,10 +481,15 @@ var MainLayout = Mn.LayoutView.extend({
 		var menuLeftGroupsCV = new MenuLeftGroupsCV({
 			collection: menuLeftC
 		});
-		this.mainLeftRegion.show(menuLeftGroupsCV);
+		//this.mainLeftRegion.show(menuLeftGroupsCV);
+
+		var menuLeftIV = new MenuLeftIV({
+			collection: menuLeftC
+		});
+		this.mainLeftRegion.show(menuLeftIV);
 
 		var defaultLV = new DefaultLV();
-		this.mainRightRegion.show(defaultLV);		
+		//this.mainRightRegion.show(defaultLV);		
 	},
 
 	showViewRight: function(code){

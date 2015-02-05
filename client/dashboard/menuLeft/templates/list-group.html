@@ -1,0 +1,16 @@
+{% macro listGroup(code, items) %}
+
+<div style="margin-bottom: 0;" id="{{ code }}" class="list-group panel-collapse collapse in">
+
+{% for obj in items %}
+
+<a href="#" class="list-group-item" data-list-item="{{ obj['itemCode'] }}" style="border-radius: 0;">
+    <span>{{ obj['itemTitle']['pt'] }}</span>
+    <span class="arrow-container pull-right"></span>
+</a>
+
+{% endfor %}
+
+</div>
+
+{% endmacro %}

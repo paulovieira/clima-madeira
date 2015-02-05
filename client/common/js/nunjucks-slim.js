@@ -1600,6 +1600,7 @@ var Context = Obj.extend({
 
 var Template = Obj.extend({
     init: function (src, env, path, eagerCompile) {
+
         this.env = env || new Environment();
 
         if(lib.isObject(src)) {
