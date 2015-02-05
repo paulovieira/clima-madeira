@@ -1494,6 +1494,7 @@ var Environment = Obj.extend({
     },
 
     render: function(name, ctx, cb) {
+
         if(lib.isFunction(ctx)) {
             cb = ctx;
             ctx = null;
@@ -1630,6 +1631,7 @@ var Template = Obj.extend({
     },
 
     render: function(ctx, frame, cb) {
+
         if (typeof ctx === 'function') {
             cb = ctx;
             ctx = {};

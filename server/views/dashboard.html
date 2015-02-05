@@ -8,52 +8,21 @@
 
 {% block content %}
 
-
-
-
     <div class="row">
-        <div class="col-sm-12" id="main-region" >
-
-
-
-
-{#
-
-
-    Hello {{ ctx.credentials.firstName }}
-
-    <h2>{{ ctx.title }}</h2>
-    <p>This is the dashboard page.</p>
-
-
-    Navigation
-    <ul class="menu">
-        <li><a href="/{{ lang }}">Home</a></li>
-        {% if ctx.isAuthenticated %}
-        <li><a href="/{{ lang }}/logout">Logout</a></li>
-        {% endif %}
-    </ul>
-
-
-    <form role="form">
-        <div class="form-group">
-            <textarea class="form-control" id="fixed-texts-json" rows="20">{{ ctx.fixedTextsJson }}</textarea>
-        </div>
-
-        <div class="form-group">
-            <textarea class="form-control" id="home-texts-json" rows="20">{{ ctx.homeTextsJson }}</textarea>
-        </div>
-
-        <button  id="save-json" class="btn btn-primary">Save</button>
-    </form>
-#}
-
-
+        <div class="col-sm-10 col-sm-offset-1" id="main-region" >
 
         </div>
     </div>
 
 
+    <div class="modal xfade" id="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal-content-region">
+
+
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
@@ -72,14 +41,17 @@
     <script src="/common/js/nunjucks-slim.js"></script>
     <script src="/common/js/moment_2.9.0.js"></script>
 
+    <script src="/dashboard/templates.js"></script>
+    <script src="/dashboard/backbone_override.js"></script>
+
     <script type="text/javascript">
         var Clima = {};
         Clima.lang = "{{ lang }}";
         Clima.texts = {{ ctx["textsJson"] }};
+
     </script>
 
-    <script src="/dashboard/templates.js"></script>
-    <script src="/dashboard/backbone_override.js"></script>
+
     <script src="/dashboard/index.js"></script>
 
 

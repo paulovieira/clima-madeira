@@ -5,12 +5,13 @@
 <div class="panel panel-primary" style="border-radius: 0;">
 
     <div class="panel-heading" style="border-radius: 0;">
-        <a data-toggle="collapse" href="#{{ obj['groupCode'] }}">{{ obj['groupTitle']['pt'] }}</a>
+    	<span class="glyphicon {{ obj['panelIcon']}}" aria-hidden="true"></span>&nbsp;
+        <a data-toggle="collapse" href="#{{ obj['panelCode'] }}">{{ obj['panelTitle'][ obj['lang'] ] }}</a>
     </div>
 
     <div class="panel-body" style="padding: 0; ">
 
-    	{{ listGroup(obj['groupCode'], obj['groupItems']) }} 
+    	{{ listGroup(obj['panelCode'], obj['panelItems']) }} 
 
     </div>
 

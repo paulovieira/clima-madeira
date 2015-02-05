@@ -1,8 +1,15 @@
 var _ = require('underscore');
 var Hoek = require('hoek');
-//var settings = require('../config/settings.js');
+var settings = require(global.rootPath + 'config/server.js');
 
 module.exports = {
+
+	// set auth false in development mode (so that we don't have to login after every server restart)
+	getAuthConfig: function(){
+		var authConfig = (settings.environment === "dev") ? false : { mode: "try" };
+
+		return authConfig;
+	},
 
 	// return the html filename (in server/views) associated with the parameters
 	getView: function(page1, page2){

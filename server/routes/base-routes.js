@@ -1,8 +1,8 @@
-//var settings = require('../config/settings.js');
 var utils = require(global.rootPath +  'server/common/utils.js');
 var pre = require(global.rootPath +  'server/common/pre.js');
 var validate = require(global.rootPath + 'server/common/validate.js');
 var baseHandlers = require(global.rootPath + 'server/routes/base-handlers.js');
+//var settings = require(global.rootPath + 'config/server.js');
 
 var routes = [
 
@@ -190,11 +190,15 @@ var routes = [
 
         config: {
 
-            auth: {
-                mode: "try"
-            },
 
-            //            auth: false,
+            auth: utils.getAuthConfig(),
+
+            // auth: {
+            //     mode: "try"
+            // },
+            //
+            //auth: false,
+
             validate: {
                 params: validate.params.lang
             },

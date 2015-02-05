@@ -1,0 +1,32 @@
+<div class="modal-header">
+    <h4 class="modal-title">Edit text #{{ id }}</h4>
+</div>
+
+
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+            <label for="edit-text-pt">Português</label>
+            <textarea id="edit-text-pt" class="form-control" rows="3">{{ pt }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-text-pt">Inglês</label>
+            <textarea id="edit-text-pt" class="form-control" rows="3">{{ en }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-text-tags">Tags</label>
+            <input type="text" class="form-control" id="edit-text-tags" value="{{ tagsStr }}">
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default js-modal-close">Fechar</button>
+    <button type="button" class="btn btn-primary js-modal-save">Gravar</button>
+
+
+    <div id="message-status" style="margin-top: 35px;"></div>
+    <div id="" style="margin-top: 10px;">
+        <h5 id="message-links"></h5>
+    </div>
+</div>

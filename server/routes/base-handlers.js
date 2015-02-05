@@ -202,9 +202,7 @@ debugger;
 
         console.log("IMPORTANT: REMOVE DEBUG MODE IN THE DASHBOARD HANDLER");
 
-        var debugMode = false;
-
-        if (!debugMode) {
+        if (settings.environment!=="dev") {
             if (!request.auth.isAuthenticated) {
                 console.log("    not authenticated, will now redirect to /lang/login");
                 return reply.redirect("/" + request.params.lang + "/login");
@@ -215,7 +213,6 @@ debugger;
         var transform    = transforms.baseTransform;
 
         var context = {
-//            textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
             textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
             auth: request.auth
         };

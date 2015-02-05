@@ -1,6 +1,9 @@
 
 module.exports = {
 
+    // use "dev" to disable authentication/cookie
+    environment: "dev",
+
     host: "localhost",
     port: parseInt(process.env.PORT, 10) || 3000,
     //debugEndpoint: "/debug/consol",  // endpoint to be used in the TV module

@@ -5,20 +5,22 @@
 var leftMenuChannel = Backbone.Radio.channel('leftMenu');
 
 var Dashboard = new Mn.Application();
+Dashboard.$modal = $("#modal");
 
 Dashboard.addRegions({
-	mainRegion: "#main-region"
+	mainRegion: "#main-region",
+	modalRegion: "#modal-content-region"
 });
 
 
 
 
 var menuLeftC = new Backbone.Collection([
-
 {
-	groupCode: "texts",
-	groupTitle: Clima.texts[12].contents,
-	groupItems: [
+	panelCode: "texts",
+	panelTitle: Clima.texts[12].contents,
+	panelIcon: "glyphicon-font",
+	panelItems: [
 		{
 			itemCode: "texts-all",
 			itemTitle: Clima.texts[13].contents,
@@ -34,9 +36,10 @@ var menuLeftC = new Backbone.Collection([
 },
 
 {
-	groupCode: "users",
-	groupTitle: {pt: "Utilizadores", en: "Users"},
-	groupItems: [
+	panelCode: "users",
+	panelTitle: {pt: "Utilizadores", en: "Users"},
+	panelIcon: "glyphicon-user",
+	panelItems: [
 		{
 			itemCode: "users-all",
 			itemTitle: { pt: "Todos os utilizadores", en: "All users"},
@@ -52,9 +55,10 @@ var menuLeftC = new Backbone.Collection([
 
 
 {
-	groupCode: "groups",
-	groupTitle: {pt: "Grupos", en: "Grups"},
-	groupItems: [
+	panelCode: "groups",
+	panelTitle: {pt: "Grupos", en: "Grups"},
+	panelIcon: "glyphicon-user",
+	panelItems: [
 		{
 			itemCode: "groups-all",
 			itemTitle: { pt: "Todos os grupos", en: "All groups"},
@@ -69,9 +73,10 @@ var menuLeftC = new Backbone.Collection([
 },
 
 {
-	groupCode: "files",
-	groupTitle: {pt: "Ficheiros", en: "Files"},
-	groupItems: [
+	panelCode: "files",
+	panelTitle: {pt: "Ficheiros", en: "Files"},
+	panelIcon: "glyphicon-folder-open",
+	panelItems: [
 		{
 			itemCode: "files-all",
 			itemTitle: { pt: "Todos os ficheiros", en: "All files"},
@@ -86,12 +91,16 @@ var menuLeftC = new Backbone.Collection([
 },
 ]);
 
+menuLeftC.each(function(model){
+	model.set("lang", Clima.lang);
+});
 
 
 
 var TextM = Backbone.Model.extend({
 	defaults: {
 		"tags": [],
+		"tagsStr": "",
 		"contents": {pt: "", en: ""},
 		"pt": "",
 		"en": "",
@@ -113,6 +122,11 @@ var TextM = Backbone.Model.extend({
 			contents.en = newValue;
 			this.set("contents", contents);
 		});
+
+		this.set("tagsStr", this.get("tags").join(", "));
+		this.on("change:tags", function(){
+			this.set("tagsStr", this.get("tags").join(", "));
+		});
 	},
 
 	parse: function(resp){
@@ -121,7 +135,7 @@ var TextM = Backbone.Model.extend({
 		resp.author = (resp.authorData.firstName || "") + " " + (resp.authorData.lastName || "");
 		delete resp.authorData;
 
-		resp.lastUpdated = moment(resp.lastUpdated).format('YYYY-MM-DD HH:mm:ss');
+		resp.lastUpdated = moment(resp.lastUpdated).format('YY-MM-DD HH:mm:ss');
 		return resp;
 	}
 });
@@ -132,6 +146,27 @@ var TextsC = Backbone.Collection.extend({
 });
 
 var textsC = new TextsC();
+
+var TextEditModalIV = Mn.ItemView.extend({
+	template: "texts/templates/textEditModal.html",
+
+	events: {
+		"click button.js-modal-close": "modalClose",
+		"click button.js-modal-save": "modalSave"
+	},
+
+	modalClose: function(){
+		console.log("close modal");
+		Dashboard.$modal.modal("hide");
+	},
+
+	modalSave: function(){
+		console.log("save changes");
+	},
+});
+
+
+
 
 var TextRowLV = Mn.LayoutView.extend({
 	template: "texts/templates/textRow.html",
@@ -147,6 +182,29 @@ var TextRowLV = Mn.LayoutView.extend({
 			observe: "en",
 			updateModel: "avoidDuplicateSet"
 		}
+	},
+
+	events: {
+		"click button.js-edit": "showEditModal",
+		"click button.js-delete": "showDeleteConfirmation"
+	},
+
+	showEditModal: function(){
+
+			var textEditIV = new TextEditModalIV({
+				model: this.model
+			});
+
+			// first set the content of the modal
+			Dashboard.modalRegion.show(textEditIV);
+
+			// then show the modal 
+			Dashboard.$modal.modal("show");
+
+	},
+
+	showDeleteConfirmation: function(){
+		console.log("delete confirmation");
 	},
 
 	// for some reason stickit is setting the observed attribute 2 times; the value 
@@ -352,101 +410,6 @@ var DefaultLV = Mn.LayoutView.extend({
 
 
 
-// NESTING LEVEL 2
-
-var MenuLeftArrowIV = Mn.ItemView.extend({
-	tagName: "span",
-	className: "glyphicon glyphicon-chevron-right",
-/*
-	attributes: {
-		"style": "margin-left: 5px;"
-	},
-*/
-	template: false,
-});
-
-var MenuLeftItemLV = Mn.LayoutView.extend({
-	initialize: function(){
-		leftMenuChannel.on("remove:arrow", 
-						function(){ 
-							// if this view has an arrow (from a previous selection), remove it
-							if(this.arrowRegion.hasView()){
-								console.log("reset arrow region");
-								this.arrowRegion.reset(); 
-								this.$el.removeClass("selected-item");								
-							}
-						}, 
-						this);
-	},
-	template: "menuLeft/templates/menuLeftItem.html",  
-	regions: {
-		arrowRegion: ".mn-arrow-region"
-	},
-	events: {
-		"click": function(){
-			this.$el.addClass("selected-item");
-
-			leftMenuChannel.trigger("remove:arrow");
-			this.arrowRegion.show(new MenuLeftArrowIV);
-
-			leftMenuChannel.trigger("show:main:right", this.model.get("itemCode"));
-		}
-	},
-	onBeforeRender: function(){
-		this.model.set("lang",   Clima.lang);
-	},
-
-});
-
-var MenuLeftItemsCV = Mn.CollectionView.extend({
-	tagName: "div",
-	className: "list-group panel-collapse collapse in",
-	attributes: {
-		style: "margin-bottom: 0;"
-	},
-	childView: MenuLeftItemLV,
-
-});
-
-
-
-
-
-
-// NESTING LEVEL 1
-
-var MenuLeftGroupLV = Mn.LayoutView.extend({
-	template: "menuLeft/templates/menuLeftGroup.html",
-	regions: {
-		itemsRegion: ".mn-items-region"
-	},
-
-	onBeforeRender: function(){
-		this.model.set("lang", Clima.lang);
-	},
-
-	//onAttach: function(){
-	onRender: function(view, region){
-
-//		debugger;
-
-		// get the collection with the group items and show them using a collection view
-		var groupItemsC = new Backbone.Collection(this.model.get("groupItems"));
-		
-		var menuLeftItemsCV = new MenuLeftItemsCV({
-			collection: groupItemsC,
-			id: this.model.get("groupCode")
-		});
-
-		this.itemsRegion.show(menuLeftItemsCV)
-	},
-
-});
-
-var MenuLeftGroupsCV = Mn.CollectionView.extend({
-	childView: MenuLeftGroupLV,
-});
-
 // new version - using nunjucks instead of collectionView
 var MenuLeftIV = Mn.ItemView.extend({
 	template: "menuLeft/templates/panel.html",
@@ -478,9 +441,10 @@ var MainLayout = Mn.LayoutView.extend({
 	},
 	onBeforeShow: function(view, region){
 //debugger;
-		var menuLeftGroupsCV = new MenuLeftGroupsCV({
-			collection: menuLeftC
-		});
+
+		// var menuLeftGroupsCV = new MenuLeftGroupsCV({
+		// 	collection: menuLeftC
+		// });
 		//this.mainLeftRegion.show(menuLeftGroupsCV);
 
 		var menuLeftIV = new MenuLeftIV({
@@ -581,72 +545,3 @@ Dashboard.mainRegion.show(mainLayout);
 
 
 
-
-/*
-MODEL
-    fetch: function(options) {
-      options = options ? _.clone(options) : {};
-      if (options.parse === void 0) options.parse = true;
-      var model = this;
-      var success = options.success;
-      options.success = function(resp) {
-        if (!model.set(model.parse(resp, options), options)) return false;
-        if (success) success(model, resp, options);
-        model.trigger('sync', model, resp, options);
-      };
-      wrapError(this, options);
-      return this.sync('read', this, options);
-    },
-
-COLLECTION
-    fetch: function(options) {
-      options = options ? _.clone(options) : {};
-      if (options.parse === void 0) options.parse = true;
-      var success = options.success;
-      var collection = this;
-      options.success = function(resp) {
-        var method = options.reset ? 'reset' : 'set';
-        collection[method](resp, options);
-        if (success) success(collection, resp, options);
-        collection.trigger('sync', collection, resp, options);
-      };
-      wrapError(this, options);
-      return this.sync('read', this, options);
-    },
-
-
-
-
-
-
-// we should call   collection.save(null, {});
-    save: function(attrs, options) {
-      options = options ? _.clone(options) : {};
-
-      // the object in options.attrs will be the "data" property in the options for the the AJAX call (that is, the payload of the request);
-      // we want to send only the objects that are new or that have changed since the last .set
-       var filteredModels = this.filter(function(model){ return model.isNew() || model.hasChanged(); });
-
-       options.attrs = options.attrs || {};
-       for(var i=0, l=filteredModels.length; i<l; i++){
-   			options.attrs.push(filteredModels[i].toJSON())
-       }
-
-      if (options.parse === void 0) options.parse = true;
-      var success = options.success;
-
-      var collection = this;
-
-      options.success = function(resp) {
-        collection.set(resp, options);
-        if (success) success(collection, resp, options);
-        collection.trigger('sync', collection, resp, options);
-      };
-
-      wrapError(this, options);
-
-      // we want to make a POST, so we use 'create'
-      return this.sync('create', this, options);
-    },
-
-*/
