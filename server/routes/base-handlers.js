@@ -53,7 +53,7 @@ var handlers = {
 
         var viewFile = utils.getView(request.params.page1, request.params.page2);
 
-        // if the page param is not recognized, the empty string will be returned
+        // if the page params are not recognized, the empty string will be returned
         if(!viewFile){
             return reply.redirect("/" + request.params.lang + "/404");
         }
@@ -63,7 +63,6 @@ var handlers = {
 
         var context = {
             texts: request.pre.texts,
-//            textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
             textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
             auth: request.auth,
         };

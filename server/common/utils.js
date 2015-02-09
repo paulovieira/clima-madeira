@@ -88,7 +88,7 @@ module.exports = {
             }
         }
 
-        // if the params didn't match anything, return the default value (empty string); the route handler will then redirect to the 404 page
+        // if the params didn't match anything, it will return the default value (empty string); the route handler will then redirect to the 404 page
         return viewFile;
     },
 
