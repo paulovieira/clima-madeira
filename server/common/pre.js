@@ -121,7 +121,7 @@ f		                }
 		method: function(request, reply){
 
             var transformMap = transforms.maps.text;
-            var transform    = transforms.baseTransform;
+            var transform    = transforms.transformArray;
 
 			var texts = transform(request.pre.textsC.toJSON(), transformMap);
 			reply(_.indexBy(texts, "id"));

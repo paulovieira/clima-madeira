@@ -208,7 +208,8 @@ debugger;
                     var resp      = baseC.toJSON();
 //return reply(resp);
                     //return reply(transforms.heatmapArray(resp, "tmean_ref"));
-                    return reply(transforms.heatmapData2(resp, "tmean_ref"));
+                    //return reply(transforms.heatmapData2(resp, "tmean_ref"));
+                    return reply(resp);
         		},
                 function(err){
 debugger;

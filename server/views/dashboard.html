@@ -2,7 +2,7 @@
 
 {% block title %}{{ title }}{% endblock %}
 
-{% block custom_css %}
+{% block css %}
     <link href="/dashboard/css/dashboard.css" rel="stylesheet" />
 {% endblock %}
 
@@ -36,6 +36,7 @@
     <script src="/common/js/backbone.radio.js"></script>
     <script src="/common/js/backbone.marionette.js"></script>
     <script src="/common/js/backbone.stickit.js"></script>
+    <script src="/common/js/backbone.syphon.js"></script>
 
     <script src="/common/js/q.js"></script>
     <script src="/common/js/nunjucks-slim.js"></script>
@@ -47,11 +48,13 @@
     <script type="text/javascript">
         var Clima = {};
         Clima.lang = "{{ lang }}";
-        Clima.texts = {{ ctx["textsJson"] }};
-
+        Clima.texts = {{ ctx.textsJson }};
+        Clima.userId = {{ ctx.auth.credentials.id }};
     </script>
 
 
+    <script src="/dashboard/texts/texts.js"></script>
+    <script src="/dashboard/profile/profile.js"></script>
     <script src="/dashboard/index.js"></script>
 
 

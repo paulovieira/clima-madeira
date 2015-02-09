@@ -14,6 +14,8 @@ module.exports = function registerHapiAuthCookie(server){
 
             if (err){ throw err; }
 
+            console.log("plugin registered: hapi-auth-cookie");
+
             // 12 * 60 * 60 * 1000 = 12 hours
             var cache = server.cache({ segment: 'sessions',  expiresIn: 12 * 60 * 60 * 1000 });
             server.app.cache = cache;

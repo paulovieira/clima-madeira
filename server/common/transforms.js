@@ -43,7 +43,7 @@ var transforms = {
 	},
 
 	// calls Hoek.transform  with the given transform map to all the objects in the array
-	baseTransform: function(array, transformMap, options){
+	transformArray: function(array, transformMap, options){
 	    if(!_.isArray(array)){ array = [array]; }		
 
 	    var i, li;

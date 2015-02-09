@@ -1,17 +1,15 @@
 <td>{{ id }}</td>x
 
 <td>
-{#    <input type="text" class="js-pt" value="{{ pt }}"> #}
     {{ pt }}
 </td>
 
 <td>
-{#    <input type="text" class="js-en" value="{{ en }}"> #}
 	{{ en }}
 </td>
-<td>{{ author }}</td>
+<td>{{ authorData.firstName }} {{ authorData.lastName }}</td>
 
-<td>{{ lastUpdated }}</td>
+<td>{{ tags | join(', ') }}</td>
 
 <td>
     <button class="btn btn-primary btn-xs js-edit"><span class="glyphicon glyphicon-pencil"></span>

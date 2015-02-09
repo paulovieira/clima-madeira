@@ -1,3 +1,4 @@
+var data;
 var showCoordinates = function() {
     console.log("show coordinates");
 };
@@ -141,12 +142,42 @@ getData()
         //		debugger;
 
 
+        data = {
+        	type: "FeatureCollection",
+        	features: heatData
+        };
 
-        var heatmapLayer = new HeatmapOverlay(heatmapConfig);
-        map.addLayer(heatmapLayer);
+        var breaks = _.range(5, 26, 1);
+		isobands = turf.isolines(data, 'tmean_ref', 160, breaks);
+
+		var temp = [];
+		for(var i=0, l = isobands.features.length; i<l; i++){
+			temp.push(isobands.features[i].properties.tmean_ref);
+		}
+
+		var min = _.min(temp),
+			max = _.max(temp);
+
+		var scale = chroma.scale(['blue', 'red']).domain([min, max]);
 
 
-        heatmapLayer.setData(heatData);
+		L.geoJson(isobands, {
+			style: function(feature){
+				//console.log(scale(feature.properties.tmean_ref).hex());
+				return { 
+					color: scale(feature.properties.tmean_ref).hex(),
+					weight: 2,
+				};
+			}
+		})
+		.addTo(map);
+
+        //var heatmapLayer = new HeatmapOverlay(heatmapConfig);
+        //map.addLayer(heatmapLayer);
+
+
+        //heatmapLayer.setData(heatData);
+
 
 
     })

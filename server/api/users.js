@@ -79,21 +79,10 @@ internals.validateIds = function(value, options, next) {
 internals.validatePayloadForCreate = function(value, options, next) {
 
     var schemaCreate = Joi.object().keys({
-        id: Joi.number().integer().min(0),
-
-        tags: Joi.array().unique().includes(Joi.string()).required(),
-
-        contents: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
-        }).required(),
-
-        contentsDesc: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
-        }),
-
-        active: Joi.boolean()
+        firstName: Joi.string().required(),
+        lastName: Joi.string().required(),
+        email: Joi.string().email().required(),
+        newPw: Joi.string().required()
     });
 
     return internals.validatePayload(value, options, next, schemaCreate);
@@ -104,20 +93,12 @@ internals.validatePayloadForUpdate = function(value, options, next) {
 
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0).required(),
-
-        tags: Joi.array().unique().includes(Joi.string()),
-
-        contents: Joi.object().keys({
-            pt: Joi.string().allow("").required(),
-            en: Joi.string().allow("").required()
-        }),
-
-        contentsDesc: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
-        }),
-
-        active: Joi.boolean()
+        firstName: Joi.string().required(),
+        lastName: Joi.string().required(),
+        email: Joi.string().email().required(),
+        currentPw: Joi.string(),
+        newPw: Joi.string(),
+        updateProfile: Joi.boolean()
     });
 
     return internals.validatePayload(value, options, next, schemaUpdate);
@@ -168,15 +149,20 @@ internals.validatePayload = function(value, options, next, schema) {
 exports.register = function(server, options, next) {
 
 
-
-
         // READ (all)
         server.route({
             method: 'GET',
             path: internals.resourcePath,
             handler: function (request, reply) {
                 utils.logHandlerInfo("/api" + internals.resourcePath, request);
-    debugger;
+debugger;
+
+                if(settings.environment !== "dev"){
+                    if(!request.auth.credentials.id){
+                        return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
+                    }
+                }
+
                 var usersC = new UsersC();
 
                 usersC.execute({
@@ -189,7 +175,7 @@ exports.register = function(server, options, next) {
 
                         var resp         = usersC.toJSON();
                         var transformMap = transforms.maps.user;
-                        var transform    = transforms.baseTransform;
+                        var transform    = transforms.transformArray;
 
                         return reply(transform(resp, transformMap));
                     },
@@ -204,17 +190,15 @@ exports.register = function(server, options, next) {
             },
 
             config: {
+                auth: utils.getAuthConfig("required"),
+
                 description: 'Get all the resources',
                 notes: 'Returns all the resources (full collection)',
                 tags: ['api'],
-                auth: {
-                    mode: "required"
-                },
-                auth: false
             }
         });
 
-    /*
+    
         // READ (one or more, but not all)
         server.route({
             method: 'GET',
@@ -222,6 +206,13 @@ exports.register = function(server, options, next) {
             handler: function (request, reply) {
                 utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
     debugger;
+
+                if(settings.environment !== "dev"){
+                    if(!request.auth.credentials.id){
+                        return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
+                    }
+                }
+
                 var usersC = new UsersC();
                 request.params.ids.forEach(function(id){
                     usersC.add({id: id});
@@ -238,10 +229,11 @@ exports.register = function(server, options, next) {
                 .done(
                     function(){
     debugger;
-                        var resp      = usersC.toJSON();
-                        var transform = transforms.text;
+                        var resp         = usersC.toJSON();
+                        var transformMap = transforms.maps.user;
+                        var transform    = transforms.transformArray;
 
-                        return reply(utils.transform(resp, transform));
+                        return reply(transform(resp, transformMap));
                     },
                     function(err){
     debugger;
@@ -255,17 +247,14 @@ exports.register = function(server, options, next) {
                 validate: {
                     params: internals.validateIds,
                 },
+                auth: utils.getAuthConfig("required"),
 
                 description: 'Get 2 (short description)',
                 notes: 'Get 2 (long description)',
                 tags: ['api'],
-                auth: {
-                    mode: "required"
-                },
-                auth: false
             }
         });
-
+/*
         // CREATE (one or more)
         server.route({
             method: 'POST',
@@ -316,18 +305,15 @@ exports.register = function(server, options, next) {
                     //payload: internals.validatePayload,
                     payload: internals.validatePayloadForCreate
                 },
+                auth: utils.getAuthConfig("required"),
 
-                auth: {
-                    mode: "required"
-                },
-                auth: false,
 
                 description: 'Post (short description)',
                 notes: 'Post (long description)',
                 tags: ['api'],
             }
         });
-
+*/
         // UPDATE (one or more)
         server.route({
             method: 'PUT',
@@ -336,22 +322,51 @@ exports.register = function(server, options, next) {
 
                 utils.logHandlerInfo("/api" + internals.resourcePath, request);
     debugger;
-    // decomment here!
-    //             request.auth.credentials = request.auth.credentials || {};
 
-    //             if(!request.auth.credentials.id){
-    //                 return reply(Boom.unauthorized("To create a new resource you must sign in."));
-    //             }
-
-
-                // we must decode html entities here because the payload might come from 
-                // kendoUI editor (which uses html entities); we also do the trimming;
-                //var usersC = new UsersC(internals.decodeHtmlEntities(request.payload));
+                if(settings.environment !== "dev"){
+                    if(!request.auth.credentials.id){
+                        return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
+                    }
+                }
+                else{
+                    request.auth.credentials.id = 9;
+                    request.auth.credentials.firstName = "paulo";
+                    request.auth.credentials.lastName = "vieira";
+                }
 
                 var usersC = new UsersC(request.payload);
+                var dbUsersC = request.pre.usersC;
 
                 usersC.forEach(function(model){
-                    model.set("author_id", 8 || request.auth.credentials.id);
+debugger;
+                    // this endpoint might be called from the update profile menu,
+                    // or from the users menu; if we are updating the profile, then
+                    // we force the id value to be the one in the credentials
+                    if(model.get("update_profile") === true){
+                        model.set("id", request.auth.credentials.id);
+
+                        var userM = dbUsersC.findWhere({ id: request.auth.credentials.id});
+
+                        if(model.get("current_pw")){
+                            // 1. verify that the current password match with the one
+                            // in the database
+                            var res = Bcrypt.compareSync(model.get("current_pw"), userM.get("pwHash"));
+
+                            // 2. if so set the new password in the correct key
+                            if(res){
+                                model.set("pw_hash", Bcrypt.hashSync(model.get("new_pw"), 10))
+                            }
+                            else{
+                                return reply(Boom.conflict("The current password does not match."))   
+                            }
+
+                        }
+                    }
+                    else{
+                        // TODO: make sure request.auth.credentials.id is relative
+                        // to a user in the admin group (the ones who can change the profile
+                        // of others users)
+                    }
                 });
 
                 var dbData = JSON.stringify(usersC.toJSON());
@@ -360,15 +375,17 @@ exports.register = function(server, options, next) {
                     query: {
                         command: "select * from users_update($1);",
                         arguments: [dbData]
-                    }
+                    },
+                    reset: true
                 })
                 .done(
                     function(){
     debugger;
                         var resp      = usersC.toJSON();
-                        var transform = transforms.text;
+                        var transformMap = transforms.maps.user;
+                        var transform    = transforms.transformArray;
 
-                        return reply(utils.transform(resp, transform));
+                        return reply(transform(resp, transformMap));
                     },
                     function(err){
     debugger;
@@ -385,18 +402,17 @@ exports.register = function(server, options, next) {
                     payload: internals.validatePayloadForUpdate
 
                 },
-
-                auth: {
-                    mode: "required"
-                },
-                auth: false,
+                auth: utils.getAuthConfig("required"),
+                pre: [
+                    pre.db.read_users
+                ],
 
                 description: 'Put (short description)',
                 notes: 'Put (long description)',
                 tags: ['api'],
             }
         });
-
+/*
         // DELETE (one or more)
         server.route({
             method: 'DELETE',
@@ -433,14 +449,11 @@ exports.register = function(server, options, next) {
                 validate: {
                     params: internals.validateIds,
                 },
+                auth: utils.getAuthConfig("required"),
 
                 description: 'Delete (short description)',
                 notes: 'Delete (long description)',
                 tags: ['api'],
-                auth: {
-                    mode: "required"
-                },
-                auth: false
             }
         });
     */

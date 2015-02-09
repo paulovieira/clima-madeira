@@ -191,7 +191,7 @@ var routes = [
         config: {
 
 
-            auth: utils.getAuthConfig(),
+            auth: utils.getAuthConfig("try"),
 
             // auth: {
             //     mode: "try"

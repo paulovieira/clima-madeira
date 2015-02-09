@@ -6,24 +6,35 @@
 <div class="modal-body">
     <form>
         <div class="form-group">
-            <label for="edit-text-pt">Português</label>
-            <textarea id="edit-text-pt" class="form-control" rows="3">{{ pt }}</textarea>
+            <label for="js-edit-text-pt">Português</label>
+            <textarea id="js-edit-text-pt" class="form-control" name="pt" rows="3">{{ pt }}</textarea>
         </div>
         <div class="form-group">
-            <label for="edit-text-pt">Inglês</label>
-            <textarea id="edit-text-pt" class="form-control" rows="3">{{ en }}</textarea>
+            <label for="js-edit-text-en">Inglês</label>
+            <textarea  id="js-edit-text-en" class="form-control" name="en" rows="3">{{ en }}</textarea>
         </div>
         <div class="form-group">
-            <label for="edit-text-tags">Tags</label>
-            <input type="text" class="form-control" id="edit-text-tags" value="{{ tagsStr }}">
+            <label for="js-edit-text-tags">Tags</label>
+            <input type="text" id="js-edit-text-tags" class="form-control" name="tags" value="{{ tags | join(', ') }}">
+        </div>
+        <div class="form-group">
+            <label>id</label>
+            <input type="text" class="form-control" value="{{ id }}" disabled>
+        </div>
+        <div class="form-group">
+            <label>Last updated</label>
+            <input type="text" class="form-control" value="{{ lastUpdated }}" disabled>
+        </div>
+        <div class="form-group">
+            <label>Author (of the last update)</label>
+            <input type="text" class="form-control" value="{{ authorData.firstName }} {{ authorData.lastName }}" disabled>
         </div>
     </form>
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-default js-modal-close">Fechar</button>
     <button type="button" class="btn btn-primary js-modal-save">Gravar</button>
-
+    <button type="button" class="btn btn-default js-modal-cancel">Cancelar</button>
 
     <div id="message-status" style="margin-top: 35px;"></div>
     <div id="" style="margin-top: 10px;">

@@ -42,6 +42,7 @@ server.route(require(global.rootPath + 'server/routes/base-routes.js'));
 var apiRoutesArray = _.values(require(global.rootPath + "server/api/load-all.js"));
 
 // register the API routes (which were defined as hapi plugin objects)
+/**/
 server.register(
     apiRoutesArray, 
     {
@@ -56,6 +57,7 @@ server.register(
     }
 );
 
+// make sure we always have a "credentials" object on request.auth
 server.ext("onPostAuth", function(request, reply){
     request.auth.credentials = request.auth.credentials || {};
     return reply.continue();

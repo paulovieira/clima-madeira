@@ -176,6 +176,13 @@ exports.register = function(server, options, next) {
         handler: function (request, reply) {
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
+
+            if(settings.environment !== "dev"){
+                if(!request.auth.credentials.id){
+                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
+                }
+            }
+
         	var textsC = new TextsC();
 
         	textsC.execute({
@@ -187,7 +194,7 @@ debugger;
         		function(){
                     var resp         = textsC.toJSON();
                     var transformMap = transforms.maps.text;
-                    var transform    = transforms.baseTransform;
+                    var transform    = transforms.transformArray;
 
                     return reply(transform(resp, transformMap));
         		},
@@ -202,13 +209,11 @@ debugger;
         },
 
         config: {
+            auth: utils.getAuthConfig("required"),
+
 			description: 'Get all the resources',
 			notes: 'Returns all the resources (full collection)',
 			tags: ['api'],
-            auth: {
-                mode: "required"
-            },
-            auth: false
         }
     });
 
@@ -219,6 +224,13 @@ debugger;
         handler: function (request, reply) {
             utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
 debugger;
+
+            if(settings.environment !== "dev"){
+                if(!request.auth.credentials.id){
+                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
+                }
+            }
+
             var textsC = new TextsC();
             request.params.ids.forEach(function(id){
                 textsC.add({id: id});
@@ -237,7 +249,7 @@ debugger;
 debugger;
                     var resp         = textsC.toJSON();
                     var transformMap = transforms.maps.text;
-                    var transform    = transforms.baseTransform;
+                    var transform    = transforms.transformArray;
 
                     return reply(transform(resp, transformMap));
                 },
@@ -253,14 +265,12 @@ debugger;
 			validate: {
 	            params: internals.validateIds,
 			},
+            auth: utils.getAuthConfig("required"),
 
 			description: 'Get 2 (short description)',
 			notes: 'Get 2 (long description)',
 			tags: ['api'],
-            auth: {
-                mode: "required"
-            },
-            auth: false
+
         }
     });
 
@@ -272,14 +282,21 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-            if(!request.auth.credentials.id){
-                return reply(Boom.unauthorized("To create a new resource you must sign in."));
+            if(settings.environment !== "dev"){
+                if(!request.auth.credentials.id){
+                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
+                }
+            }
+            else{
+                request.auth.credentials.id = 9;
+                request.auth.credentials.firstName = "paulo";
+                request.auth.credentials.lastName = "vieira";
             }
 
         	var textsC = new TextsC(request.payload);
 
             textsC.forEach(function(model){
-                model.set("author_id", request.auth.credentials.id || 1);
+                model.set("author_id", request.auth.credentials.id);
             });
 
             var dbData = JSON.stringify(textsC.toJSON());
@@ -288,14 +305,25 @@ debugger;
 				query: {
                     command: "select * from texts_create($1);",
                     arguments: [dbData]
-                }
+                },
+                reset: true
         	})
         	.done(
         		function(){
 debugger;
-                    var resp         = textsC.toJSON();
+                    var resp = textsC.toJSON();
+
+                    // add the author information (directly from the credentials)
+                    utils.extend(resp, {
+                        authorData: {
+                            id:        request.auth.credentials.id,
+                            firstName: request.auth.credentials.firstName,
+                            lastName:  request.auth.credentials.lastName  
+                        }
+                    });
+
                     var transformMap = transforms.maps.text;
-                    var transform    = transforms.baseTransform;
+                    var transform    = transforms.transformArray;
 
                     return reply(transform(resp, transformMap));
         		},
@@ -312,11 +340,7 @@ debugger;
         	validate: {
                 payload: internals.validatePayloadForCreate
         	},
-
-            auth: {
-                mode: "required"
-            },
-//            auth: false,
+            auth: utils.getAuthConfig("required"),
 
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
@@ -333,9 +357,15 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-
-            if(!request.auth.credentials.id){
-                return reply(Boom.unauthorized("To create a new resource you must sign in."));
+            if(settings.environment !== "dev"){
+                if(!request.auth.credentials.id){
+                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
+                }
+            }
+            else{
+                request.auth.credentials.id = 9;
+                request.auth.credentials.firstName = "paulo";
+                request.auth.credentials.lastName = "vieira";
             }
 
             var textsC = new TextsC(request.payload);
@@ -350,14 +380,25 @@ debugger;
 				query: {
 				  	command: "select * from texts_update($1);",
                     arguments: [dbData]
-				}
+				},
+                reset: true
         	})
         	.done(
         		function(){
 debugger;
-                    var resp         = textsC.toJSON();
+                    var resp = textsC.toJSON();
+
+                    // add the author information (directly from the credentials)
+                    utils.extend(resp, {
+                        authorData: {
+                            id:        request.auth.credentials.id,
+                            firstName: request.auth.credentials.firstName,
+                            lastName:  request.auth.credentials.lastName  
+                        }
+                    });
+
                     var transformMap = transforms.maps.text;
-                    var transform    = transforms.baseTransform;
+                    var transform    = transforms.transformArray;
 
                     return reply(transform(resp, transformMap));
         		},
@@ -378,10 +419,7 @@ debugger;
             pre: [
 //                pre.db.read_user_by_email
             ],
-            auth: {
-                mode: "required"
-            },
-//            auth: false,
+            auth: utils.getAuthConfig("required"),
 
 			description: 'Put (short description)',
 			notes: 'Put (long description)',
@@ -395,6 +433,13 @@ debugger;
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
 debugger;
+
+            if(settings.environment !== "dev"){
+                if(!request.auth.credentials.id){
+                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
+                }
+            }
+
             var textsC = new TextsC();
             request.params.ids.forEach(function(id){
                 textsC.add({id: id});
@@ -406,7 +451,8 @@ debugger;
                 query: {
                     command: "select * from texts_delete($1)",
                     arguments: [dbData]
-                }
+                },
+                reset: true
             })
             .done(
                 function(){
@@ -425,14 +471,12 @@ debugger;
 			validate: {
 	            params: internals.validateIds,
 			},
+            auth: utils.getAuthConfig("required"),
 
 			description: 'Delete (short description)',
 			notes: 'Delete (long description)',
 			tags: ['api'],
-            auth: {
-                mode: "required"
-            },
-            auth: false
+
         }
     });
 
