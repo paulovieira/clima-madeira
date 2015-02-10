@@ -9,7 +9,7 @@
 - run the initial scripts (update the database): database/000_bootstrap_db.sh
 - insert the initial data: cd database/populate && node index.js
 - install global package:
-    - nunjucks: sudo npm install nunjucks -g
+    - (???) nunjucks: sudo npm install nunjucks -g
     - forever: sudo npm install forever -g
 
 

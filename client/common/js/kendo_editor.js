@@ -11,11 +11,11 @@ var saveTool = {
         debugger;
 
             var editor = $(this).data("kendoEditor"),
-               textId = $(this).data("textId"),
-            textObj = _.findWhere(Clima.texts, {
-                id: textId
-            }),
-            newContents = {};
+                textId = $(this).data("textId"),
+                textObj = _.findWhere(Clima.texts, {
+                    id: textId
+                }),
+                newContents = {};
 
         if (!textObj) {
             alert("ERROR: Text not found.")
@@ -28,7 +28,8 @@ var saveTool = {
 
         var dataObj = {
             id: textId,
-            contents: _.extend(textObj.contents, newContents)
+            contents: _.extend(textObj.contents, newContents),
+            tags: textObj.tags
         };
 
         Clima.$currentEl = $(this);

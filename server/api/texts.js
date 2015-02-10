@@ -87,7 +87,7 @@ internals.validatePayloadForCreate = function(value, options, next){
     var schemaCreate = Joi.object().keys({
         id: Joi.number().integer().min(0),
 
-        tags: Joi.array().unique().includes(Joi.string()).required(),
+        tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
 
         contents: Joi.object().keys({
             pt: Joi.string().required(),
@@ -111,7 +111,7 @@ internals.validatePayloadForUpdate = function(value, options, next){
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0).required(),
 
-        tags: Joi.array().unique().includes(Joi.string()).required(),
+        tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
 
         contents: Joi.object().keys({
             pt: Joi.string().allow("").required(),

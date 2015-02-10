@@ -60,6 +60,11 @@ var TextEditModalIV = Mn.ItemView.extend({
 			data.tags[i] = $.trim(data.tags[i]);
 		}
 
+		// if tags is the empty string, we get an array with 1 element (the empty string); we want the empty array instead
+		if(data.tags.length===1 && !data.tags[0]){
+			data.tags = [];
+		}
+
 		this.model.set(data);
 		
 		Q(this.model.save()).then(

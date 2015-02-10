@@ -5,7 +5,7 @@ html {
 
 body {
 /*	padding-top: 0px; */
-	margin-bottom: 140px;
+	margin-bottom: 110px;
 }
 
 #map {
@@ -73,7 +73,7 @@ body {
 	bottom: 0;
 	width: 100%;
 	/* height of the footer - must be the same as margin-bottom of body  */
-	height: 140px;
+	height: 110px;
 	background-color: #ddd;
 
 
@@ -87,6 +87,18 @@ body {
 	background-color: green;	
 	*/
 }
+
+/*
+img.grayscale {
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1);
+}
+
+img.grayscale:hover {
+  filter: none;
+  -webkit-filter: none;
+}
+*/
 
 .button-top {
 	padding-left: 0px;

@@ -2,7 +2,7 @@
 module.exports = {
 
     // use "dev" to disable authentication/cookie
-    environment: "dev",
+    environment: "!dev",
 
     host: "localhost",
     port: parseInt(process.env.PORT, 10) || 3000,

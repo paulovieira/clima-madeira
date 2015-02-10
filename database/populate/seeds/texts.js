@@ -207,8 +207,8 @@ var data =
             id: 19,
             tags: [],
             contents: {
-                pt: "Mapa de Vulnerabilidades",
-                en: "Vulnerabilities map"
+                pt: "Cartografia",
+                en: "Cartography"
             },
             author_email: "paulovieira@gmail.com"
         },
@@ -248,8 +248,8 @@ var data =
             id: 23,
             tags: [],
             contents: {
-                pt: "Sectores",
-                en: "Sectors"
+                pt: "Informação sectorial",
+                en: "Sector information"
             },
             author_email: "paulovieira@gmail.com"
         },
@@ -376,15 +376,15 @@ var data =
             author_email: "paulovieira@gmail.com"
         },
 
-        {
-            id: 36,
-            tags: [],
-            contents: {
-                pt: "/biodiversidade",
-                en: "/biodiversidade"
-            },
-            author_email: "paulovieira@gmail.com"
-        },
+        // {
+        //     id: 36,
+        //     tags: [],
+        //     contents: {
+        //         pt: "/biodiversidade",
+        //         en: "/biodiversidade"
+        //     },
+        //     author_email: "paulovieira@gmail.com"
+        // },
 
 
         {
@@ -417,15 +417,15 @@ var data =
             author_email: "paulovieira@gmail.com"
         },
 
-        {
-            id: 40,
-            tags: [],
-            contents: {
-                pt: "/recursos_hidricos",
-                en: "/recursos_hidricos"
-            },
-            author_email: "paulovieira@gmail.com"
-        },
+        // {
+        //     id: 40,
+        //     tags: [],
+        //     contents: {
+        //         pt: "/recursos_hidricos",
+        //         en: "/recursos_hidricos"
+        //     },
+        //     author_email: "paulovieira@gmail.com"
+        // },
 
 
         {
@@ -458,15 +458,15 @@ var data =
             author_email: "paulovieira@gmail.com"
         },
 
-        {
-            id: 44,
-            tags: [],
-            contents: {
-                pt: "/saude",
-                en: "/saude"
-            },
-            author_email: "paulovieira@gmail.com"
-        },
+        // {
+        //     id: 44,
+        //     tags: [],
+        //     contents: {
+        //         pt: "/saude",
+        //         en: "/saude"
+        //     },
+        //     author_email: "paulovieira@gmail.com"
+        // },
 
 
         {
@@ -499,15 +499,15 @@ var data =
             author_email: "paulovieira@gmail.com"
         },
 
-        {
-            id: 48,
-            tags: [],
-            contents: {
-                pt: "/turismo",
-                en: "/turismo"
-            },
-            author_email: "paulovieira@gmail.com"
-        },
+        // {
+        //     id: 48,
+        //     tags: [],
+        //     contents: {
+        //         pt: "/turismo",
+        //         en: "/turismo"
+        //     },
+        //     author_email: "paulovieira@gmail.com"
+        // },
 
         {
             id: 49,
@@ -539,15 +539,15 @@ var data =
             author_email: "paulovieira@gmail.com"
         },
 
-        {
-            id: 52,
-            tags: [],
-            contents: {
-                pt: "/agricultura",
-                en: "/agricultura"
-            },
-            author_email: "paulovieira@gmail.com"
-        },
+        // {
+        //     id: 52,
+        //     tags: [],
+        //     contents: {
+        //         pt: "/agricultura",
+        //         en: "/agricultura"
+        //     },
+        //     author_email: "paulovieira@gmail.com"
+        // },
 
         {
             id: 53,
@@ -579,19 +579,16 @@ var data =
             author_email: "paulovieira@gmail.com"
         },
 
-        {
-            id: 56,
-            tags: [],
-            contents: {
-                pt: "/energia",
-                en: "/energia"
-            },
-            author_email: "paulovieira@gmail.com"
-        },
+        // {
+        //     id: 56,
+        //     tags: [],
+        //     contents: {
+        //         pt: "/energia",
+        //         en: "/energia"
+        //     },
+        //     author_email: "paulovieira@gmail.com"
+        // },
 
-
-
-        // 2000-2999 : URLs
 
         {
             id: 57,
@@ -661,8 +658,8 @@ var data =
             id: 63,
             tags: [],
             contents: {
-                pt: "/common/images/logos/logo-drota.jpg",
-                en: "/common/images/logos/logo-drota.jpg"
+                pt: "/common/images/logos/logo-drota_70px.jpg",
+                en: "/common/images/logos/logo-drota_70px.jpg"
             },
             author_email: "paulovieira@gmail.com"
         },
@@ -671,8 +668,8 @@ var data =
             id: 64,
             tags: [],
             contents: {
-                pt: "/common/images/logos/logo-cciam.jpg",
-                en: "/common/images/logos/logo-cciam.jpg"
+                pt: "/common/images/logos/logo-cciam_70px.jpg",
+                en: "/common/images/logos/logo-cciam_70px.jpg"
             },
             author_email: "paulovieira@gmail.com"
         },
@@ -681,8 +678,8 @@ var data =
             id: 65,
             tags: [],
             contents: {
-                pt: "/common/images/logos/logo-fcul.jpg",
-                en: "/common/images/logos/logo-fcul.jpg"
+                pt: "/common/images/logos/logo-fcul_70px.png",
+                en: "/common/images/logos/logo-fcul_70px.png"
             },
             author_email: "paulovieira@gmail.com"
         },
@@ -691,8 +688,8 @@ var data =
             id: 66,
             tags: [],
             contents: {
-                pt: "/common/images/logos/logo-ffcul.jpg",
-                en: "/common/images/logos/logo-ffcul.jpg"
+                pt: "/common/images/logos/logo-ffcul_70px.jpg",
+                en: "/common/images/logos/logo-ffcul_70px.jpg"
             },
             author_email: "paulovieira@gmail.com"
         },

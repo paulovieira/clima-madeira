@@ -1,0 +1,40 @@
+<script type="text/javascript">
+
+    window.Clima = {};
+    Clima.lang = "{{ lang }}";
+    Clima.texts = {{ ctx["textsJson"] | default("'template context does not have texts!'") }}
+
+
+	// simple polyfill for addEventListener (not available in IE8)
+	Clima.addEvent = function(evnt, elem, func) {
+	   if (elem.addEventListener)  // W3C DOM
+	      elem.addEventListener(evnt,func,false);
+	   else if (elem.attachEvent) { // IE DOM
+	      elem.attachEvent("on"+evnt, func);
+	   }
+	   else { // No much to do
+	      elem[evnt] = func;
+	   }
+	}
+
+	// buttons from the navbar
+	Clima.addEvent("click", document.getElementById("js-login-nav"), function(){
+		window.location.href = "/{{ lang }}/login";
+	});
+
+	Clima.addEvent("click", document.getElementById("js-lang-nav"), function(){
+		var currentPath = window.location.pathname.split("/");
+		var newPath = "/" + (currentPath[1] === "pt" ? "en" : "pt");
+
+		for(var i=2, l=currentPath.length; i<l; i++){
+			newPath = newPath + "/" + currentPath[i];
+
+		}
+		window.location.href = newPath;
+	});
+
+
+</script>
+    
+<script src="/common/js/jquery.js"></script>
+<script src="/common/js/bootstrap_3.3.2.js"></script>

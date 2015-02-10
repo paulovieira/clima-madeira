@@ -7,62 +7,62 @@
 	    <div class="container-fluid">
 	        <!-- Brand and toggle get grouped for better mobile display -->
 	        <div class="navbar-header">
-	            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-bar">
 	                <span class="sr-only">Toggle navigation</span>
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	            </button>
-	            <a class="navbar-brand" href="/{{ lang }}">CLIMA</a>
+	            <a class="navbar-brand" href="/{{ lang }}" style="padding-left: 30px; padding-right: 30px;">
+	            	<span class="glyphicon glyphicon-home"></span>&nbsp;
+	            	{{ ctx.texts[0][lang] }}
+	            </a>
 	        </div>
 
 	        <!-- Collect the nav links, forms, and other content for toggling -->
-	        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	        <div class="collapse navbar-collapse" id="top-bar">
 	            <ul class="nav navbar-nav">
-	                <li><a href="/{{ lang }}">Home</a>
+
+	                <li class="{% if page_name=='introducao' %}active{% endif %}" ><a href="/{{ lang }}/introducao">{{ ctx.texts[17][lang] }}</a>
 	                </li>
 
-	                <li class="{% if page_name=='introducao' %}active{% endif %}" ><a href="/{{ lang }}/introducao">Introdução</a>
-	                </li>
-
-	                <li class="{% if page_name=='mapa' %}active{% endif %}"><a href="/{{ lang }}/mapa">Mapa de vulnerabilidades</a>
-	                </li>
-
+					{# dropdown with the 6 sectors #}
 	                <li class="dropdown {% if page_name=='sectores' %}active{% endif %}">
-	                    <a href="/{{ lang }}/sectores" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Informação Sectorial <span class="caret"></span></a>
+	                    <a href="/{{ lang }}/sectores" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ ctx.texts[23][lang] }} <span class="caret"></span></a>
 	                    <ul class="dropdown-menu" role="menu">
+{#
 	                        <li class="{% if page_name=='sectores' and not sector_name %}active{% endif %}"><a href="/{{ lang }}/sectores">Introdução</a>
 	                        </li>
 
 							<li class="divider"></li>
-
-	                        <li class="{% if sector_name=='biodiversidade' %}active{% endif %}"><a href="/{{ lang }}/sectores/biodiversidade">Biodiversidade</a>
+#}
+	                        <li class="{% if sector_name=='biodiversidade' %}active{% endif %}"><a href="/{{ lang }}/sectores/biodiversidade">{{ ctx.texts[33][lang] }}</a>
 	                        </li>
 
-	                        <li class="{% if sector_name=='recursos-hidricos' %}active{% endif %}"><a href="/{{ lang }}/sectores/recursos-hidricos">Recursos Hídricos</a>
+	                        <li class="{% if sector_name=='recursos-hidricos' %}active{% endif %}"><a href="/{{ lang }}/sectores/recursos-hidricos">{{ ctx.texts[37][lang] }}</a>
 	                        </li>
 
-	                        <li class="{% if sector_name=='saude' %}active{% endif %}"><a href="/{{ lang }}/sectores/saude">Saúde</a>
+	                        <li class="{% if sector_name=='saude' %}active{% endif %}"><a href="/{{ lang }}/sectores/saude">{{ ctx.texts[41][lang] }}</a>
 	                        </li>
 
-	                        <li class="{% if sector_name=='turismo' %}active{% endif %}"><a href="/{{ lang }}/sectores/turismo">Turismo</a>
+	                        <li class="{% if sector_name=='turismo' %}active{% endif %}"><a href="/{{ lang }}/sectores/turismo">{{ ctx.texts[45][lang] }}</a>
 	                        </li>
 
-	                        <li class="{% if sector_name=='agricultura-florestas' %}active{% endif %}"><a href="/{{ lang }}/sectores/agricultura-florestas">Agricultura e Florestas</a>
+	                        <li class="{% if sector_name=='agricultura-florestas' %}active{% endif %}"><a href="/{{ lang }}/sectores/agricultura-florestas">{{ ctx.texts[49][lang] }}</a>
 	                        </li>
 
-	                        <li class="{% if sector_name=='energia' %}active{% endif %}"><a href="/{{ lang }}/sectores/energia">Energia</a>
+	                        <li class="{% if sector_name=='energia' %}active{% endif %}"><a href="/{{ lang }}/sectores/energia">{{ ctx.texts[53][lang] }}</a>
 	                        </li>
 	                    </ul>
 	                </li>
 
-	                <li class="{% if page_name=='adaptacao' %}active{% endif %}"><a href="/{{ lang }}/adaptacao">Estratégia de Adaptação</a>
+	                <li class="{% if page_name=='mapa' %}active{% endif %}"><a href="/{{ lang }}/mapa">{{ ctx.texts[19][lang] }}</a>
 	                </li>
 
-	                <li class="{% if page_name=='ferramenta' %}active{% endif %}"><a href="/{{ lang }}/ferramenta">Ferramenta de Apoio à Decisão</a>
+	                <li class="{% if page_name=='adaptacao' %}active{% endif %}"><a href="/{{ lang }}/adaptacao">{{ ctx.texts[20][lang] }}</a>
 	                </li>
 
-	                <li class="{% if page_name=='equipa' %}active{% endif %}"><a href="/{{ lang }}/equipa">Equipa</a>
+	                <li class="{% if page_name=='equipa' %}active{% endif %}"><a href="/{{ lang }}/equipa">{{ ctx.texts[21][lang] }}</a>
 	                </li>
 	            </ul>
 
@@ -74,6 +74,25 @@
 						</div>
 
 	            </form>
+
+	            <ul class="nav navbar-nav navbar-right">
+
+		            <li style="margin-right: 15px;">
+		            	<button type="button" class="btn btn-default navbar-btn" id="js-login-nav">
+		            		{{ ctx.texts[2][lang] }}&nbsp;&nbsp;
+		            		<span class="glyphicon glyphicon-log-in"></span> 
+		            	</button>
+		            </li>
+
+		            <li>
+		            	{% if lang == "pt" %}
+		            		<button type="button" class="btn btn-primary navbar-btn" id="js-lang-nav">&nbsp;&nbsp;English&nbsp;&nbsp;</button>
+		            	{% else %}
+		            		<button type="button" class="btn btn-primary navbar-btn" id="js-lang-nav">&nbsp;&nbsp;Português&nbsp;&nbsp;</button>
+		            	{% endif %}
+
+		            </li>
+	            </ul>
 
            
 	        </div>

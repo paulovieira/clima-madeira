@@ -13,49 +13,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>
-        {# default title, can be overriden in each page #}
+        {# default title - to be overriden in each page #}
         {% block title %}{{ ctx.texts[15][lang] }}{% endblock %}
     </title>
 
-    {# common css (to be included in all pages) #}
-    {% include "common/stylesheets.html" %}
+    {# common css (included in all pages) #}
+    {% include "common/common_stylesheets.html" %}
 
-    {# common css (after authentication and authorization) #}
+    {# common css (included in all pages, but only after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
     {% include "common/kendo_stylesheets.html" %}
     {% endif %}
 
-    {# custom css (specific for each page) #}
+    {# custom css (specific for each page - to be overriden in that page) #}
     {% block css %}{% endblock %}
 
 </head>
 
 <body>
 
-
-
+    {# top navbar #}
     {% block navigation %}{% endblock %}
 
 
-
+    {# main container #}
 	<div class="container-fluid">
         {% block content %}{% endblock %}
 	</div>
 
+    {# sticky footer #}
     <footer class="footer">
         {% include "common/footer.html" %}
     </footer>
 
 
-    {# common javascript #}
-    {% include "common/scripts.js" %}
+    {# common javascript (included in all pages) #}
+    {% include "common/common_scripts.html" %}
 
-    {# custom scripts (specific for each page) #}    
+    {# custom scripts (specific for each page - to be overriden in that page) #}    
     {% block scripts %}{% endblock %}
 
-    {# common javascript (after authentication and authorization) #}
+    {# editor javascript (included in all pages, but only after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    {% include "common/editor.js" %}
+    {% include "common/editor_scripts.js" %}
     {% endif %}
 
 </body>

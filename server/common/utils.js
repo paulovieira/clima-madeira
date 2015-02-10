@@ -20,79 +20,37 @@ module.exports = {
         return authConfig;
     },
 
-    // return the html filename (in server/views) associated with the parameters
+    // return the html filename (in server/views) associated with the "page1/page2" parameters (the typical url will be "/{lang}/{page1}/{page2}" )
     getView: function(page1, page2) {
 
-        var viewFile = "";
+        var htmlFile = 
 
-        // match "/pt"
-        if (!page1 && !page2) {
-            viewFile = "home";
-        }
+			// matches: "/{lang}"
+			!page1 && !page2 ? "home" :
 
-        // match "/pt/introducao", "/pt/sobre", etc
-        else if (page1 && !page2) {
+	        // matches: "/{lang}/introducao", "/{lang}/sobre", etc
+			page1 === "introducao" && !page2 ? "introducao" :
+			page1 === "mapa"       && !page2 ? "mapa"       :
+			page1 === "equipa"     && !page2 ? "equipa"     :
+			page1 === "adaptacao"  && !page2 ? "adaptacao"  :
+			page1 === "ferramenta" && !page2 ? "ferramenta" :
+			page1 === "sectores"   && !page2 ? "sectores"   :
+			page1 === "test"       && !page2 ? "test"       :
+			page1 === "menu"       && !page2 ? "menu"       :
 
-            if (page1 === "introducao") {
-                viewFile = "introducao";
-            }
-            else if (page1 === "mapa") {
-                viewFile = "mapa";
-            }
-            else if (page1 === "equipa") {
-                viewFile = "equipa";
-            }
-            else if (page1 === "adaptacao") {
-                viewFile = "adaptacao";
-            }
-            else if (page1 === "ferramenta") {
-                viewFile = "ferramenta";
-            }
-            else if (page1 === "sectores") {
-                viewFile = "sectores";
-            }
-            else if (page1 === "test") {
-                viewFile = "test";
-            }
-            else if (page1 === "menu") {
-                viewFile = "menu";
-            }
+			// matches: "/{lang}/sectores/biodiversidade", "/{lang}/sectores/energia", etc
+			page1 === "sectores"   && page2 === "biodiversidade"        ? "sectores/biodiversidade"        :
+			page1 === "sectores"   && page2 === "recursos-hidricos"     ? "sectores/recursos-hidricos"     :
+			page1 === "sectores"   && page2 === "saude"                 ? "sectores/saude"                 :
+			page1 === "sectores"   && page2 === "turismo"               ? "sectores/turismo"               :
+			page1 === "sectores"   && page2 === "agricultura-florestas" ? "sectores/agricultura-florestas" :
+			page1 === "sectores"   && page2 === "energia"               ? "sectores/energia"               : 
+			"";
 
-        }
-
-        // match "/pt/sectores/biodiversidade", "/pt/sectores/energia", etc
-        else if (page1 === "sectores" && page2) {
-
-            if (page2 === "biodiversidade") {
-                viewFile = "sectores/biodiversidade";
-            }
-
-            else if (page2 === "recursos-hidricos") {
-                viewFile = "sectores/recursos-hidricos";
-            }
-
-            else if (page2 === "saude") {
-                viewFile = "sectores/saude";
-            }
-
-            else if (page2 === "turismo") {
-                viewFile = "sectores/turismo";
-            }
-
-            else if (page2 === "agricultura-florestas") {
-                viewFile = "sectores/agricultura-florestas";
-            }
-
-            else if (page2 === "energia") {
-                viewFile = "sectores/energia";
-            }
-        }
-
-        // if the params didn't match anything, it will return the default value (empty string); the route handler will then redirect to the 404 page
-        return viewFile;
+        return htmlFile;
     },
 
-
+    // call Hoek.transform in all objects of an array (of objects)
     transform: function(array, transform, options) {
         if (!_.isArray(array)) {
             array = [array];
