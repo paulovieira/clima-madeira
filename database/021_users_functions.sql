@@ -366,7 +366,7 @@ Update 30 rows: 40ms
 */
 
 
-gDROP FUNCTION if exists users_delete(json);
+DROP FUNCTION if exists users_delete(json);
 
 CREATE OR REPLACE FUNCTION users_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS
