@@ -55,7 +55,7 @@
 
     {# editor javascript (included in all pages, but only after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    {% include "common/editor_scripts.js" %}
+    {% include "common/editor_scripts.html" %}
     {% endif %}
 
 </body>
