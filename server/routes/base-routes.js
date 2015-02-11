@@ -39,8 +39,10 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts],
-                pre.transform_texts
+                [
+                    pre.db.read_texts  // assign to textsC
+                ],
+                pre.transform_texts   // assign to texts
             ]
         }
 

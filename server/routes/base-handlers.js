@@ -319,10 +319,11 @@ debugger;
         var transformMap = transforms.maps.text;
         var transform    = transforms.transformArray;
 
+
         var context = {
+            texts: request.pre.texts,
             textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
             auth: request.auth,
-            x: JSON.stringify(request.auth)
         };
 
         return reply.view('dashboard', {
