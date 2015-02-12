@@ -33,10 +33,10 @@ module.exports = {
 			page1 === "mapa"       && !page2 ? "mapa"       :
 			page1 === "equipa"     && !page2 ? "equipa"     :
 			page1 === "adaptacao"  && !page2 ? "adaptacao"  :
-			page1 === "ferramenta" && !page2 ? "ferramenta" :
+			page1 === "cartografia" && !page2 ? "cartografia" :
 			page1 === "sectores"   && !page2 ? "sectores"   :
-			page1 === "test"       && !page2 ? "test"       :
-			page1 === "menu"       && !page2 ? "menu"       :
+			//page1 === "test"       && !page2 ? "test"       :
+			//page1 === "menu"       && !page2 ? "menu"       :
 
 			// matches: "/{lang}/sectores/biodiversidade", "/{lang}/sectores/energia", etc
 			page1 === "sectores"   && page2 === "biodiversidade"        ? "sectores/biodiversidade"        :

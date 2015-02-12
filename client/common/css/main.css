@@ -66,9 +66,23 @@ body {
 }
 
 
+.debug-red {
+  border-style: solid;
+  border-width: 1px;
+  border-color: red;
+}
+
+.debug-blue {
+  border-style: solid;
+  border-width: 1px;
+  border-color: blue;
+}
+
+
 /* sticky footer - taken from http://getbootstrap.com/examples/sticky-footer/*/
 
 .footer {
+
 	position: absolute;
 	bottom: 0;
 	width: 100%;
@@ -177,7 +191,9 @@ img.grayscale:hover {
 	cursor: pointer;
 }
 
-
+.modal {
+  z-index: 2040;
+}
 
 /* override bootstrap */
 /*

@@ -1,3 +1,21 @@
+//var sidebarChannel = Backbone.Radio.channel('sidebar');
+
+var Ferramenta = new Mn.Application();
+Ferramenta.$modal = $("#modal");
+Ferramenta.$modalSm = $("#modal-sm");
+
+Ferramenta.addRegions({
+//    mainRegion: "#main-region",
+    modalRegion: "#modal-content-region",
+    modalSmRegion: "#modal-sm-content-region"
+});
+
+
+
+var mapHeight = $(window).height() - $(".navbar").height() - $(".footer").height();
+var mapHeight = $(window).height() - $(".navbar").height() - 23;
+$("#map").height(mapHeight);
+
 var data;
 var showCoordinates = function() {
     console.log("show coordinates");
@@ -5,6 +23,7 @@ var showCoordinates = function() {
 
 // create a map in the "map" div, set the view to a given place and zoom
 var map = L.map('map', {
+/*
     contextmenu: true,
     contextmenuWidth: 280,
     contextmenuItems: [{
@@ -12,9 +31,11 @@ var map = L.map('map', {
     }, {
         separator: true,
     }, ]
+*/
 });
 
-map.setView([32.74, -16.95], 11);
+
+map.setView([32.7517543, -16.9605921], 11);
 
 var mapboxAccessToken = "pk.eyJ1IjoicGF1bG9zYW50b3N2aWVpcmEiLCJhIjoidWlIaGRJayJ9.xDEbXL8LPTO0gJW-NBN8eg";
 var tileLayers = {
@@ -74,17 +95,6 @@ L.easyButton('fa-bars',
     'Show the options menu'
 );
 
-var sidebar = L.control.sidebar('sidebar', {
-    position: 'left',
-    autoPan: true,
-    closeButton: false
-});
-
-setTimeout(function() {
-    sidebar.show();
-}, 200);
-
-map.addControl(sidebar);
 
 
 function getData() {
@@ -135,7 +145,7 @@ var heatmapConfig = {
 
 };
 
-
+/*
 getData()
     .then(function(heatData) {
         //		console.log("heatData: ", heatData);
@@ -184,3 +194,135 @@ getData()
     .catch(function(err) {
         console.log(err);
     });
+*/
+
+
+var rasterBaseUrl = "/ferramenta/images/png/";
+var rasterCollection = new Backbone.Collection([
+{
+    description : "Temperatura média (referência: 1970-1999)",
+    layers: [
+        {
+            imageUrl: rasterBaseUrl + '0_Tref_Anual_color.png',
+            overlay: undefined
+        },
+        {
+            imageUrl: rasterBaseUrl + '1_Tref_Inverno2_color.png',
+            overlay: undefined
+        },
+        {
+            imageUrl: rasterBaseUrl + '2_Tref_Primavera2_color.png',
+            overlay: undefined
+        },
+        {
+            imageUrl: rasterBaseUrl + '3_Tref_verao2_color.png',
+            overlay: undefined
+        },
+        {
+            imageUrl: rasterBaseUrl + '4_Tref_Outono2_color.png',
+            overlay: undefined
+        }
+    ],
+    imageBounds : [[32.8706293, -17.2659376 ], [32.6328793, -16.6552465]],
+//    options     : { opacity: 0.4 },
+    opacity     : 0.9,
+    checkboxId  : "#js-temp-ref-layer",
+    optionsId   : "#js-temp-ref-options"
+}
+
+]);
+
+var models = rasterCollection.models;
+for(var i=0, l=models.length; i<l; i++){
+/*
+    _.each(models[i].get("layers"), function(obj){
+        obj.overlay = L.imageOverlay(
+                            obj.imageUrl, 
+                            models[i].get("imageBounds"), 
+                            { opacity: models[i].get("opacity") }
+                        );
+    });
+    
+
+    $(models[i].get("checkboxId")).on("click", function(e){
+        var isChecked = $(e.target).is(":checked");
+
+        if(isChecked){
+            map.addLayer( ((models[i].get("layers"))[0]).overlay );
+
+            var periodsSeasonsLV = new PeriodsSeasonsLV({
+                model: models[i]
+            });
+            Ferramenta.periodControlRegion.show(periodsSeasonsLV);
+        }
+        else{
+            Ferramenta.periodControlRegion.empty();
+
+            // we don't know which overlay is being shows; make sure all of them are removed
+            _.each(models[i].get("layers"), function(obj){
+                map.removeLayer(obj.overlay);
+            });
+        }
+    });
+
+
+    $(model.get("optionsId")).on("click", function(e){
+        console.log("options");
+
+        var layerOptionsModalLV = new LayerOptionsModalLV({
+            model: model
+        });
+
+        Ferramenta.modalRegion.show(layerOptionsModalLV);
+        Ferramenta.$modal.modal("show");
+    });
+*/
+
+
+};
+
+
+
+
+
+_.each(models[0].get("layers"), function(obj){
+    obj.overlay = L.imageOverlay(
+                        obj.imageUrl, 
+                        models[0].get("imageBounds"), 
+                        { opacity: models[0].get("opacity") }
+                    );
+});
+
+
+$(models[0].get("checkboxId")).on("click", function(e){
+    var isChecked = $(e.target).is(":checked");
+
+    if(isChecked){
+        map.addLayer( ((models[0].get("layers"))[0]).overlay );
+
+        var periodsSeasonsLV = new PeriodsSeasonsLV({
+            model: models[0]
+        });
+        Ferramenta.periodControlRegion.show(periodsSeasonsLV);
+    }
+    else{
+        Ferramenta.periodControlRegion.empty();
+
+        // we don't know which overlay is being shows; make sure all of them are removed
+        _.each(models[0].get("layers"), function(obj){
+            map.removeLayer(obj.overlay);
+        });
+    }
+});
+
+
+
+$(models[0].get("optionsId")).on("click", function(e){
+
+    var layerOptionsModalLV = new LayerOptionsModalLV({
+        model: models[0]
+    });
+
+    Ferramenta.modalRegion.show(layerOptionsModalLV);
+    Ferramenta.$modal.modal("show");
+});

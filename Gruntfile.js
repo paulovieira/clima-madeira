@@ -14,6 +14,12 @@ module.exports = function(grunt) {
                 options: {}
             },
 
+            ferramenta: {
+                baseDir: 'client/ferramenta',
+                src: ['client/ferramenta/**/*.html'],
+                dest: 'client/ferramenta/templates.js',
+                options: {}
+            },
         },
 
 
@@ -64,6 +70,10 @@ module.exports = function(grunt) {
                 files: 'client/dashboard/**/*.html',
                 tasks: ['nunjucks:dashboard']
             },
+            "ferramenta templates": {
+                files: 'client/ferramenta/**/*.html',
+                tasks: ['nunjucks:ferramenta']
+            },
             "compile-js-dev test": {
                 files: 'client/test/js/**/*.js',
                 tasks: ['browserify:test-dev']
@@ -79,7 +89,7 @@ module.exports = function(grunt) {
 
     // NOTE: "grunt compile-js:test" and "grunt browserify:test" are equivalent (will execute the same task:target)
     grunt.registerTask('default', ['watch']);
-    grunt.registerTask('compile-templates', ['nunjucks:dashboard']);
+    grunt.registerTask('compile-templates', ['nunjucks:dashboard', 'nunjucks:ferramenta']);
 
     grunt.registerTask('compile-js-dev', ['browserify:test-dev']);
     grunt.registerTask('compile-js-prod', ['browserify:test-prod']);
