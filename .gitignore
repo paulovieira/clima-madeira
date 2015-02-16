@@ -27,6 +27,7 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
-# configuration files (contain passwords)
-config/email.js
-config/database.js
+# configuration files (contain sensitive data - passwords, api keys, etc)
+config/debug.js
+config/no-auth.js
+config/prod.js

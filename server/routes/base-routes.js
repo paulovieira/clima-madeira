@@ -1,8 +1,8 @@
-var utils = require(global.rootPath +  'server/common/utils.js');
+var config = require('config');
+//var utils = require(global.rootPath +  'server/common/utils.js');
 var pre = require(global.rootPath +  'server/common/pre.js');
 var validate = require(global.rootPath + 'server/common/validate.js');
 var baseHandlers = require(global.rootPath + 'server/routes/base-handlers.js');
-//var settings = require(global.rootPath + 'config/server.js');
 
 var routes = [
 
@@ -15,11 +15,6 @@ var routes = [
         
         config: {
             auth: false,
-            /*            
-            auth: {
-                mode: "try"
-            },
-*/
         }
     },
 
@@ -192,14 +187,9 @@ var routes = [
 
         config: {
 
+            //auth: utils.getAuthConfig("try"),
 
-            auth: utils.getAuthConfig("try"),
-
-            // auth: {
-            //     mode: "try"
-            // },
-            //
-            //auth: false,
+            auth: config.get('hapi.auth'),
 
             validate: {
                 params: validate.params.lang

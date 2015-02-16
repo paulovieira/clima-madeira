@@ -4,7 +4,7 @@
 // https://github.com/hapijs/tv
 
 /*
-var settings = require("../config/settings.js");
+var config = require("config");
 
 module.exports = function registerTv(server){
 
@@ -12,9 +12,9 @@ module.exports = function registerTv(server){
         {
             register: require('tv'),
             options: {
-                host: settings.host,
-                port: settings.port + 1,
-                endpoint: settings.debugEndpoint
+                host: config.get("host"),
+                port: config.get("port") + 1,
+                endpoint: config.get("debugEndpoint")
             }
         }, 
         function (err) {

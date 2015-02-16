@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var Nunjucks = require('hapi-nunjucks');
-var settings = require(global.rootPath + 'config/server.js');
+var config = require("config");
 
 var validate = {
 	params: {
@@ -10,7 +10,7 @@ var validate = {
 
 			// if lang param is allowed, set the global variable in Nunjucks
 			// and return it as it came (do nothing)
-			if(_.contains(settings.allowedLanguages, value.lang)){
+			if(_.contains(config.get("allowedLanguages"), value.lang)){
 				Nunjucks.addGlobal("lang", value.lang);
 			}
 			else {

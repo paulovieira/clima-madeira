@@ -8,7 +8,7 @@ var changeCaseKeys = require('change-case-keys');
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 var utils = require(global.rootPath + 'server/common/utils.js');
 var transforms = require(global.rootPath + 'server/common/transforms.js');
-var settings = require(global.rootPath + "config/server.js");
+var config = require("config");
 var pre = require(global.rootPath + 'server/common/pre.js');
 
 
@@ -61,7 +61,7 @@ debugger;
         ids: Joi.array().unique().includes(idSchema)
     });
 
-    var validation = Joi.validate(value, schema, settings.joiOptions);
+    var validation = Joi.validate(value, schema, config.get("hapi.joi"));
 
     if(validation.error){  return next(validation.error);  }
 

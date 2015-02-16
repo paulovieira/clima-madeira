@@ -1,6 +1,5 @@
 var _ = require('underscore');
 var Hoek = require('hoek');
-var settings = require(global.rootPath + 'config/server.js');
 
 module.exports = {
 
@@ -9,15 +8,6 @@ module.exports = {
         for (var i = 0, l = arrayOfObjs.length; i < l; i++) {
             _.extend(arrayOfObjs[i], sourceObj);
         }
-    },
-
-    // set auth false in development mode (so that we don't have to login after every server restart)
-    getAuthConfig: function(mode) {
-        var authConfig = (settings.environment === "dev") ? false : {
-            mode: mode
-        };
-
-        return authConfig;
     },
 
     // return the html filename (in server/views) associated with the "page1/page2" parameters (the typical url will be "/{lang}/{page1}/{page2}" )
@@ -154,28 +144,6 @@ module.exports = {
     	},
 
 
-
-    	validate: {
-    		params: {
-    			
-    			lang: function(value, options, next){
-    				value.lang = encodeURIComponent(value.lang || "").toLowerCase();
-
-    				// if lang param is allowed, set the global variable in Nunjucks
-    				// and return it as it came (do nothing)
-    				if(_.contains(settings.allowedLanguages, value.lang)){
-    					Nunjucks.addGlobal("lang", value.lang);
-    				}
-    				else {
-    					// otherwise change the param to undefined; this will make
-    					// the pre-requisite method redirect to the general 404 page 
-    					value.lang = undefined;
-    				}
-
-    				return next(undefined, value);	
-    			},		
-    		},
-    	},
     */
 
 };

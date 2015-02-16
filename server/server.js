@@ -2,21 +2,21 @@ var Hapi = require('hapi'),
     Nunjucks = require('hapi-nunjucks'),
     _ = require('underscore'),
 
-    settings = require(global.rootPath + 'config/server.js'),
+    config = require("config"),
     utils = require(global.rootPath + "server/common/utils.js");
 
 
 // 1. create a server with the options defined in the main server's settings file
-var server = new Hapi.Server(settings.serverOptions);
+var server = new Hapi.Server(config.get("hapi.server"));
 
 server.connection({
-    host: settings.host,
-    port: settings.port
+    host: config.get("host"),
+    port: config.get("port")
 });
 
 
 // 2. configure views and template engine
-server.views(settings.viewsOptions);
+server.views(config.get("hapi.views"));
 
 Nunjucks.configure(global.rootPath + 'server/views', {
     watch: true

@@ -6,7 +6,7 @@ var Bcrypt = require("bcrypt");
 var Q = require("q");
 var Moment = require("moment");
 
-var settings = require(global.rootPath + 'config/server.js');
+var config = require("config");
 var utils = require(global.rootPath + 'server/common/utils.js');
 var transforms = require(global.rootPath + 'server/common/transforms.js');
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
@@ -28,7 +28,7 @@ var handlers = {
         utils.logHandlerInfo("index", request);
         debugger;
 
-        return reply.redirect("/" + settings.allowedLanguages[0]);
+        return reply.redirect("/" + config.get("allowedLanguages")[0]);
     },
 
     // home: function(request, reply) {
@@ -302,19 +302,19 @@ debugger;
         utils.logHandlerInfo("dashboard", request);
         debugger;
 
-        console.log("IMPORTANT: REMOVE DEBUG MODE IN THE DASHBOARD HANDLER");
-
-        if (settings.environment!=="dev") {
+        // when NODE_ENV is "no-auth", the route's auth configuration is set to false
+        if(process.env.NODE_ENV==="no-auth"){
+            request.auth.credentials.id = 9;
+            request.auth.credentials.firstName = "paulo";
+            request.auth.credentials.lastName = "vieira";            
+        }
+        else{
             if (!request.auth.isAuthenticated) {
                 console.log("    not authenticated, will now redirect to /lang/login");
                 return reply.redirect("/" + request.params.lang + "/login");
-            }
+            }            
         }
-        else{
-            request.auth.credentials.id = 9;
-            request.auth.credentials.firstName = "paulo";
-            request.auth.credentials.lastName = "vieira";
-        }
+
 
         var transformMap = transforms.maps.text;
         var transform    = transforms.transformArray;

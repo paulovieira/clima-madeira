@@ -1,9 +1,8 @@
 var Boom = require('boom');
 var _ = require('underscore');
-//var changeCaseKeys = require('change-case-keys');
+var config = require('config');
 
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
-var settings = require(global.rootPath + "config/server.js");
 //var utils = require(global.rootPath +  "server/common/utils.js");
 var transforms = require(global.rootPath +  "server/common/transforms.js");
 
@@ -135,7 +134,7 @@ debugger;
         // if the lang param is not valid, it has been set to undefined
         if(request.params.lang === undefined){
 	        console.log("			redirectOnInvalidLang: lang is invalid, will redirect to 404");
-        	return reply.redirect("/" + settings.allowedLanguages[0] + "/404").takeover();
+        	return reply.redirect("/" + config.get("allowedLanguages")[0] + "/404").takeover();
         }
 
         return reply.continue();

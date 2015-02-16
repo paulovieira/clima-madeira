@@ -6,18 +6,16 @@ var changeCaseKeys = require('change-case-keys');
 var UUID = require('node-uuid');
 var Q = require('q');
 var Bcrypt = require("bcrypt");
-
-var emailSettings = require(global.rootPath + "config/email.js");
-var settings = require(global.rootPath + "config/server.js");
+var config = require('config');
 
 var UsersC = require(global.rootPath + "server/models/base-model.js").collection;
 var utils = require(global.rootPath + 'server/common/utils.js');
 var transforms = require(global.rootPath + 'server/common/transforms.js');
 var pre = require(global.rootPath + 'server/common/pre.js');
 
-var mandrill = require("node-mandrill")(emailSettings.mandrill.apiKey);
+var mandrill = require("node-mandrill")(config.get('email.mandrill.apiKey'));
 
-
+console.log("mandrill: ", config.get('email.mandrill'));
 
 
 var internals = {};
@@ -66,7 +64,7 @@ internals.validateIds = function(value, options, next) {
         ids: Joi.array().unique().includes(idSchema)
     });
 
-    var validation = Joi.validate(value, schema, settings.joiOptions);
+    var validation = Joi.validate(value, schema, config.get('hapi.joi'));
 
     if (validation.error) {
         return next(validation.error);
@@ -115,7 +113,7 @@ internals.validatePayload = function(value, options, next, schema) {
     }
 
     // validate the elements of the array using the given schema
-    var validation = Joi.validate(value, Joi.array().includes(schema), settings.joiOptions);
+    var validation = Joi.validate(value, Joi.array().includes(schema), config.get('hapi.joi'));
 
     if (validation.error) {
         return next(validation.error);
@@ -157,7 +155,7 @@ exports.register = function(server, options, next) {
                 utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-                if(settings.environment !== "dev"){
+                if(process.env.NODE_ENV !== "no-auth"){
                     if(!request.auth.credentials.id){
                         return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
                     }
@@ -190,7 +188,8 @@ debugger;
             },
 
             config: {
-                auth: utils.getAuthConfig("required"),
+                //auth: utils.getAuthConfig("required"),
+                auth: config.get('hapi.auth'),
 
                 description: 'Get all the resources',
                 notes: 'Returns all the resources (full collection)',
@@ -207,7 +206,7 @@ debugger;
                 utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
     debugger;
 
-                if(settings.environment !== "dev"){
+                if(process.env.NODE_ENV !== "no-auth"){
                     if(!request.auth.credentials.id){
                         return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
                     }
@@ -247,7 +246,8 @@ debugger;
                 validate: {
                     params: internals.validateIds,
                 },
-                auth: utils.getAuthConfig("required"),
+                //auth: utils.getAuthConfig("required"),
+                auth: config.get('hapi.auth'),
 
                 description: 'Get 2 (short description)',
                 notes: 'Get 2 (long description)',
@@ -323,7 +323,7 @@ debugger;
                 utils.logHandlerInfo("/api" + internals.resourcePath, request);
     debugger;
 
-                if(settings.environment !== "dev"){
+                if(process.env.NODE_ENV !== "no-auth"){
                     if(!request.auth.credentials.id){
                         return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
                     }
@@ -402,7 +402,9 @@ debugger;
                     payload: internals.validatePayloadForUpdate
 
                 },
-                auth: utils.getAuthConfig("required"),
+                //auth: utils.getAuthConfig("required"),
+                auth: config.get('hapi.auth'),
+
                 pre: [
                     pre.db.read_users
                 ],
@@ -494,8 +496,8 @@ debugger;
                         var name = usersC.at(0).get("firstName") + " " + usersC.at(0).get("lastName");
                         var email = usersC.at(0).get("email");
 
-                        var publicPort = (settings.publicPort === 80) ? "" : (":" + settings.publicPort);
-                        var recoverUri = settings.publicUri + publicPort + "/en/recover?token=" + usersC.at(0).get("recover");
+                        var publicPort = (config.get('publicPort') === 80) ? "" : (":" + config.get('publicPort'));
+                        var recoverUri = config.get('publicUri') + publicPort + "/en/recover?token=" + usersC.at(0).get("recover");
 
 
                         var deferred = Q.defer();
@@ -508,10 +510,10 @@ debugger;
                                         email: email,
                                         name: name
                                     }],
-                                    from_email: emailSettings.from_email,
-                                    from_name: emailSettings.from_name,
-                                    subject: emailSettings.subject,
-                                    text: emailSettings.body + recoverUri
+                                    from_email: config.get('email.fromEmail'),
+                                    from_name: config.get('email.fromName'),
+                                    subject: config.get('email.subject'),
+                                    text: config.get('email.body') + recoverUri
                                 }
                             },
                             function(error, response) {

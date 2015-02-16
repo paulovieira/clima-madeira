@@ -1,9 +1,11 @@
 var Backbone = require("backbone-pg");
+var config = require("config");
+
 var BaseM = Backbone.Model.extend({});
 
 var BaseC = Backbone.Collection.extend({
     model: BaseM,
-    connection: require(global.rootPath + "config/database.js").getConnectionString("pg"),
+    connection: config.get("db.postgres").getConnectionString()
 });
 
 module.exports = {
