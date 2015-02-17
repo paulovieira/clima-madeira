@@ -57,7 +57,7 @@ module.exports = {
 
 
     email: {
-        // TODO: add this file to ignore
+        // should be redefined in some other configuration file (that should be present in .gitignore)
         mandrill: {
             host: "smtp.mandrillapp.com",
             port: 587,
@@ -74,6 +74,7 @@ module.exports = {
 
     db: {
 
+        // should be redefined in some other configuration file (that should be present in .gitignore)
         postgres: {
             host: "127.0.0.1",
             database: "test_150111",

@@ -197,6 +197,7 @@ debugger;
                     var transformMap = transforms.maps.text;
                     var transform    = transforms.transformArray;
 
+
                     return reply(transform(resp, transformMap));
         		},
                 function(err){

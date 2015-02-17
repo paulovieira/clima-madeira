@@ -11,7 +11,7 @@ var utils = require(global.rootPath + 'server/common/utils.js');
 var transforms = require(global.rootPath + 'server/common/transforms.js');
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 
-var jsonFormat = require("json-format");
+//var jsonFormat = require("json-format");
 
 var handlers = {
 
@@ -21,6 +21,8 @@ var handlers = {
 
         var users = request.pre.usersC.toJSON();
         utils.deleteProps(users, "userTexts", "userGroups", "pwHash");
+
+
         return reply(users);
     },
 
