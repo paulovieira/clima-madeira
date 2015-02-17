@@ -7,7 +7,7 @@ var Q = require("q");
 var Moment = require("moment");
 
 var config = require("config");
-var utils = require(global.rootPath + 'server/common/utils.js');
+var utils = require(global.rootPath + 'server/common/utils');
 var transforms = require(global.rootPath + 'server/common/transforms.js');
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 

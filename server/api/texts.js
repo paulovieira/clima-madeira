@@ -1,3 +1,5 @@
+
+
 var Boom = require('boom');
 var Joi = require('joi');
 var config = require('config');
@@ -7,10 +9,10 @@ var _ = require('underscore');
 var _s = require('underscore.string');
 var changeCaseKeys = require('change-case-keys');
 
-var TextsC = require(global.rootPath + "server/models/base-model.js").collection;
-var utils = require(global.rootPath + 'server/common/utils.js');
-var transforms = require(global.rootPath + 'server/common/transforms.js');
-var pre = require(global.rootPath + 'server/common/pre.js');
+var TextsC = require("../../server/models/base-model.js").collection;
+var utils = require('../../server/common/utils.js');
+var transforms = require('../../server/common/transforms.js');
+var pre = require('../../server/common/pre.js');
 
 
 
@@ -196,6 +198,9 @@ debugger;
                     var resp         = textsC.toJSON();
                     var transformMap = transforms.maps.text;
                     var transform    = transforms.transformArray;
+
+
+
 
 
                     return reply(transform(resp, transformMap));
