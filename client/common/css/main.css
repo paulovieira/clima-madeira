@@ -408,3 +408,52 @@ th {
   background-color: #fff;
 }
 */
+
+.carousel-control {
+  opacity: 1.0;
+}
+
+.carousel-indicators li {
+  width: 16px;
+  height: 16px;
+}
+
+.carousel-indicators .active {
+  width: 18px;
+  height: 18px;
+}
+
+.carousel-control .glyphicon-circle-arrow-left,
+.carousel-control .glyphicon-circle-arrow-right {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  display: inline-block;
+}
+.carousel-control .glyphicon-circle-arrow-left {
+  left: 50%;
+  margin-left: -10px;
+}
+.carousel-control .glyphicon-circle-arrow-right {
+  right: 50%;
+  margin-right: -10px;
+}
+
+@media screen and (min-width: 768px) {
+  .carousel-control .glyphicon-circle-arrow-left,
+  .carousel-control .glyphicon-circle-arrow-right {
+    width: 30px;
+    height: 30px;
+    margin-top: -15px;
+    font-size: 30px;
+  }
+  .carousel-control .glyphicon-circle-arrow-left {
+    margin-left: -15px;
+  }
+  .carousel-control .glyphicon-circle-arrow-right {
+    margin-right: -15px;
+  }
+  .carousel-indicators {
+    bottom: 10px;
+  }
+}

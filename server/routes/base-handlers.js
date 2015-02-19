@@ -63,7 +63,10 @@ var handlers = {
         var transformMap = transforms.maps.text;
         var transform    = transforms.transformArray;
 
+//console.log(request.pre.images);
+
         var context = {
+            images: request.pre.images,
             texts: request.pre.texts,
             textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
             auth: request.auth,

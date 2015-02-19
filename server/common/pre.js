@@ -128,6 +128,82 @@ f		                }
 		assign: "texts"
 	},
 
+	// filter the texts collection to get only those that are image urls
+	extractImages: {
+		method: function(request, reply){
+
+			var texts = request.pre.textsC.toJSON();
+
+			var images = {};
+			images.carousel = {};
+
+
+			// extract all the texts that are image url
+
+			images.all = _.filter(texts, function(obj){
+				return _.contains(obj.tags, "image") || _.contains(obj.tags, "images") || _.contains(obj.tags, "img") || _.contains(obj.tags, "imagem") || _.contains(obj.tags, "imagens");
+			});
+
+
+			// extract the images for each sector
+
+			images.energia = _.filter(images.all, function(obj){
+				return obj.tags.join().indexOf("energia") >= 0;
+			});
+
+			images.turismo = _.filter(images.all, function(obj){
+				return obj.tags.join().indexOf("turismo") >= 0;
+			});
+
+			images.biodiversidade = _.filter(images.all, function(obj){
+				return obj.tags.join().indexOf("biodiversidade") >= 0;
+			});
+
+			images.saude = _.filter(images.all, function(obj){
+				return obj.tags.join().indexOf("saude") >= 0 || obj.tags.join().indexOf("saúde") >= 0;
+			});
+
+			images.recursosHidricos = _.filter(images.all, function(obj){
+				return obj.tags.join().indexOf("hidricos") >= 0 || obj.tags.join().indexOf("hídricos") >= 0;
+			});			
+
+			images.agricultura = _.filter(images.all, function(obj){
+				return obj.tags.join().indexOf("agricultura") >= 0 || obj.tags.join().indexOf("florestas") >= 0;
+			});
+
+
+			// extract the images for each sector that are to be in the carousel
+
+			images.carousel.energia = _.filter(images.energia, function(obj){
+				return _.contains(obj.tags, "carousel");
+			});
+
+			images.carousel.turismo = _.filter(images.turismo, function(obj){
+				return _.contains(obj.tags, "carousel");
+			});
+
+			images.carousel.biodiversidade = _.filter(images.biodiversidade, function(obj){
+				return _.contains(obj.tags, "carousel");
+			});
+
+			images.carousel.saude = _.filter(images.saude, function(obj){
+				return _.contains(obj.tags, "carousel");
+			});
+
+			images.carousel.recursosHidricos = _.filter(images.recursosHidricos, function(obj){
+				return _.contains(obj.tags, "carousel");
+			});
+
+			images.carousel.agricultura = _.filter(images.agricultura, function(obj){
+				return _.contains(obj.tags, "carousel");
+			});
+
+
+			reply(images);
+		},
+		assign: "images"
+	},
+
 	// route pre-requisite to be added to all routes that have the lang param validation
 	redirectOnInvalidLang: function(request, reply){
 debugger;
@@ -139,6 +215,8 @@ debugger;
 
         return reply.continue();
     },
+
+
 
 	preA: {
 		method: function(request, reply){

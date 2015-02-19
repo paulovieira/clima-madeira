@@ -1,6 +1,8 @@
 {#  NOTE: lang is a global variable #}
 {% extends "layouts/default.html"          %}
 {% from "macros/navigation.html" import navigation %}
+{# #} 
+{% from "macros/sectores/home_sector.html" import home_sector %} 
 
 {% set page_name = "sectores" %}
 {% set sector_name = "agricultura-florestas" %}
@@ -16,12 +18,22 @@
 
 {% block content %}
 
+
+<div class="row">
+    <div class="col-sm-10 col-sm-offset-1 col-lg-8 col-lg-offset-2" style="margin-top: 20px;">
+
+		{{ home_sector(ctx, 'Agricultura e Florestas') }}
+
+    </div>
+</div>
+
+{#
 <div class="row">
     <div class="col-sm-12 text-center">
 		<h1>Agricultura e Florestas</h1>
     </div>
 </div>
-
+#}
 
 
 {% endblock %}
