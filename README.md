@@ -19,6 +19,15 @@ publicUri
 publicPort
 
 
+## run the migrations (update the database objects)
+
+From the main root directory, execute the database/migrations.js script:
+
+    export NODE_ENV=correct_environment && node database/migrations.js
+
+## if this is the first time, populate the database
+
+
 ## Start 
 
 nodemon -e html,js index.js
