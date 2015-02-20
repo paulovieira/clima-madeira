@@ -1,3 +1,10 @@
+postgrator:
+
+1) create a new db
+2) create config/postgrator.js
+3) export NODE_ENV=postgrator && node database/update_db.js 
+4) change a seed file
+
 ## 1. Bootstrap the application
 
 - Create the database using the same user (might be necessary to change the login configurations in pg_hba.conf, the method should be md5 [?])
