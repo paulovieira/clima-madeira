@@ -77,9 +77,9 @@ module.exports = {
         // should be redefined in some other configuration file (that should be present in .gitignore)
         postgres: {
             host: "127.0.0.1",
-            database: "test_150111",
-            username: "clima",
-            password: "clima",
+            database: "db_name",
+            username: "db_username",
+            password: "db_password",
 
             getConnectionString: function(){
                 return "postgres://" +

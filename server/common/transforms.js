@@ -14,11 +14,11 @@ var transforms = {
 		    "contents": "contents",
 		    "lastUpdated": "lastUpdated",
 
-		    // b) the new properties (move properties from the nested object to the top object)
+		    // b) new properties (move properties from the nested object to the top object)
 		    "pt": "contents.pt",
 		    "en": "contents.en",
 
-		    // c) changed propeties (some fields from authorData, such as pwHash, will be deleted)
+		    // c) changed properties (some fields from authorData, such as pwHash, will be deleted)
 		    "authorData.id": "authorData.id",
 		    "authorData.firstName": "authorData.firstName",
 		    "authorData.lastName": "authorData.lastName",
@@ -39,6 +39,21 @@ var transforms = {
 
 		    // d) deleted properties: "recover", "pwHash", "recoverValidUntil"
 		},
+
+		files: {
+		    // a) properties to be maintained
+		    "id": "id",
+		    "name": "name",
+		    "path": "path",
+		    "tags": "tags",
+		    "properties":"properties",
+		    "uploadedAt":"uploadedAt",
+
+		    // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)
+		    "ownerData.id": "ownerData.id",
+		    "ownerData.firstName": "ownerData.firstName",
+		    "ownerData.lastName": "ownerData.lastName",
+		}
 
 	},
 

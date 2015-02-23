@@ -60,15 +60,19 @@ var handlers = {
             return reply.redirect("/" + request.params.lang + "/404");
         }
 
-        var transformMap = transforms.maps.text;
-        var transform    = transforms.transformArray;
+//        var transformMap = transforms.maps.text;
+//        var transform    = transforms.transformArray;
 
 //console.log(request.pre.images);
 
         var context = {
             images: request.pre.images,
             texts: request.pre.texts,
-            textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
+            files: request.pre.files,
+            textsJson: JSON.stringify(request.pre.texts),
+            filesJson: JSON.stringify(request.pre.files),
+            //textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
+            //filesJson: JSON.stringify(request.pre.filesC.toJSON()),
             auth: request.auth,
         };
 
@@ -305,11 +309,12 @@ debugger;
     /* will handle these paths: /pt/dashboard, /en/dashboard   */
     dashboard: function(request, reply) {
         utils.logHandlerInfo("dashboard", request);
+
         debugger;
 
         // when NODE_ENV is "no-auth", the route's auth configuration is set to false
-        if(process.env.NODE_ENV==="no-auth"){
-            request.auth.credentials.id = 9;
+        if(config.get('hapi.auth')===false){
+            request.auth.credentials.id = 1;
             request.auth.credentials.firstName = "paulo";
             request.auth.credentials.lastName = "vieira";            
         }

@@ -1,31 +1,27 @@
-postgrator:
 
-1) create a new db
-2) create config/postgrator.js
-3) export NODE_ENV=postgrator && node database/update_db.js 
-4) change a seed file
-
-## 1. Bootstrap the application
+## 1. Prepare the database
 
 - Create the database using the same user (might be necessary to change the login configurations in pg_hba.conf, the method should be md5 [?])
 
-- Create the database (using the same user that is given in config/database.js)
+- Create the database:
 	createdb test_150111
 
-- update the configuration settings for the database (user, password and database) in the config/prod.js
+- update the configuration settings for the database (user, password and database name) in the config/prod.js (or whatever environment will be used)
  
-- run the initial scripts (update the database): 
-    cd database && ./run_sql.sh
+- run the initial scripts (create tables and sql functins): 
+    cd database
+    emacs run_sql.sh (edit the name of the database)
+    ./run_sql.sh
 
 - insert the initial data: 
+    cd ..
     export NODE_ENV=prod && node database/initial-data/populate/index.js 
-- 
-- install global package:
-    - (???) nunjucks: sudo npm install nunjucks -g
+
+- make sure the required global packages are installed:
     - forever: sudo npm install forever -g
 
 
-## change config/server.js
+## 2. Set the required configurations in config/server.js
 
 publicUri
 publicPort

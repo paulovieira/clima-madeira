@@ -34,10 +34,8 @@ var routes = [
             },
 
             pre: [
-                [
-                    pre.db.read_texts  // assign to textsC
-                ],
-                pre.transform_texts,   // assign to texts
+                [pre.db.read_texts, pre.db.read_files],
+                [pre.transform.texts, pre.transform.files],
                 pre.extractImages     // assign to images
             ]
         }
@@ -60,8 +58,8 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts],
-                pre.transform_texts,
+                [pre.db.read_texts, pre.db.read_files],
+                [pre.transform.texts, pre.transform.files],
                 pre.extractImages
             ]
         }
@@ -83,8 +81,8 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts],
-                pre.transform_texts,
+                [pre.db.read_texts, pre.db.read_files],
+                [pre.transform.texts, pre.transform.files],
                 pre.extractImages
             ]
         }
@@ -106,7 +104,7 @@ var routes = [
 
             pre: [
                 [pre.db.read_texts, pre.db.read_user_by_token],
-                pre.transform_texts
+                pre.transform.texts
             ]
         }
 
@@ -127,7 +125,7 @@ var routes = [
 
             pre: [
                 [pre.db.read_texts],
-                pre.transform_texts
+                pre.transform.texts
             ]
         }
 
@@ -149,7 +147,7 @@ var routes = [
 
             pre: [
                 [pre.db.read_texts],
-                pre.transform_texts
+                pre.transform.texts
             ]
         }
     },
@@ -190,8 +188,6 @@ var routes = [
 
         config: {
 
-            //auth: utils.getAuthConfig("try"),
-
             auth: config.get('hapi.auth'),
 
             validate: {
@@ -200,7 +196,7 @@ var routes = [
 
             pre: [
                 [pre.db.read_texts],
-                pre.transform_texts
+                pre.transform.texts
             ]
         },
     },

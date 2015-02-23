@@ -108,25 +108,72 @@ var preRequisites = {
 		                function(err) {
 		                	console.log(err);
 		                    return reply(err);
-f		                }
+		                }
 			        );
 			},
 			assign: "textsC",
-	//		failAction: "log"
+		},
+
+		read_files: {
+			method: function(request, reply){
+				console.log("pre: read files");
+		        var filesC = new BaseC();
+
+		        filesC
+		            .execute({
+		                query: {
+		                    command: "select * from files_read()"
+		                },
+		            })
+		            .done(
+		                function() {
+		                	return reply(filesC);
+		                },
+		                function(err) {
+		                	console.log(err);
+		                    return reply(err);
+		                }
+			        );
+			},
+			assign: "filesC",
+		},
+
+	},
+
+	transform: {
+		texts: {
+			method: function(request, reply){
+
+	            var transformMap = transforms.maps.text;
+	            var transform    = transforms.transformArray;
+
+				var texts = transform(request.pre.textsC.toJSON(), transformMap);
+
+				reply(_.indexBy(texts, "id"));
+			},
+			assign: "texts"
+		},
+
+		files: {
+			method: function(request, reply){
+
+	            var transformMap = transforms.maps.files;
+	            var transform    = transforms.transformArray;
+
+				var files = transform(request.pre.filesC.toJSON(), transformMap);
+
+				// add the fullPath property
+				_.forEach(files, function(obj){
+					obj["fullPath"] = obj["path"] + "/" + obj["name"];
+				});
+
+				reply(_.indexBy(files, "id"));
+			},
+			assign: "files"
 		},
 	},
 
-	transform_texts: {
-		method: function(request, reply){
 
-            var transformMap = transforms.maps.text;
-            var transform    = transforms.transformArray;
-
-			var texts = transform(request.pre.textsC.toJSON(), transformMap);
-			reply(_.indexBy(texts, "id"));
-		},
-		assign: "texts"
-	},
 
 	// filter the texts collection to get only those that are image urls
 	extractImages: {
@@ -202,6 +249,25 @@ f		                }
 			reply(images);
 		},
 		assign: "images"
+	},
+
+	abortIfNotAuthenticated: {
+		method: function(request, reply){
+
+		    if(config.get('hapi.auth')!==false){
+		        if(!request.auth.credentials.id){
+		            return reply(Boom.unauthorized("To read/edit/create a resource you must sign in.")).takeover();
+		        }
+		    }
+		    else{
+		        request.auth.credentials.id = 1;
+		        request.auth.credentials.firstName = "paulo";
+		        request.auth.credentials.lastName = "vieira";
+		    }
+
+		    return reply();
+
+		}
 	},
 
 	// route pre-requisite to be added to all routes that have the lang param validation

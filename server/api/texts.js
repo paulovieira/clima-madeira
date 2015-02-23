@@ -180,12 +180,6 @@ exports.register = function(server, options, next) {
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-            if(process.env.NODE_ENV!=="no-auth"){
-                if(!request.auth.credentials.id){
-                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
-                }
-            }
-
         	var textsC = new TextsC();
 
         	textsC.execute({
@@ -198,10 +192,6 @@ debugger;
                     var resp         = textsC.toJSON();
                     var transformMap = transforms.maps.text;
                     var transform    = transforms.transformArray;
-
-
-
-
 
                     return reply(transform(resp, transformMap));
         		},
@@ -216,8 +206,9 @@ debugger;
         },
 
         config: {
-            //auth: utils.getAuthConfig("required"),
+
             auth: config.get('hapi.auth'),
+            pre: [pre.abortIfNotAuthenticated],
 
 			description: 'Get all the resources',
 			notes: 'Returns all the resources (full collection)',
@@ -233,10 +224,15 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
 debugger;
 
-            if(process.env.NODE_ENV!=="no-auth"){
+            if(config.get('hapi.auth')!==false){
                 if(!request.auth.credentials.id){
                     return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
                 }
+            }
+            else{
+                request.auth.credentials.id = 1;
+                request.auth.credentials.firstName = "paulo";
+                request.auth.credentials.lastName = "vieira";
             }
 
             var textsC = new TextsC();
@@ -273,8 +269,9 @@ debugger;
 			validate: {
 	            params: internals.validateIds,
 			},
-            //auth: utils.getAuthConfig("required"),
+
             auth: config.get('hapi.auth'),
+            pre: [pre.abortIfNotAuthenticated],
 
 			description: 'Get 2 (short description)',
 			notes: 'Get 2 (long description)',
@@ -291,13 +288,13 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-            if(process.env.NODE_ENV!=="no-auth"){
+            if(config.get('hapi.auth')!==false){
                 if(!request.auth.credentials.id){
                     return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
                 }
             }
             else{
-                request.auth.credentials.id = 9;
+                request.auth.credentials.id = 1;
                 request.auth.credentials.firstName = "paulo";
                 request.auth.credentials.lastName = "vieira";
             }
@@ -349,8 +346,8 @@ debugger;
         	validate: {
                 payload: internals.validatePayloadForCreate
         	},
-            //auth: utils.getAuthConfig("required"),
             auth: config.get('hapi.auth'),
+            pre: [pre.abortIfNotAuthenticated],
 
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
@@ -367,13 +364,13 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-            if(process.env.NODE_ENV!=="no-auth"){
+            if(config.get('hapi.auth')!==false){
                 if(!request.auth.credentials.id){
                     return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
                 }
             }
             else{
-                request.auth.credentials.id = 9;
+                request.auth.credentials.id = 1;
                 request.auth.credentials.firstName = "paulo";
                 request.auth.credentials.lastName = "vieira";
             }
@@ -426,10 +423,12 @@ debugger;
                 payload: internals.validatePayloadForUpdate
 
 			},
+
             pre: [
-//                pre.db.read_user_by_email
+//                pre.db.read_user_by_email,
+                pre.abortIfNotAuthenticated
             ],
-            //auth: utils.getAuthConfig("required"),
+
             auth: config.get('hapi.auth'),
 
 			description: 'Put (short description)',
@@ -445,10 +444,15 @@ debugger;
         handler: function (request, reply) {
 debugger;
 
-            if(process.env.NODE_ENV!=="no-auth"){
+            if(config.get('hapi.auth')!==false){
                 if(!request.auth.credentials.id){
                     return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
                 }
+            }
+            else{
+                request.auth.credentials.id = 1;
+                request.auth.credentials.firstName = "paulo";
+                request.auth.credentials.lastName = "vieira";
             }
 
             var textsC = new TextsC();
@@ -482,7 +486,7 @@ debugger;
 			validate: {
 	            params: internals.validateIds,
 			},
-            //auth: utils.getAuthConfig("required"),
+            pre: [pre.abortIfNotAuthenticated],
             auth: config.get('hapi.auth'),
 
 			description: 'Delete (short description)',

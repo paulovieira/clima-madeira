@@ -29,5 +29,5 @@ node_modules
 
 # configuration files (contain sensitive data - passwords, api keys, etc)
 config/debug.js
-config/no-auth.js
-config/prod.js
+config/debug-no-auth.js
+config/production.js

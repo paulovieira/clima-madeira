@@ -14,6 +14,17 @@ var routeTable = [
 
     {
         method: 'GET',
+        path: '/uploads/{anyPath*}',
+        handler: {
+            directory: { path: './data/uploads' }
+        },
+        config: {
+            auth: false,
+        }
+    },
+
+    {
+        method: 'GET',
         path: '/dashboard/{anyPath*}',
         handler: {
             directory: { path: './client/dashboard' }
