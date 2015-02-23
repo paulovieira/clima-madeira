@@ -142,38 +142,63 @@ $BODY$
 DECLARE
 	new_row texts%ROWTYPE;
 	input_row texts%ROWTYPE;
+	current_row texts%ROWTYPE;
 
 	new_id INT;
+	proceed_with_insert BOOL;
 BEGIN
 
 FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)) LOOP
 
-	-- if an id has not been given, we have to explicitely find one
+	proceed_with_insert := true;
+
+	-- if an id has not been given it means the data was sent through the user interface;
+	-- we have to explicitely find one (>=1001)
 	SELECT input_row.id INTO new_id;
-	IF new_id IS NULL THEN   
-		SELECT COALESCE(max(id)+1, 1) FROM texts INTO new_id;   -- max(id) will return null if the table is empty
+	IF new_id IS NULL THEN
+		-- we use coalesce because max(id) will return null if the table is empty
+		SELECT GREATEST(COALESCE(max(id)+1, 1001), 1001) FROM texts INTO new_id;   
+	ELSE
+		-- verify if we already have a row with the given id; if so, do not proceed with the insert
+		-- (and do not throw an error)
+		SELECT * INTO current_row FROM texts WHERE id = new_id;
+
+		IF FOUND THEN
+			proceed_with_insert := false;
+		END IF;
 	END IF;
 
-	INSERT INTO texts(
-		id,
-		tags, 
-		contents, 
-		contents_desc, 
-		author_id
-		)
-	VALUES (
-		new_id,
-		input_row.tags, 
-		input_row.contents, 
-		input_row.contents_desc, 
-		input_row.author_id
-		)
-	RETURNING 
-		*
-	INTO STRICT 
-		new_row;
+	-- we proceed with the insert if there is no id (which means it is a new text) or if it a
+	-- non-existent id
+	IF proceed_with_insert IS true THEN
+		INSERT INTO texts(
+			id,
+			tags, 
+			contents, 
+			contents_desc, 
+			author_id
+			)
+		VALUES (
+			new_id,
+			input_row.tags, 
+			input_row.contents, 
+			input_row.contents_desc, 
+			input_row.author_id
+			)
+		RETURNING 
+			*
+		INTO STRICT 
+			new_row;
 
-	RETURN NEXT new_row;
+		RETURN NEXT new_row;
+	ELSE
+		-- don't insert the data, but also give an error
+		current_row.contents = '"NOTE: there exists a row with the given id. Data will not be inserted."';
+
+		RETURN NEXT current_row;
+	END IF;
+
+
 END LOOP;
 
 RETURN;

@@ -39,7 +39,7 @@ var promise = baseC1.execute({
                 var model = baseC1.findWhere({
                     email: text.author_email
                 });
-                if (model) {
+                if (model && model.get("id") >= 0) {
                     text.authorId = model.get("id");
                 }
                 else {

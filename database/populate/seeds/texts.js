@@ -1,13 +1,4 @@
 
-
-/*
-ID RANGES:
-
-1-999: fixed texts
-1000-1999: 
-2000-2999: fixed url (images, etc
-)
-*/
 var data =
     [
         {
@@ -813,6 +804,7 @@ var data =
             },
             author_email: "paulovieira@gmail.com"
         },
+
 
 
 /*

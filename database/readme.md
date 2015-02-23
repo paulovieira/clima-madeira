@@ -179,3 +179,22 @@ Similar to tableame_read:
 LOADING SHAPES
 
 shp2pgsql -I -s 4326  climate-madeira.shp  climate_madeira  |  psql --dbname=test_150111
+
+
+
+# update the database
+
+After fetching a new version we probably have to update the db. To do that run database/update_db.js
+
+    node database/update_db.js
+
+This will execute all the sql scripts in the database directory.
+
+## Update of the seed data
+
+The seed data is placed with an id <= 1000 (the data created through the user interface will have an id >= 1001). We might add new seed data, for which we will have to find an id: the max available id that is <= 1000.
+
+When doing the update we cannot delete the existing seed data as it might have been already changed by the users.
+
+
+
