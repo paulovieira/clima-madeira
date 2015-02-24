@@ -3,7 +3,7 @@
         "id": 1,
         "name": "biodiversidade_w800.jpg",
         "path": "/uploads/public/images",
-        "tags": ["image"],
+        "tags": ["image", "biodiversidade"],
         "owner_id": 1
     }, 
 
@@ -11,7 +11,7 @@
         "id": 2,
         "name": "recursos_hidricos_w800.jpg",
         "path": "/uploads/public/images",
-        "tags": ["image"],
+        "tags": ["image", "recursos-hidricos"],
         "owner_id": 1
     }, 
 
@@ -19,7 +19,7 @@
         "id": 3,
         "name": "saude_w800.jpg",
         "path": "/uploads/public/images",
-        "tags": ["image"],
+        "tags": ["image", "saude"],
         "owner_id": 1
     }, 
 
@@ -27,7 +27,7 @@
         "id": 4,
         "name": "turismo_w800.jpg",
         "path": "/uploads/public/images",
-        "tags": ["image"],
+        "tags": ["image", "turismo"],
         "owner_id": 1
     }, 
 
@@ -35,7 +35,7 @@
         "id": 5,
         "name": "agricultura_florestas_w800.jpg",
         "path": "/uploads/public/images",
-        "tags": ["image"],
+        "tags": ["image", "agricultura-florestas"],
         "owner_id": 1
     }, 
 
@@ -43,97 +43,147 @@
         "id": 6,
         "name": "energia_w800.jpg",
         "path": "/uploads/public/images",
-        "tags": ["image"],
+        "tags": ["image", "energia"],
         "owner_id": 1
     }, 
 
     {
         "id": 7,
         "name": "logo-drota_70px.jpg",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/logos",
+        "tags": ["image", "logo"],
         "owner_id": 1
     }, 
 
     {
         "id": 8,
         "name": "logo-cciam_70px.jpg",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/logos",
+        "tags": ["image", "logo"],
         "owner_id": 1
     }, 
 
     {
         "id": 9,
         "name": "logo-fcul_70px.png",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/logos",
+        "tags": ["image", "logo"],
         "owner_id": 1
     }, 
 
     {
         "id": 10,
         "name": "logo-ffcul_70px.jpg",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/logos",
+        "tags": ["image", "logo"],
         "owner_id": 1
     }, 
 
     {
         "id": 11,
         "name": "200x200.gif",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/placeholders",
+        "tags": ["image", "placeholder"],
         "owner_id": 1
     }, 
 
     {
         "id": 12,
         "name": "200x300.gif",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/placeholders",
+        "tags": ["image", "placeholder"],
         "owner_id": 1
     }, 
 
     {
         "id": 13,
         "name": "300x200.gif",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/placeholders",
+        "tags": ["image", "placeholder"],
         "owner_id": 1
     }, 
 
     {
         "id": 14,
         "name": "300x250.gif",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/placeholders",
+        "tags": ["image", "placeholder"],
         "owner_id": 1
     }, 
 
     {
         "id": 15,
         "name": "300x300.gif",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/placeholders",
+        "tags": ["image", "placeholder"],
         "owner_id": 1
     }, 
 
     {
         "id": 16,
         "name": "300x350.gif",
-        "path": "/uploads/public/images",
-        "tags": ["image"],
+        "path": "/uploads/public/images/placeholders",
+        "tags": ["image", "placeholder"],
         "owner_id": 1
     }, 
 
     {
         "id": 17,
         "name": "400x300.gif",
+        "path": "/uploads/public/images/placeholders",
+        "tags": ["image", "placeholder"],
+        "owner_id": 1
+    },
+
+    {
+        "id": 18,
+        "name": "header_madeira4.jpg",
         "path": "/uploads/public/images",
+        "description": {
+            "pt": "imagem principal (homepag)",
+            "en": "imagem principal (homepag)"
+        },
         "tags": ["image"],
         "owner_id": 1
+    },
+
+    {
+        "id": 19,
+        "name": "madeira-ilha_gr_h400.jpg",
+        "path": "/uploads/public/images/carousel/agricultura-florestas",
+        "description": {
+            "pt": "imagem para o carousel - agricultura e florestas",
+            "en": "imagem para o carousel - agricultura e florestas"
+        },
+        "tags": ["image", "carousel", "agricultura-florestas"],
+        "owner_id": 1
+    },
+
+    {
+        "id": 20,
+        "name": "laurisilva_madeira2_h400.jpg",
+        "path": "/uploads/public/images/carousel/agricultura-florestas",
+        "description": {
+            "pt": "imagem para o carousel - agricultura e florestas",
+            "en": "imagem para o carousel - agricultura e florestas"
+        },
+        "tags": ["image", "carousel", "agricultura-florestas"],
+        "owner_id": 1
+    },
+
+    {
+        "id": 21,
+        "name": "vinice_madeira_santana_h400.jpg",
+        "path": "/uploads/public/images/carousel/agricultura-florestas",
+        "description": {
+            "pt": "imagem para o carousel - agricultura e florestas",
+            "en": "imagem para o carousel - agricultura e florestas"
+        },
+        "tags": ["image", "carousel", "agricultura-florestas"],
+        "owner_id": 1
     }
+
+
 
 
     /*

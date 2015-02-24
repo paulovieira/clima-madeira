@@ -56,7 +56,8 @@
     <script type="text/javascript">
         var Clima = {};
         Clima.lang = "{{ lang }}";
-        Clima.texts = {{ ctx.textsJson }};
+        Clima.texts  = {{ ctx.textsArray | stringify }};
+        Clima.files  = {{ ctx.filesArray | stringify }};
         Clima.userId = {{ ctx.auth.credentials.id }};
     </script>
 

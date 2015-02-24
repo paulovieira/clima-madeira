@@ -6,7 +6,9 @@
 */
 
 
-CREATE OR REPLACE FUNCTION files_read(options json DEFAULT '[{}]')
+DROP FUNCTION files_read(json);
+
+CREATE FUNCTION files_read(options json DEFAULT '[{}]')
 
 -- return table, uses the definition of the files table + extra data from the join
 RETURNS TABLE(
@@ -14,6 +16,7 @@ RETURNS TABLE(
 	name TEXT,
 	path TEXT,
 	tags JSONB,
+	description JSONB,
 	properties JSONB,
 	owner_id INT,
 	uploaded_at timestamptz,
@@ -39,11 +42,11 @@ BEGIN
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 	command := 'SELECT 
-			t.*, 
+			f.*, 
 			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data
-		FROM files t 
+		FROM files f 
 		INNER JOIN users u
-		ON t.owner_id = u.id';
+		ON f.owner_id = u.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id')           INTO id;
@@ -61,7 +64,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' t.id = %L', id);
+		command = format(command || ' f.id = %L', id);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -71,7 +74,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' t.owner_id = %L', owner_id);
+		command = format(command || ' f.owner_id = %L', owner_id);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -81,7 +84,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' t.tags ?| ARRAY[%L]', tags);
+		command = format(command || ' f.tags ?| ARRAY[%L]', tags);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -91,7 +94,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' t.name = %L', name);
+		command = format(command || ' f.name = %L', name);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -101,7 +104,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' t.path = %L', path);
+		command = format(command || ' f.path = %L', path);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -115,7 +118,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	command := command || ' ORDER BY t.id;';
+	command := command || ' ORDER BY f.id;';
 
 	RETURN QUERY EXECUTE command;
 
@@ -149,7 +152,9 @@ select * from  files_read('[{"owner_id":"2"}]');
 */
 
 
-CREATE OR REPLACE FUNCTION files_create(input_data json, options json DEFAULT '[{}]')
+DROP FUNCTION files_create(json, json);
+
+CREATE FUNCTION files_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF files AS
 $BODY$
 DECLARE
@@ -176,6 +181,7 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 			name,
 			path,
 			tags, 
+			description,
 			properties, 
 			owner_id
 			)
@@ -184,6 +190,7 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 			input_row.name, 
 			input_row.path, 
 			input_row.tags, 
+			input_row.description, 
 			input_row.properties, 
 			input_row.owner_id
 			)
@@ -245,7 +252,9 @@ select * from files_create('[
 */
 
 
-CREATE OR REPLACE FUNCTION files_update(input_data json, options json DEFAULT '[{}]')
+DROP FUNCTION files_update(json, json);
+
+CREATE FUNCTION files_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF files AS
 $$
 DECLARE
@@ -271,6 +280,9 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 	END IF;
 	IF input_row.tags IS NOT NULL THEN
 		command = format(command || 'tags = %L, ', input_row.tags);
+	END IF;
+	IF input_row.description IS NOT NULL THEN
+		command = format(command || 'description = %L, ', input_row.description);
 	END IF;
 	IF input_row.properties IS NOT NULL THEN
 		command = format(command || 'properties = %L, ', input_row.properties);
@@ -322,7 +334,9 @@ select * from files_update('[{"id": 1, "tags": ["tag7"] }]');
 */
 
 
-CREATE OR REPLACE FUNCTION files_delete(options json DEFAULT '[{}]')
+DROP FUNCTION files_delete(json);
+
+CREATE FUNCTION files_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS
 $$
 DECLARE

@@ -1,51 +1,62 @@
 
 ## 1. Prepare the database
 
-- Create the database using the same user (might be necessary to change the login configurations in pg_hba.conf, the method should be md5 [?])
+Create the database using the same user (might be necessary to change the login configurations in pg_hba.conf, the method should be md5 [?])
 
-- Create the database:
-	createdb test_150111
+    createdb test_150111
 
-- update the configuration settings for the database (user, password and database name) in the config/prod.js (or whatever environment will be used)
+Run the initial scripts (create tables, sql functions, views, etc): 
+   
+    cd database && ./run_sql.sh test_150111
+
+Update the configuration settings for the database (user, password and database name) in the config/prod.js (or whatever environment will be used)
  
-- run the initial scripts (create tables and sql functins): 
-    cd database
-    emacs run_sql.sh (edit the name of the database)
-    ./run_sql.sh
+Insert the initial data: 
 
-- insert the initial data: 
     cd ..
     export NODE_ENV=prod && node database/initial-data/populate/index.js 
 
-- make sure the required global packages are installed:
-    - forever: sudo npm install forever -g
 
-
-## 2. Set the required configurations in config/server.js
+## 2. Set the required configurations in config/prod.js
 
 publicUri
 publicPort
 
 
 
+## 3. Start the application
 
+Make sure the required global modules are installed (nodemon, forever)
 
-## Start 
+    sudo npm install forever -g
+    sudo npm install nodemon -g
 
-export NODE_ENV=prod
-nodemon -e html,js index.js
+Make sure all the local modules are installed:
 
-or with forever:
+    sudo npm install 
 
-START FOREVER IN "DEAMON MODE"
+Set the environment and start.
 
-export NODE_ENV=prod
-sudo forever start -m 50 -l forever_output.log -o server_stdout.log -e server_stderr.log --append --verbose --spinSleepTime 2000 --minUptime 1000  --uid "clima" server.js
+with nodemon:
 
-LIST ALL THE PROCESSES
-sudo forever list
+    export NODE_ENV=prod
 
-STOP THE PROCESS WITH THE GIVEN REFERENCE
-sudo forever stop clima
+    nodemon -e html,js index.js
+
+with forever (the app will execute in "deamon mode"):
+
+    export NODE_ENV=prod
+
+    sudo forever start -m 50 -l forever_output.log -o server_stdout.log -e server_stderr.log --append --verbose --spinSleepTime 2000 --minUptime 1000  --uid "clima" server.js
+
+# 4. Commands to manage the process with forever
+
+List all the processes:
+
+    sudo forever list
+
+Stop the process with the given reference (we named it "clima"):
+
+    sudo forever stop clima
 
 

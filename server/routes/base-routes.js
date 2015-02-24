@@ -35,8 +35,8 @@ var routes = [
 
             pre: [
                 [pre.db.read_texts, pre.db.read_files],
-                [pre.transform.texts, pre.transform.files],
-                pre.extractImages     // assign to images
+                [pre.transform.texts, pre.transform.textsArray, pre.transform.files],
+                [pre.filterImages]
             ]
         }
 
@@ -59,8 +59,8 @@ var routes = [
 
             pre: [
                 [pre.db.read_texts, pre.db.read_files],
-                [pre.transform.texts, pre.transform.files],
-                pre.extractImages
+                [pre.transform.texts, pre.transform.textsArray, pre.transform.files],
+                [pre.filterImages]
             ]
         }
     },
@@ -82,8 +82,8 @@ var routes = [
 
             pre: [
                 [pre.db.read_texts, pre.db.read_files],
-                [pre.transform.texts, pre.transform.files],
-                pre.extractImages
+                [pre.transform.texts, pre.transform.textsArray, pre.transform.files],
+                [pre.filterImages]
             ]
         }
     },
@@ -195,8 +195,8 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts],
-                pre.transform.texts
+                [pre.db.read_texts, pre.db.read_files],
+                [pre.transform.texts, pre.transform.textsArray, pre.transform.files, pre.transform.filesArray]
             ]
         },
     },

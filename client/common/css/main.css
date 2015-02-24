@@ -28,8 +28,8 @@ body {
 }
 
 .header-bg {
-	background-image: url('/common/images/clouds_texture2877.jpg');
-	background-image: url('/common/images/header_madeira3.jpg');
+/*	background-image: url('/common/images/clouds_texture2877.jpg');*/
+	background-image: url('/uploads/public/images/header_madeira3.jpg');
 	background-size: 100%;
 	z-index: -1;
 	display: block;

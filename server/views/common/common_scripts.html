@@ -2,8 +2,7 @@
 
     window.Clima = {};
     Clima.lang = "{{ lang }}";
-    Clima.texts = {{ ctx["textsJson"] | default("'template context does not have texts!'") }}
-
+    Clima.texts  = {{ ctx.textsArray | stringify }};
 
 	// simple polyfill for addEventListener (not available in IE8)
 	Clima.addEvent = function(evnt, elem, func) {

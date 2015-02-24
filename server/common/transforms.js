@@ -46,6 +46,7 @@ var transforms = {
 		    "name": "name",
 		    "path": "path",
 		    "tags": "tags",
+		    "description": "description",
 		    "properties":"properties",
 		    "uploadedAt":"uploadedAt",
 

@@ -6,6 +6,6 @@ do
 	echo "		***********************************************************"
 	echo "			Executing " $file
 	echo "		***********************************************************"
-	psql --dbname test_150223 --file="$file"
-
+#	psql --dbname $1 --file="$file" --log-file=prepare_database.log
+	psql --dbname $1 --file="$file" 
 done

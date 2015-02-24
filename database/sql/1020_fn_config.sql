@@ -6,8 +6,11 @@
 */
 
 
+-- NOTE: we explicitely execute a DROP FUNCTION (instead of CREATE OR REPLACE) because the replacement will not work if the output changes; by calling DROP wemake sure the function definition will really be updated
 
-CREATE OR REPLACE FUNCTION config_read(options json DEFAULT '[{}]')
+DROP FUNCTION config_read(json);
+
+CREATE FUNCTION config_read(options json DEFAULT '[{}]')
 
 -- return table using the definition of the config table
 RETURNS TABLE(
@@ -95,8 +98,9 @@ select * from  config_read('[{"config_data_key": "adminEmail"}, {"config_data_ke
 
 */
 
+DROP FUNCTION config_create(json, json);
 
-CREATE OR REPLACE FUNCTION config_create(input_data json, options json DEFAULT '[{}]')
+CREATE FUNCTION config_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF config AS
 $BODY$
 DECLARE
@@ -151,8 +155,9 @@ select * from config_create('[
 
 */
 
+DROP FUNCTION config_update(json, json);
 
-CREATE OR REPLACE FUNCTION config_update(input_data json, options json DEFAULT '[{}]')
+CREATE FUNCTION config_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF config AS
 $$
 DECLARE
@@ -214,7 +219,9 @@ select * from config_update('[
 
 */
 
-CREATE OR REPLACE FUNCTION config_delete(options json DEFAULT '[{}]')
+DROP FUNCTION config_delete(json);
+
+CREATE FUNCTION config_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS
 $$
 DECLARE

@@ -9,7 +9,9 @@
 */
 
 
-CREATE OR REPLACE FUNCTION users_groups_read(options json DEFAULT '[{}]')
+DROP FUNCTION users_groups_read(json);
+
+CREATE FUNCTION users_groups_read(options json DEFAULT '[{}]')
 
 -- return table using the definition of the users_groups table
 RETURNS TABLE(
@@ -95,7 +97,9 @@ select * from  users_groups_read('[{"user_id":"1"}, {"user_id":"2"}]');
 */
 
 
-CREATE OR REPLACE FUNCTION users_groups_create(input_data json, options json DEFAULT '[{}]')
+DROP FUNCTION users_groups_create(json, json);
+
+CREATE FUNCTION users_groups_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF users_groups AS
 $BODY$
 DECLARE
@@ -169,7 +173,9 @@ select * from users_groups_create('[
 */
 
 
-CREATE OR REPLACE FUNCTION users_groups_update(input_data json, options json DEFAULT '[{}]')
+DROP FUNCTION users_groups_update(json, json);
+
+CREATE FUNCTION users_groups_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF users_groups AS
 $$
 DECLARE
@@ -236,7 +242,9 @@ select * from users_groups_update('[
 
 */
 
-CREATE OR REPLACE FUNCTION users_groups_delete(options json DEFAULT '[{}]')
+DROP FUNCTION users_groups_delete(json);
+
+CREATE FUNCTION users_groups_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS
 $$
 DECLARE

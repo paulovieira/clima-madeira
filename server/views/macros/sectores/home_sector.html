@@ -12,24 +12,34 @@
             <ol class="carousel-indicators">
                 <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
                 <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
             </ol>
 
 
             <!-- Wrapper for slides -->
+
+            {# TODO: iterate over ctx.images[sectorName][n] #}
             <div class="carousel-inner" role="listbox">
 
 
                 <div class="item active">
-                    <img src="{{ ctx.images.carousel.agricultura[0].contents.pt }}" alt="...">
+                    <img src="{{ ctx.images[sectorName][0].fullPath }}" alt="...">
                     <div class="carousel-caption">
                         caption 1
                     </div>
                 </div>
 
                 <div class="item">
-                    <img src="/common/images/Vinice_Madeira_Santana_w600.jpg" class="img-responsive img-rounded" alt="">
+                    <img src="{{ ctx.images[sectorName][1].fullPath }}" class="img-responsive img-rounded" alt="">
                     <div class="carousel-caption">
                         caption 2
+                    </div>
+                </div>
+
+                <div class="item">
+                    <img src="{{ ctx.images[sectorName][2].fullPath }}" class="img-responsive img-rounded" alt="">
+                    <div class="carousel-caption">
+                        caption 3
                     </div>
                 </div>
 
@@ -44,14 +54,11 @@
 
         </div>
 
-
-
-
-
     </div>
+
     <div class="col-sm-8">
         <div class="">
-            <h1>{{sectorName}}</h1>
+            <h1>Agricultura e Florestas</h1>
         </div>
 
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, enim repellendus rerum officia dolore recusandae magni aliquid perferendis in, repellat, deserunt quis totam. Repudiandae inventore officiis blanditiis earum suscipit.</p>
@@ -75,4 +82,55 @@
 
 <hr>
 
+<div class="row">
+
+    <div class="col-sm-4">
+        <h3>Indicadores</h3>
+
+
+        <ul>
+            <li style="color: #696969; margin-bottom: 5px;">Forest growth</li>
+            <li style="color: #696969; margin-bottom: 5px;">Irrigation water requirement</li>
+            <li style="color: #696969; margin-bottom: 5px;">Soil moisture</li>
+        </ul>
+
+    </div>
+
+    <div class="col-sm-4">
+        <h3>Recursos</h3>
+
+        <dl>
+
+          <dt style="color: #696969;"><span style="font-size: 85%;" class="glyphicon glyphicon-chevron-right"></span> Forest growth</dt>
+          <dd style="margin-bottom: 10px;">Dolor odit debitis vel voluptatem, consectetur suscipit recusandae, culpa explicabo ipsam exercitationem.</dd>
+
+          <dt style="color: #696969;"><span style="font-size: 85%;" class="glyphicon glyphicon-chevron-right"></span> Irrigation water requirement</dt>
+          <dd  style="margin-bottom: 10px;">Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</dd>
+
+          <dt style="color: #696969;"><span style="font-size: 85%;" class="glyphicon glyphicon-chevron-right"></span> Soil moisture</dt>
+          <dd  style="margin-bottom: 10px;">In ad quas molestiae veniam omnis nisi culpa aspernatur facere facilis dolores, expedita quaerat</dd>
+
+        </dl>
+  
+
+    </div>
+
+    <div class="col-sm-4">
+
+        <h3>Media</h3>
+
+        <dl class="dl-horizontal">
+
+          <dt style="color: #696969; text-align: left;"><span style="font-size: 85%;" class="glyphicon glyphicon-chevron-right"></span> Forest growth</dt>
+          <dd style="margin-bottom: 10px;">Dolor odit debitis vel voluptatem, consectetur suscipit recusandae, culpa explicabo ipsam exercitationem.</dd>
+
+
+          <dt style="color: #696969; text-align: left"><span style="font-size: 85%;" class="glyphicon glyphicon-chevron-right"></span> Soil moisture</dt>
+          <dd  style="margin-bottom: 10px;">In ad quas molestiae veniam omnis nisi culpa aspernatur facere facilis dolores, expedita quaerat</dd>
+
+        </dl>
+    </div>
+
+
+</div>
 {% endmacro %}

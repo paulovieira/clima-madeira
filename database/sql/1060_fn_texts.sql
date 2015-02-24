@@ -14,7 +14,9 @@ We return
 */
 
 
-CREATE OR REPLACE FUNCTION texts_read(options json DEFAULT '[{}]')
+DROP FUNCTION texts_read(json);
+
+CREATE FUNCTION texts_read(options json DEFAULT '[{}]')
 
 -- return table uses the definition of the texts table + extra data from the join
 RETURNS TABLE(
@@ -133,7 +135,9 @@ select * from  texts_read('[{"id":"1"}]');
 */
 
 
-CREATE OR REPLACE FUNCTION texts_create(input_data json, options json DEFAULT '[{}]')
+DROP FUNCTION texts_create(json, json);
+
+CREATE FUNCTION texts_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF texts AS
 $BODY$
 DECLARE
@@ -215,7 +219,9 @@ select * from texts_create('[
 */
 
 
-CREATE OR REPLACE FUNCTION texts_update(input_data json, options json DEFAULT '[{}]')
+DROP FUNCTION texts_update(json, json);
+
+CREATE FUNCTION texts_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF texts AS
 $$
 DECLARE
@@ -293,7 +299,9 @@ select * from texts_update('[{"id": 1, "tags": ["tag7"], "contents": {"pt": "xxx
 */
 
 
-CREATE OR REPLACE FUNCTION texts_delete(options json DEFAULT '[{}]')
+DROP FUNCTION texts_delete(json);
+
+CREATE FUNCTION texts_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS
 $$
 DECLARE

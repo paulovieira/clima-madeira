@@ -25,6 +25,10 @@ Nunjucks.configure(global.rootPath + 'server/views', {
 
 Nunjucks.addGlobal("lang", "pt");
 
+Nunjucks.addFilter('stringify', function(str) {
+    return JSON.stringify(str);
+});
+
 
 // 3. register the plugins
 utils.registerPlugins(server);

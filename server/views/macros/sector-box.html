@@ -1,0 +1,15 @@
+
+{% macro sectorBox(ctx, title, sectorDesc, sectorPath, sectorImg) %}
+
+<div class="sector-box">
+	<h4 class="text-center sector-title is-editable" data-text-id="{{ title }}">{{ ctx.texts[title][lang] | upper }}</h4>
+	<img src="{{ ctx.files[sectorImg].fullPath }}" class="img-responsive img-thumbnail center-block" alt="Responsive image">
+	<p class="is-editable" data-text-id="{{ sectorDesc }}">{{ ctx.texts[sectorDesc][lang] }}</p>
+	<div class="text-center">
+		<a href="/{{ lang }}/{{ sectorPath }}" class="btn btn-info" style="padding: 4px 30px; letter-spacing: 1px;" role="button">
+			<span class="is-editable" data-text-id="6">{{ ctx.texts[6][lang] }}</span>
+		</a>
+	</div>
+</div>
+
+{% endmacro %}

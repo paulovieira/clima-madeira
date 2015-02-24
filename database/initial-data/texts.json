@@ -579,68 +579,68 @@
     // },
 
 
-    {
-        "id": 57,
-        "tags": [],
-        "contents": {
-            "pt": "/common/images/sectores/biodiversidade_w800.jpg",
-            "en": "/common/images/sectores/biodiversidade_w800.jpg"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
+    // {
+    //     "id": 57,
+    //     "tags": [],
+    //     "contents": {
+    //         "pt": "/common/images/sectores/biodiversidade_w800.jpg",
+    //         "en": "/common/images/sectores/biodiversidade_w800.jpg"
+    //     },
+    //     "author_email": "paulovieira@gmail.com"
+    // },
 
-    {
-        "id": 58,
-        "tags": [],
-        "contents": {
-            "pt": "/common/images/sectores/recursos_hidricos_w800.jpg",
-            "en": "/common/images/sectores/recursos_hidricos_w800.jpg"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
+    // {
+    //     "id": 58,
+    //     "tags": [],
+    //     "contents": {
+    //         "pt": "/common/images/sectores/recursos_hidricos_w800.jpg",
+    //         "en": "/common/images/sectores/recursos_hidricos_w800.jpg"
+    //     },
+    //     "author_email": "paulovieira@gmail.com"
+    // },
 
-    {
-        "id": 59,
-        "tags": [],
-        "contents": {
-            "pt": "/common/images/sectores/saude_w800.jpg",
-            "en": "/common/images/sectores/saude_w800.jpg"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
-
-
-    {
-        "id": 60,
-        "tags": [],
-        "contents": {
-            "pt": "/common/images/sectores/turismo_w800.jpg",
-            "en": "/common/images/sectores/turismo_w800.jpg"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
+    // {
+    //     "id": 59,
+    //     "tags": [],
+    //     "contents": {
+    //         "pt": "/common/images/sectores/saude_w800.jpg",
+    //         "en": "/common/images/sectores/saude_w800.jpg"
+    //     },
+    //     "author_email": "paulovieira@gmail.com"
+    // },
 
 
-    {
-        "id": 61,
-        "tags": [],
-        "contents": {
-            "pt": "/common/images/sectores/agricultura_florestas_w800.jpg",
-            "en": "/common/images/sectores/agricultura_florestas_w800.jpg"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
+    // {
+    //     "id": 60,
+    //     "tags": [],
+    //     "contents": {
+    //         "pt": "/common/images/sectores/turismo_w800.jpg",
+    //         "en": "/common/images/sectores/turismo_w800.jpg"
+    //     },
+    //     "author_email": "paulovieira@gmail.com"
+    // },
 
 
-    {
-        "id": 62,
-        "tags": [],
-        "contents": {
-            "pt": "/common/images/sectores/energia_w800.jpg",
-            "en": "/common/images/sectores/energia_w800.jpg"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
+    // {
+    //     "id": 61,
+    //     "tags": [],
+    //     "contents": {
+    //         "pt": "/common/images/sectores/agricultura_florestas_w800.jpg",
+    //         "en": "/common/images/sectores/agricultura_florestas_w800.jpg"
+    //     },
+    //     "author_email": "paulovieira@gmail.com"
+    // },
+
+
+    // {
+    //     "id": 62,
+    //     "tags": [],
+    //     "contents": {
+    //         "pt": "/common/images/sectores/energia_w800.jpg",
+    //         "en": "/common/images/sectores/energia_w800.jpg"
+    //     },
+    //     "author_email": "paulovieira@gmail.com"
+    // },
 
 
     {

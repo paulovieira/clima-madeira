@@ -15,7 +15,9 @@ We return
 */
 
 
-CREATE OR REPLACE FUNCTION groups_read(options json DEFAULT '[{}]')
+DROP FUNCTION groups_read(json);
+
+CREATE FUNCTION groups_read(options json DEFAULT '[{}]')
 
 -- return table uses the definition of the groups table + extra data from the join
 RETURNS TABLE(
@@ -128,7 +130,9 @@ select * from  groups_read('[{"id":"1"}]');
 */
 
 
-CREATE OR REPLACE FUNCTION groups_create(input_data json, options json DEFAULT '[{}]')
+DROP FUNCTION groups_create(json, json);
+
+CREATE FUNCTION groups_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF groups AS
 $BODY$
 DECLARE
@@ -220,7 +224,9 @@ The time is clearly growing linearly;
 */
 
 
-CREATE OR REPLACE FUNCTION groups_update(input_data json, options json DEFAULT '[{}]')
+DROP FUNCTION groups_update(json, json);
+
+CREATE FUNCTION groups_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF groups AS
 $$
 DECLARE
@@ -303,7 +309,9 @@ Update 30 rows: 40ms
 */
 
 
-CREATE OR REPLACE FUNCTION groups_delete(options json DEFAULT '[{}]')
+DROP FUNCTION groups_delete(json);
+
+CREATE FUNCTION groups_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS
 $$
 DECLARE

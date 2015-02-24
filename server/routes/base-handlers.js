@@ -33,21 +33,6 @@ var handlers = {
         return reply.redirect("/" + config.get("allowedLanguages")[0]);
     },
 
-    // home: function(request, reply) {
-    //     utils.logHandlerInfo("home", request);
-    //     debugger;
-
-
-    //     var context = {
-    //         texts: request.pre.texts,
-    //         textsJson: JSON.stringify(utils.transform(request.pre.textsC.toJSON(), transforms.text)),
-    //         auth: request.auth,
-    //     };
-
-    //     return reply.view('home', {
-    //         ctx: context
-    //     });
-    // },
 
     generalPage: function(request, reply) {
         utils.logHandlerInfo("generalPage", request);
@@ -60,19 +45,18 @@ var handlers = {
             return reply.redirect("/" + request.params.lang + "/404");
         }
 
-//        var transformMap = transforms.maps.text;
-//        var transform    = transforms.transformArray;
+        // create a nested object with the images for the carousel (for each sector)
+        request.pre.files.carousel = {};
+        request.pre.files.carousel["agricultura-florestas"] = [request.pre.files[18], request.pre.files[19], request.pre.files[20] ];
 
-//console.log(request.pre.images);
+//console.log(request.pre.files);
 
         var context = {
-            images: request.pre.images,
             texts: request.pre.texts,
+            textsArray: request.pre.textsArray,
             files: request.pre.files,
-            textsJson: JSON.stringify(request.pre.texts),
-            filesJson: JSON.stringify(request.pre.files),
-            //textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
-            //filesJson: JSON.stringify(request.pre.filesC.toJSON()),
+            images: request.pre.images,
+            
             auth: request.auth,
         };
 
@@ -204,136 +188,32 @@ debugger;
     },
 
 
-    loginAuthenticateOld: function(request, reply) {
-        utils.logHandlerInfo("loginAuthenticate", request);
-        debugger;
-
-        var email = request.payload.username,
-            password = request.payload.password,
-            status_code;
-
-
-        if (request.auth.isAuthenticated) {
-            console.log("loginAuthenticate handler: is already authenticated, will now redirect to /lang/dashboard");
-            return reply.redirect("/" + request.params.lang + "/dashboard");
-        }
-
-        /*
-            Possible values for status_code/status_message:
-            1 - "ok" (the provided username and password match)
-            2 - "missing username or password" (won't even connect to the DB)
-            3 - "username does not exist" 
-            4 - "wrong password" (username exists but password doesn't match)
-        */
-
-        if (!email || !password) {
-            status_code = 2;  // "missing username or password"
-            return reply.redirect("/" + request.params.lang + "/login?lfr=" + status_code);
-        }
-
-        var usersC = new BaseC();
-        usersC
-            .execute({
-                query: {
-                    command: "select * from users_read($1)",
-                    arguments: JSON.stringify([{
-                        email: email
-                    }])
-                }
-            })
-            .done(
-                function() {
-                    debugger;
-                    if (usersC.length === 0) {
-                        status_code = 3;  // "username does not exist" 
-                        return reply.redirect("/" + request.params.lang + "/login?lfr=" + status_code);
-                    }
-
-                    Bcrypt.compare(password, usersC.at(0).get("pwHash"), function(err, res) {
-                        debugger;
-                        if (err) {
-                            return reply(Boom.badImplementation());
-                        }
-
-                        if (res === false) {
-                            status_code = 4;  // "wrong password"
-                            return reply.redirect("/" + request.params.lang + "/login?lfr=" + status_code);
-                        }
-
-                        // if we get here, the username and password match
-                        console.log("    authentication succeeded!".green);
-debugger;
-                        var credentials = {
-                            id:           usersC.at(0).get("id"),
-                            firstName:    usersC.at(0).get("firstName"),
-                            lastName:     usersC.at(0).get("lastName"),
-                            email:        usersC.at(0).get("email"),
-
-                            // set to true if the user belongs to the group "admin"
-                            isAdmin:      !!_.findWhere(usersC.at(0).get("userGroups"), {code: 99}),  
-
-                            // set to true if the user belongs to the group "can_edit_texts"
-                            canEditTexts: !!_.findWhere(usersC.at(0).get("userGroups"), {code: 98})
-                        };
-
-                        // set the session in the internal cache (Catbox with memory adapter)
-                        var uuid = UUID.v4();
-                        request.server.app.cache.set(uuid, {
-                            account: credentials
-                        }, 0, function(err) {
-                            debugger;
-                            if (err) {
-                                return reply(err);
-                            }
-
-                            request.auth.session.set({
-                                sid: uuid
-                            });
-
-                            console.log("    session was set in catbox".green);
-                            console.log("    will now redirect to /lang/dashboard");
-
-                            return reply.redirect("/" + request.params.lang + "/dashboard");
-                        });
-                    });
-
-                },
-                function() {
-                    return reply(Boom.badImplementation());
-                }
-            );
-
-    },
-
-
     /* will handle these paths: /pt/dashboard, /en/dashboard   */
     dashboard: function(request, reply) {
         utils.logHandlerInfo("dashboard", request);
 
         debugger;
 
-        // when NODE_ENV is "no-auth", the route's auth configuration is set to false
-        if(config.get('hapi.auth')===false){
-            request.auth.credentials.id = 1;
-            request.auth.credentials.firstName = "paulo";
-            request.auth.credentials.lastName = "vieira";            
-        }
-        else{
-            if (!request.auth.isAuthenticated) {
+        // when NODE_ENV is "debug-no-auth", the route's auth configuration is set to false
+        if(config.get('hapi.auth')!==false){
+            if(!request.auth.isAuthenticated){
                 console.log("    not authenticated, will now redirect to /lang/login");
                 return reply.redirect("/" + request.params.lang + "/login");
-            }            
+            }
         }
-
-
-        var transformMap = transforms.maps.text;
-        var transform    = transforms.transformArray;
+        else{
+            request.auth.credentials.id = 1;
+            request.auth.credentials.firstName = "paulo";
+            request.auth.credentials.lastName = "vieira";
+        }
 
 
         var context = {
-            texts: request.pre.texts,
-            textsJson: JSON.stringify(transform(request.pre.textsC.toJSON(), transformMap)),
-            auth: request.auth,
+            texts:      request.pre.texts,
+            textsArray: request.pre.textsArray,
+            files:      request.pre.files,
+            filesArray: request.pre.filesArray,
+            auth:       request.auth,
         };
 
         return reply.view('dashboard', {

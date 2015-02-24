@@ -11,7 +11,7 @@ var preRequisites = {
 	db: {
 		read_users: {
 			method: function(request, reply){
-				console.log("pre: read users");
+				console.log("pre: db.read_users");
 		        var usersC = new BaseC();
 
 		        usersC
@@ -37,7 +37,7 @@ var preRequisites = {
 		// if not, checks in request.auth.credential.email
 		read_user_by_email: {
 			method: function(request, reply){
-				console.log("pre: read user by email");
+				console.log("pre: db.read_user_by_email");
 
 				var email = request.params.email || request.auth.credentials.email || "";
 				console.log("		w: ", request.auth.credentials);
@@ -65,7 +65,7 @@ var preRequisites = {
 
 		read_user_by_token: {
 			method: function(request, reply){
-				console.log("pre: read user by token");
+				console.log("pre: db.read_user_by_token");
 
 				var recoverToken = request.query.token || request.params.token || "";
 		        var usersC = new BaseC();
@@ -92,7 +92,7 @@ var preRequisites = {
 
 		read_texts: {
 			method: function(request, reply){
-				console.log("pre: read texts");
+				console.log("pre: db.read_texts");
 		        var textsC = new BaseC();
 
 		        textsC
@@ -116,7 +116,7 @@ var preRequisites = {
 
 		read_files: {
 			method: function(request, reply){
-				console.log("pre: read files");
+				console.log("pre: db.read_files");
 		        var filesC = new BaseC();
 
 		        filesC
@@ -141,21 +141,44 @@ var preRequisites = {
 	},
 
 	transform: {
+
 		texts: {
 			method: function(request, reply){
+				console.log("pre: transform.texts");
 
 	            var transformMap = transforms.maps.text;
 	            var transform    = transforms.transformArray;
 
-				var texts = transform(request.pre.textsC.toJSON(), transformMap);
+				var textsArray = transform(request.pre.textsC.toJSON(), transformMap);
 
-				reply(_.indexBy(texts, "id"));
+				// transform the array into an object, indexed by the id; this will make it easy to access an arbitrary text,
+				// and will avoid using sparse arrays
+				var textsObj = _.indexBy(textsArray, "id");
+
+				return reply(textsObj);
 			},
+
 			assign: "texts"
+		},
+
+		textsArray: {
+			method: function(request, reply){
+				console.log("pre: transform.textsArray");
+
+	            var transformMap = transforms.maps.text;
+	            var transform    = transforms.transformArray;
+
+				var textsArray = transform(request.pre.textsC.toJSON(), transformMap);
+
+				return reply(textsArray);
+			},
+
+			assign: "textsArray"
 		},
 
 		files: {
 			method: function(request, reply){
+				console.log("pre: transform.files");
 
 	            var transformMap = transforms.maps.files;
 	            var transform    = transforms.transformArray;
@@ -167,92 +190,68 @@ var preRequisites = {
 					obj["fullPath"] = obj["path"] + "/" + obj["name"];
 				});
 
-				reply(_.indexBy(files, "id"));
+				var filesObj = _.indexBy(files, "id");
+
+				return reply(filesObj);
 			},
+
 			assign: "files"
+		},
+
+		filesArray: {
+			method: function(request, reply){
+				console.log("pre: transform.filesArray");
+
+	            var transformMap = transforms.maps.files;
+	            var transform    = transforms.transformArray;
+
+				var filesArray = transform(request.pre.filesC.toJSON(), transformMap);
+
+				_.forEach(filesArray, function(obj){
+					obj["fullPath"] = obj["path"] + "/" + obj["name"];
+				});
+
+				return reply(filesArray);
+			},
+
+			assign: "filesArray"
 		},
 	},
 
-
-
-	// filter the texts collection to get only those that are image urls
-	extractImages: {
+	filterImages: {
 		method: function(request, reply){
-
-			var texts = request.pre.textsC.toJSON();
+			console.log("pre: filterImages");
 
 			var images = {};
-			images.carousel = {};
+			images["biodiversidade"]        = [];
+			images["recursos-hidricos"]     = [];
+			images["saude"]                 = [];
+			images["turismo"]               = [];
+			images["agricultura-florestas"] = [];
+			images["energia"]               = [];
 
+			_.each(request.pre.files, function(obj){
+				var tags = obj.tags;
+				if(_.contains(tags, "image") && _.contains(tags, "carousel")){
 
-			// extract all the texts that are image url
+					if(_.contains(tags, "biodiversidade")){             images["biodiversidade"].push(obj); }
+					else if(_.contains(tags, "recursos-hidricos")){     images["recursos-hidricos"].push(obj); }
+					else if(_.contains(tags, "saude")){                 images["saude"].push(obj); }
+					else if(_.contains(tags, "turismo")){               images["turismo"].push(obj); }
+					else if(_.contains(tags, "agricultura-florestas")){ images["agricultura-florestas"].push(obj); }
+					else if(_.contains(tags, "energia")){               images["energia"].push(obj); }
+				}
+			})
 
-			images.all = _.filter(texts, function(obj){
-				return _.contains(obj.tags, "image") || _.contains(obj.tags, "images") || _.contains(obj.tags, "img") || _.contains(obj.tags, "imagem") || _.contains(obj.tags, "imagens");
-			});
-
-
-			// extract the images for each sector
-
-			images.energia = _.filter(images.all, function(obj){
-				return obj.tags.join().indexOf("energia") >= 0;
-			});
-
-			images.turismo = _.filter(images.all, function(obj){
-				return obj.tags.join().indexOf("turismo") >= 0;
-			});
-
-			images.biodiversidade = _.filter(images.all, function(obj){
-				return obj.tags.join().indexOf("biodiversidade") >= 0;
-			});
-
-			images.saude = _.filter(images.all, function(obj){
-				return obj.tags.join().indexOf("saude") >= 0 || obj.tags.join().indexOf("saúde") >= 0;
-			});
-
-			images.recursosHidricos = _.filter(images.all, function(obj){
-				return obj.tags.join().indexOf("hidricos") >= 0 || obj.tags.join().indexOf("hídricos") >= 0;
-			});			
-
-			images.agricultura = _.filter(images.all, function(obj){
-				return obj.tags.join().indexOf("agricultura") >= 0 || obj.tags.join().indexOf("florestas") >= 0;
-			});
-
-
-			// extract the images for each sector that are to be in the carousel
-
-			images.carousel.energia = _.filter(images.energia, function(obj){
-				return _.contains(obj.tags, "carousel");
-			});
-
-			images.carousel.turismo = _.filter(images.turismo, function(obj){
-				return _.contains(obj.tags, "carousel");
-			});
-
-			images.carousel.biodiversidade = _.filter(images.biodiversidade, function(obj){
-				return _.contains(obj.tags, "carousel");
-			});
-
-			images.carousel.saude = _.filter(images.saude, function(obj){
-				return _.contains(obj.tags, "carousel");
-			});
-
-			images.carousel.recursosHidricos = _.filter(images.recursosHidricos, function(obj){
-				return _.contains(obj.tags, "carousel");
-			});
-
-			images.carousel.agricultura = _.filter(images.agricultura, function(obj){
-				return _.contains(obj.tags, "carousel");
-			});
-
-
-			reply(images);
+			return reply(images);
 		},
+
 		assign: "images"
 	},
 
 	abortIfNotAuthenticated: {
 		method: function(request, reply){
+			console.log("pre: abortIfNotAuthenticated");
 
 		    if(config.get('hapi.auth')!==false){
 		        if(!request.auth.credentials.id){
@@ -266,12 +265,12 @@ var preRequisites = {
 		    }
 
 		    return reply();
-
 		}
 	},
 
 	// route pre-requisite to be added to all routes that have the lang param validation
 	redirectOnInvalidLang: function(request, reply){
+			console.log("pre: redirectOnInvalidLang");
 debugger;
         // if the lang param is not valid, it has been set to undefined
         if(request.params.lang === undefined){
@@ -284,40 +283,40 @@ debugger;
 
 
 
-	preA: {
-		method: function(request, reply){
-			console.log("preA");
-			var value = "value from preA: @" + Date();
+	// preA: {
+	// 	method: function(request, reply){
+	// 		console.log("preA");
+	// 		var value = "value from preA: @" + Date();
 
-			setTimeout(function(){
-				console.log("preA will now reply");
-				return reply(value);
-			}, 1000);
-		},
-		assign: "pre_A"
-	},
+	// 		setTimeout(function(){
+	// 			console.log("preA will now reply");
+	// 			return reply(value);
+	// 		}, 1000);
+	// 	},
+	// 	assign: "pre_A"
+	// },
 
-	preB: {
-		method: function(request, reply){
-			console.log("preB");
-			var value = "value from preB: @" + Date();
-			setTimeout(function(){
-				console.log("preB will now reply");
-				return reply(value);
-			}, 2000);
-		},
+	// preB: {
+	// 	method: function(request, reply){
+	// 		console.log("preB");
+	// 		var value = "value from preB: @" + Date();
+	// 		setTimeout(function(){
+	// 			console.log("preB will now reply");
+	// 			return reply(value);
+	// 		}, 2000);
+	// 	},
 
-		assign: "pre_B"
-	},
+	// 	assign: "pre_B"
+	// },
 
-	preW: function(request, reply){
-		console.log("preW");
-		var value = "value from preW: @" + Date();
-		setTimeout(function(){
-			console.log("preW will now reply");
-			return reply(value);
-		}, 1000);
-	},
+	// preW: function(request, reply){
+	// 	console.log("preW");
+	// 	var value = "value from preW: @" + Date();
+	// 	setTimeout(function(){
+	// 		console.log("preW will now reply");
+	// 		return reply(value);
+	// 	}, 1000);
+	// },
 
 
 };
