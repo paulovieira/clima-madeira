@@ -30,6 +30,7 @@
     "pretty-error": "1.1.1",
     "q": "1.1.2",
     "require-directory": "2.0.0",
+    "strip-json-comments": "^1.0.2",
     "underscore": "1.7.0",
     "underscore.string": "2.4.0"
   },

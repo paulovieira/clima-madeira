@@ -31,3 +31,11 @@
 -texts rest route: take into account the validations for put and post (we should delete some properties in the client before sending the payload)
 
 -what if the server can't connect to external services? (like mandrill) This can be simulated in the localhost if we don't have internet.
+
+150223:
+
+por os routes do general page num objecto
+
+nunjucks ... | stringify
+
+fazer um resumo do acontece desde o request ate à resposta

@@ -1,4 +1,6 @@
+var fs = require("fs");
 var Path = require('path');
+var stripJsonComments = require("strip-json-comments");
 var jsonFormat = require('json-format');
 require("console-stamp")(console, "HH:mm:ss.l");
 //var _ = require('underscore');
@@ -6,18 +8,17 @@ var changeCase = require("change-case-keys");
 
 
 var rootPath = Path.normalize(__dirname + "/../../..");
+var dataPath = rootPath + "/database/initial-data/groups.json";
 
 var BaseC = require(rootPath + "/server/models/base-model.js").collection;
 var baseC = new BaseC();
-var dbData;
 
 
 // populate groups
-var groupsArray = require(rootPath + "/database/initial-data/groups.js");
-changeCase(groupsArray, "underscored");
-baseC.reset(groupsArray);
+var groupsArray = JSON.parse( stripJsonComments( fs.readFileSync(dataPath, "utf-8") ) );
 
-dbData = JSON.stringify(baseC.toJSON());
+changeCase(groupsArray, "underscored");
+var dbData = JSON.stringify(groupsArray);
 
 var promise =
     baseC.execute({

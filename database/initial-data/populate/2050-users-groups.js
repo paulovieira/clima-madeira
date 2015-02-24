@@ -1,16 +1,21 @@
+var fs = require("fs");
 var Path = require('path');
+var stripJsonComments = require("strip-json-comments");
 var jsonFormat = require('json-format');
 var _ = require('underscore');
 var changeCase = require("change-case-keys");
 
 var rootPath = Path.normalize(__dirname + "/../../..");
+var dataPath = rootPath + "/database/initial-data/users-groups.json";
 
 var BaseC = require(rootPath +  "/server/models/base-model.js").collection;
 var baseC1 = new BaseC(),
     baseC2 = new BaseC();
 
 // populate users_groups 
-var usersGroupsArray = require(rootPath + "/database/initial-data/users-groups.js");
+var usersGroupsArray = JSON.parse( stripJsonComments( fs.readFileSync(dataPath, "utf-8") ) );
+
+
 var emailsUniq = _.chain(usersGroupsArray).pluck("email").uniq().value();
 var emailsCriteria = [];
 
@@ -48,11 +53,13 @@ var promise = baseC1.execute({
             });
 
             changeCase(usersGroupsArray, "underscored");
+            
             var promise2 = baseC2.execute({
                 query: {
                     command: "select * from users_groups_create($1);",
                     arguments: JSON.stringify(usersGroupsArray)
-                }
+                },
+                changeCase: false
             });
             return promise2;
         },
