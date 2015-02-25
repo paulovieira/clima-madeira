@@ -37,7 +37,7 @@
 {% block scripts %}
 
 
-    <script src="/common/js/underscore.js"></script>
+    <script src="/common/js/underscore-1.6.0.js"></script>
     <script src="/common/js/json2.js"></script>
 
     <script src="/common/js/backbone.js"></script>
@@ -47,14 +47,14 @@
     <script src="/common/js/backbone.syphon.js"></script>
     <script src="/common/js/backbone_override.js"></script>
 
-    <script src="/common/js/q.js"></script>
+    <script src="/common/js/q-1.1.2.js"></script>
     <script src="/common/js/nunjucks-slim.js"></script>
     <script src="/common/js/moment_2.9.0.js"></script>
 
     <script src="/dashboard/templates.js"></script>
 
     <script type="text/javascript">
-        var Clima = {};
+        window.Clima = window.Clima || {};
         Clima.lang = "{{ lang }}";
         Clima.texts  = {{ ctx.textsArray | stringify }};
         Clima.files  = {{ ctx.filesArray | stringify }};

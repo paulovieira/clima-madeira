@@ -47,9 +47,9 @@ var routeTable = [
 
     {
         method: 'GET',
-        path: '/test/{anyPath*}',
+        path: '/editor/{anyPath*}',
         handler: {
-            directory: { path: './client/test' }
+            directory: { path: './client/editor' }
         },
         config: {
             auth: false,

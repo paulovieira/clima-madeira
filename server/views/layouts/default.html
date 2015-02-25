@@ -22,7 +22,8 @@
 
     {# common css (included in all pages, but only after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    {% include "common/kendo_stylesheets.html" %}
+    {# {% include "common/kendo_stylesheets.html" %} #}
+    {% include "common/summernote_stylesheets.html" %}
     {% endif %}
 
     {# custom css (specific for each page - to be overriden in that page) #}
@@ -55,7 +56,8 @@
 
     {# editor javascript (included in all pages, but only after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    {% include "common/editor_scripts.html" %}
+    {# {% include "common/editor_scripts.html" %} #}
+    {% include "common/summernote_scripts.html" %}
     {% endif %}
 
 </body>

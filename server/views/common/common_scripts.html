@@ -1,8 +1,8 @@
 <script type="text/javascript">
 
-    window.Clima = {};
-    Clima.lang = "{{ lang }}";
-    Clima.texts  = {{ ctx.textsArray | stringify }};
+    window.Clima = window.Clima || {};
+    //Clima.lang = "{{ lang }}";
+    //Clima.texts  = {{ ctx.textsArray | stringify }};
 
 	// simple polyfill for addEventListener (not available in IE8)
 	Clima.addEvent = function(evnt, elem, func) {
@@ -16,24 +16,31 @@
 	   }
 	}
 
-	// buttons from the navbar
-	Clima.addEvent("click", document.getElementById("js-login-nav"), function(){
-		window.location.href = "/{{ lang }}/login";
-	});
+	// button from the navbar - login
+	Clima.loginBtn = document.getElementById("js-login-nav");
+	if(!!Clima.loginBtn){
+		Clima.addEvent("click", Clima.loginBtn, function(){
+			window.location.href = "/{{ lang }}/login";
+		});
+	}
 
-	Clima.addEvent("click", document.getElementById("js-lang-nav"), function(){
-		var currentPath = window.location.pathname.split("/");
-		var newPath = "/" + (currentPath[1] === "pt" ? "en" : "pt");
+	// button from the navbar - lang
+	Clima.langBtn = document.getElementById("js-lang-nav");
+	if(!!Clima.langBtn){
+		Clima.addEvent("click", Clima.langBtn, function(){
+			var currentPath = window.location.pathname.split("/");
+			var newPath = "/" + (currentPath[1] === "pt" ? "en" : "pt");
 
-		for(var i=2, l=currentPath.length; i<l; i++){
-			newPath = newPath + "/" + currentPath[i];
+			for(var i=2, l=currentPath.length; i<l; i++){
+				newPath = newPath + "/" + currentPath[i];
 
-		}
-		window.location.href = newPath;
-	});
+			}
+			window.location.href = newPath;
+		});
+	}
 
 
 </script>
     
-<script src="/common/js/jquery.js"></script>
-<script src="/common/js/bootstrap_3.3.2.js"></script>
+<script src="/common/js/jquery-1.11.2.js"></script>
+<script src="/common/js/bootstrap-3.3.2.js"></script>

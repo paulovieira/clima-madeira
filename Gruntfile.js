@@ -32,7 +32,7 @@ module.exports = function(grunt) {
                 dest: 'client/test/lib.js',
                 options: {
                     alias: [
-                        './client/common/js/jquery.js:jQuery',
+                        './client/common/js/jquery-1.11.2.js:jQuery',
                     ]
                 }
             },

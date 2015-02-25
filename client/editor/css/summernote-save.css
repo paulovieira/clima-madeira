@@ -1,0 +1,13 @@
+.is-editable {
+	background-color: transparent;
+	border-style: dashed;
+	border-color: #191919;
+	border-radius: 6px;
+}
+
+.note-editor {
+	border: 2px solid #191919;
+	border-radius: 4px;
+	margin-bottom: 12px;
+	border-style: dashed;
+}
