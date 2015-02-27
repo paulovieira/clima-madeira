@@ -1,5 +1,4 @@
 
-
 var Boom = require('boom');
 var Joi = require('joi');
 var config = require('config');
@@ -13,7 +12,6 @@ var TextsC = require("../../server/models/base-model.js").collection;
 var utils = require('../../server/common/utils.js');
 var transforms = require('../../server/common/transforms.js');
 var pre = require('../../server/common/pre.js');
-
 
 
 
@@ -87,6 +85,8 @@ debugger;
 
 internals.validatePayloadForCreate = function(value, options, next){
 
+    console.log("validatePayloadForCreate");
+
     var schemaCreate = Joi.object().keys({
         id: Joi.number().integer().min(0),
 
@@ -111,15 +111,17 @@ internals.validatePayloadForCreate = function(value, options, next){
 
 internals.validatePayloadForUpdate = function(value, options, next){
 
+    console.log("validatePayloadForUpdate");
+
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0).required(),
-
-        tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
 
         contents: Joi.object().keys({
             pt: Joi.string().allow("").required(),
             en: Joi.string().allow("").required()
         }).required(),
+
+        tags: Joi.array().unique().min(0).includes(Joi.string()),
 
         contentsDesc: Joi.object().keys({
             pt: Joi.string().required(),
@@ -224,16 +226,6 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
 debugger;
 
-            if(config.get('hapi.auth')!==false){
-                if(!request.auth.credentials.id){
-                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
-                }
-            }
-            else{
-                request.auth.credentials.id = 1;
-                request.auth.credentials.firstName = "paulo";
-                request.auth.credentials.lastName = "vieira";
-            }
 
             var textsC = new TextsC();
             request.params.ids.forEach(function(id){
@@ -288,16 +280,6 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-            if(config.get('hapi.auth')!==false){
-                if(!request.auth.credentials.id){
-                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
-                }
-            }
-            else{
-                request.auth.credentials.id = 1;
-                request.auth.credentials.firstName = "paulo";
-                request.auth.credentials.lastName = "vieira";
-            }
 
         	var textsC = new TextsC(request.payload);
 
@@ -364,16 +346,9 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-            if(config.get('hapi.auth')!==false){
-                if(!request.auth.credentials.id){
-                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
-                }
-            }
-            else{
-                request.auth.credentials.id = 1;
-                request.auth.credentials.firstName = "paulo";
-                request.auth.credentials.lastName = "vieira";
-            }
+            // if the "contents" html has images, they are encoded in base64; this method
+            // will decoded them (to /data/uploads/public/images) and update the <img> tag accordingly
+            utils.decodeImg(request.payload[0].contents);
 
             var textsC = new TextsC(request.payload);
 
@@ -443,17 +418,6 @@ debugger;
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
 debugger;
-
-            if(config.get('hapi.auth')!==false){
-                if(!request.auth.credentials.id){
-                    return reply(Boom.unauthorized("To read/edit/create a resource you must sign in."));
-                }
-            }
-            else{
-                request.auth.credentials.id = 1;
-                request.auth.credentials.firstName = "paulo";
-                request.auth.credentials.lastName = "vieira";
-            }
 
             var textsC = new TextsC();
             request.params.ids.forEach(function(id){

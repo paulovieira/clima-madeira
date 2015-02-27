@@ -22,11 +22,11 @@
 	        <div class="collapse navbar-collapse" id="top-bar">
 	            <ul class="nav navbar-nav">
 
-	                <li class="{% if page_name=='introducao' %}active{% endif %}" ><a href="/{{ lang }}/introducao">{{ ctx.texts[17][lang] }}</a>
+	                <li class="{% if page_name=='introducao' %}active{% endif %} nav-border-left"><a href="/{{ lang }}/introducao">{{ ctx.texts[17][lang] }}</a>
 	                </li>
 
 					{# dropdown with the 6 sectors #}
-	                <li class="dropdown {% if page_name=='sectores' %}active{% endif %}">
+	                <li class="dropdown {% if page_name=='sectores' %}active{% endif %} nav-border-left">
 	                    <a href="/{{ lang }}/sectores" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ ctx.texts[23][lang] }} <span class="caret"></span></a>
 	                    <ul class="dropdown-menu" role="menu">
 {#
@@ -55,24 +55,25 @@
 	                    </ul>
 	                </li>
 
-	                <li class="{% if page_name=='cartografia' %}active{% endif %}"><a href="/{{ lang }}/cartografia">{{ ctx.texts[19][lang] }}</a>
+	                <li class="{% if page_name=='cartografia' %}active{% endif %} nav-border-left"><a href="/{{ lang }}/cartografia">{{ ctx.texts[19][lang] }}</a>
 	                </li>
 
-	                <li class="{% if page_name=='adaptacao' %}active{% endif %}"><a href="/{{ lang }}/adaptacao">{{ ctx.texts[20][lang] }}</a>
+	                <li class="{% if page_name=='adaptacao' %}active{% endif %} nav-border-left"><a href="/{{ lang }}/adaptacao">{{ ctx.texts[20][lang] }}</a>
 	                </li>
 
-	                <li class="{% if page_name=='equipa' %}active{% endif %}"><a href="/{{ lang }}/equipa">{{ ctx.texts[21][lang] }}</a>
+	                <li class="{% if page_name=='equipa' %}active{% endif %} nav-border-left nav-border-right"><a href="/{{ lang }}/equipa">{{ ctx.texts[21][lang] }}</a>
 	                </li>
+
 	            </ul>
 
+{#
 	            <form class="navbar-form navbar-right" role="search">
-
 						<div class="input-group">
 							<input type="text" class="form-control" placeholder="{{ ctx.texts[5][lang] }}">
 							<span class="input-group-addon search-box"><span class="glyphicon glyphicon-search"></span></span>
 						</div>
-
 	            </form>
+#}
 
 	            <ul class="nav navbar-nav navbar-right">
 

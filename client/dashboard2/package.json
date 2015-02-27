@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "backbone.marionette": "^2.4.0"
+  }
+}

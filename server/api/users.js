@@ -155,7 +155,6 @@ exports.register = function(server, options, next) {
                 utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-
                 var usersC = new UsersC();
 
                 usersC.execute({
@@ -384,8 +383,8 @@ debugger;
                 auth: config.get('hapi.auth'),
 
                 pre: [
-                    pre.db.read_users,
-                    pre.abortIfNotAuthenticated
+                    pre.abortIfNotAuthenticated,
+                    pre.db.read_users
                 ],
 
                 description: 'Put (short description)',

@@ -1,5 +1,11 @@
 var _ = require('underscore');
 var Hoek = require('hoek');
+var Path = require('path');
+var fs = require("fs");
+var cheerio = require('cheerio');
+var ent = require("ent");
+
+var rootPath = Path.normalize(__dirname + "/../..");
 
 module.exports = {
 
@@ -10,35 +16,71 @@ module.exports = {
         }
     },
 
-    // return the html filename (in server/views) associated with the "page1/page2" parameters (the typical url will be "/{lang}/{page1}/{page2}" )
-    getView: function(page1, page2) {
+    // return the correct html filename (in server/views) associated with the "param1/param2" parameters 
+    // (the typical url will be "/{lang}/{page1}/{page2}" )
+    getView: function(param1, param2) {
 
-        var htmlFile = 
+        var htmlFile = "";
+        var recognizedRoutes = [
+            {
+                param1: "",
+                param2: ""
+            },
+            {
+                param1: "introducao",
+                param2: ""
+            },
+            {
+                param1: "mapa",
+                param2: ""
+            },
+            {
+                param1: "equipa",
+                param2: ""
+            },
+            {
+                param1: "adaptacao",
+                param2: ""
+            },
+            {
+                param1: "cartografia",
+                param2: ""
+            },
+            {
+                param1: "sectores",
+                param2: "saude"
+            },
+            {
+                param1: "sectores",
+                param2: "turismo"
+            },
+            {
+                param1: "sectores",
+                param2: "energia"
+            },
+            {
+                param1: "sectores",
+                param2: "biodiversidade"
+            },
+            {
+                param1: "sectores",
+                param2: "recursos-hidricos"
+            },
+            {
+                param1: "sectores",
+                param2: "agricultura-florestas"
+            }
+        ];
 
-			// matches: "/{lang}"
-			!page1 && !page2 ? "home" :
+        var route = _.findWhere(recognizedRoutes, {param1: param1, param2: param2});
 
-	        // matches: "/{lang}/introducao", "/{lang}/sobre", etc
-			page1 === "introducao" && !page2 ? "introducao" :
-			page1 === "mapa"       && !page2 ? "mapa"       :
-			page1 === "equipa"     && !page2 ? "equipa"     :
-			page1 === "adaptacao"  && !page2 ? "adaptacao"  :
-			page1 === "cartografia" && !page2 ? "cartografia" :
-			page1 === "sectores"   && !page2 ? "sectores"   :
-			//page1 === "test"       && !page2 ? "test"       :
-			//page1 === "menu"       && !page2 ? "menu"       :
-
-			// matches: "/{lang}/sectores/biodiversidade", "/{lang}/sectores/energia", etc
-			page1 === "sectores"   && page2 === "biodiversidade"        ? "sectores/biodiversidade"        :
-			page1 === "sectores"   && page2 === "recursos-hidricos"     ? "sectores/recursos-hidricos"     :
-			page1 === "sectores"   && page2 === "saude"                 ? "sectores/saude"                 :
-			page1 === "sectores"   && page2 === "turismo"               ? "sectores/turismo"               :
-			page1 === "sectores"   && page2 === "agricultura-florestas" ? "sectores/agricultura-florestas" :
-			page1 === "sectores"   && page2 === "energia"               ? "sectores/energia"               : 
-			"";
+        if(route){
+            htmlFile = (route.param1 + (route.param2 ? "/" + route.param2 : "")) || "home";
+        }
 
         return htmlFile;
     },
+
 
     // call Hoek.transform in all objects of an array (of objects)
     transform: function(array, transform, options) {
@@ -126,6 +168,54 @@ module.exports = {
         //		require("../plugins/tv.js")(server);
     },
 
+
+    decodeImg: function(contents){
+        var langKeys = Object.keys(contents),
+            foundImgBase64 = false;
+
+        for(var i=0, l=langKeys.length; i<l; i++){
+            if(foundImgBase64){
+                break;
+            }
+
+            var lang = langKeys[i];
+
+            var $ = cheerio.load(contents[lang], {
+                normalizeWhitespace: true,
+                decodeEntities: true
+            });
+
+            $("img").each(function(){
+                var src   = $(this).attr("src");
+                var index = src.indexOf("base64");
+
+                if(index !== -1){
+
+                    var srcBase64 = src.substr(index + 7);  // +7 to include "base64,"
+                    var filename = $(this).data("filename") || "img_" + Date.now() + ".jpg";
+                    var filePathPhysical = "/data/uploads/public/images/" + filename;
+                    var filePathLogical = "/uploads/public/images/" + filename;
+
+                    try{
+
+                        fs.writeFileSync(rootPath + filePathPhysical, new Buffer(srcBase64, "base64"));
+                        $(this).attr("src", filePathLogical);
+                        $(this).removeAttr("data-filename");
+
+                        contents[lang] = ent.decode($.html());
+
+                        foundImgBase64 = true;
+                    }
+                    catch(err){
+                        throw err;
+                    }
+                }
+
+            });
+        }
+
+        console.log("contents: ", contents);
+    }
     /*
 
     	parseTextsArray: function(resp){

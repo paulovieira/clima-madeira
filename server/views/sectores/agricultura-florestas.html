@@ -9,22 +9,29 @@
 
 {% block title %}{{ ctx.texts[15][lang] }} - agricultura e florestas{% endblock %} 
 
-
+{#
 {% block navigation %}
 
 {{ navigation(ctx, page_name, sector_name) }}
 
 {% endblock %}
+#}
 
 {% block content %}
 
 
+
+
 <div class="row">
-    <div class="col-sm-10 col-sm-offset-1 col-lg-8 col-lg-offset-2" style="margin-top: 20px;">
+    <div class="col-sm-1 col-lg-2" id="left-column" style=""></div>
+    <div class="col-sm-10 xcol-sm-offset-1 col-lg-8 xcol-lg-offset-2" id="main-content" style="margin-top: 20px;">
+
+		{{ navigation(ctx, page_name, sector_name) }}
 
 		{{ home_sector(ctx, 'agricultura-florestas') }}
 
     </div>
+    <div class="col-sm-1 col-lg-2" id="right-column" style=""></div>
 </div>
 
 {#

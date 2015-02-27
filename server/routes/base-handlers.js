@@ -38,18 +38,13 @@ var handlers = {
         utils.logHandlerInfo("generalPage", request);
         debugger;
 
-        var viewFile = utils.getView(request.params.page1, request.params.page2);
+        var viewFile = utils.getView(request.params.page1 || "", request.params.page2 || "");
 
         // if the page params are not recognized, the empty string will be returned
         if(!viewFile){
             return reply.redirect("/" + request.params.lang + "/404");
         }
 
-        // create a nested object with the images for the carousel (for each sector)
-        request.pre.files.carousel = {};
-        request.pre.files.carousel["agricultura-florestas"] = [request.pre.files[18], request.pre.files[19], request.pre.files[20] ];
-
-//console.log(request.pre.files);
 
         var context = {
             texts: request.pre.texts,

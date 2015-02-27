@@ -241,7 +241,7 @@ var preRequisites = {
 					else if(_.contains(tags, "agricultura-florestas")){ images["agricultura-florestas"].push(obj); }
 					else if(_.contains(tags, "energia")){               images["energia"].push(obj); }
 				}
-			})
+			});
 
 			return reply(images);
 		},
@@ -253,12 +253,14 @@ var preRequisites = {
 		method: function(request, reply){
 			console.log("pre: abortIfNotAuthenticated");
 
+			// with NODE_ENV=debug-no-auth, all routes have "config: false"
 		    if(config.get('hapi.auth')!==false){
 		        if(!request.auth.credentials.id){
-		            return reply(Boom.unauthorized("To read/edit/create a resource you must sign in.")).takeover();
+		            return reply(Boom.unauthorized("To access this resource you must be authenticated.")).takeover();
 		        }
 		    }
 		    else{
+		    	// use the default user
 		        request.auth.credentials.id = 1;
 		        request.auth.credentials.firstName = "paulo";
 		        request.auth.credentials.lastName = "vieira";
@@ -331,19 +333,19 @@ The redirectOnInvalidLang pre-requisite method has been added to all the routes 
 (this should happen for all the routes that reply with a view).
 
 The lang param has already been validated. If it is not valid, the validation method change the param 
-to undefined. 
-
-If that is the case, we redirect immediately to the general 404 page (using
+to undefined. If that happens, we redirect immediately to the general 404 page (using
 the default language). 
 
-But the redirection to the 404 page can happen in 2 ways:
+However the redirection to the 404 page can happen in 2 ways:
 	        
 EXAMPLE 1: /fr or /fr/fuiwebfw or /zzz/fwiebfwie: the pre-requisite will detect that the language
-is not valid (it has been set to undefined) and will immediately redirect (bypassing the handler, 
+is not valid (it has been set to undefined in the validation) and will immediately redirect (bypassing the handler, 
 because of the call to .takeover())
 
-EXAMPLE 2: /pt/fiwebfiwuef: here the language is allowed, so the control is continues to the handler;
-It will picked up by the /{lang}/{anyPath*} route. This handler also redirects to the 404 page. 
+EXAMPLE 2: /pt/fiwebfiwuef: here the language is valid, so the control is given back to the handler;
+It will end up in the  handler for the /{lang}/{anyPath*} route. This handler also redirects to the 404 page, because
+it detects that "fiwebfiwuef" is not associated with any view (it's a simple custom handler). 
+
 The difference is that in this case we know the language, so we show the 404 page in the requested language.
 
 */

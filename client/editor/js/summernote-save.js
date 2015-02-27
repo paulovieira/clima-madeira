@@ -11,43 +11,63 @@ Clima.summernoteOptions = {
         ['toolbar-group', ['height']],
         ['toolbar-group', ['link', 'picture', 'hr']],
         ['toolbar-group', ['undo', 'redo',  'codeview']],
-        ['toolbar-group', ['save']]
+        ['toolbar-group', ['save']],
+        ['toolbar-group', ['close']]
     ]
 };
 
 $('.is-editable').on("click", function(e){
-
-    if(!!Clima.$currentOpenEditor){
-        Clima.$currentOpenEditor.destroy();
-        Clima.$currentOpenEditor = null;
-    }
+//debugger;
+    // if(!!Clima.$currentOpenEditor){
+    //     Clima.$currentOpenEditor.destroy();
+    //     Clima.$currentOpenEditor = null;
+    // }
 
     var $target = $(e.target);
-    $target.summernote(Clima.summernoteOptions);
+    //var h = $target.closest(".is-editable").html();
+    //console.log("html: ", h);
 
-    Clima.$currentOpenEditor = $target;
+    $target.closest(".is-editable").summernote(Clima.summernoteOptions);
+	e.preventDefault();
+//    Clima.$currentOpenEditor = $target;
 });
 
-$("body").on("click", function(e){
+$("body").on("click", ".note-editor", function(e){
+//debugger;
 
-	// if we click an editable element that is an anchor (or a children of an anchor), we must stop the default action
-    if($(e.target).hasClass("is-editable")){
-    	e.preventDefault();
-        return;
-    }
+	$target = $(e.target);
 
-    // similar: if we have the editor already open and click inside it, and the editable text is an anchor (or a children of an anchor),
-    // we must prevent the default action
-    if($(e.target).parents(".note-editor").length > 0){
-        e.preventDefault();
-    }
-    // otherwise, if we click outside the editor, close it!
-	else{
-		if(!!Clima.$currentOpenEditor){
-	        Clima.$currentOpenEditor.destroy();
-	        Clima.$currentOpenEditor = null;
-		}
-    }
+	if(!$target.hasClass("note-image-input")){
+		e.preventDefault();
+     }
+//        return;
+
+	// // if we click an editable element that is an anchor (or a children of an anchor), we must stop the default action
+ //    if($(e.target).hasClass("is-editable")){
+ //    	e.preventDefault();
+ //        return;
+ //    }
+
+    
+
+ //    // similar: if we have the editor already open and click inside it, and the editable text is an anchor (or a children of an anchor),
+ //    // we must prevent the default action; but if the click is in the modal, it should propagate normally;
+ //    //var $editable = $(e.target).parents(".note-editor");
+
+ //    //if($editable.length > 0){
+	// if($(e.target).hasClass("note-editable") || $(e.target).hasClass("btn-close-editor")){
+
+ //        	e.preventDefault();
+
+ //    }
+ //    // otherwise, if we click outside the editor, close it!
+	// // else{
+	// // 	if(!!Clima.$currentOpenEditor){
+	// //         Clima.$currentOpenEditor.destroy();
+	// //         Clima.$currentOpenEditor = null;
+	// // 	}
+ // //    }
+  	//e.stopPropagation();
 });
 
 
@@ -64,6 +84,17 @@ $.summernote.addPlugin({
 			buttonHtml += '</button>';
 		 	
 		 	return buttonHtml;
+        },
+
+        close: function() {
+        	var buttonHtml = "";
+
+			buttonHtml += '<button type="button" style="padding-top: 5px; padding-bottom: 4px;" class="btn btn-default btn-sm btn-close" title="Close editor" data-event="close-editor" data-hide="true" tabindex="-1">';
+			buttonHtml += '<i class="fa fa-times"></i>';
+			buttonHtml += '<span style="font-size: 110%; padding: 0; margin-left: 7px;" class="btn-close-editor">Close</span>';
+			buttonHtml += '</button>';
+		 	
+		 	return buttonHtml;
         }
     },
 
@@ -71,7 +102,7 @@ $.summernote.addPlugin({
         "save-data": function(event, editor, layoutInfo) {
 			var $editorElem = $(event.target).closest(".note-editor");
             var $editableElem = $editorElem.prev();
-//debugger;
+
 
             var textId = $editableElem.data("textId");
             var textObj = _.findWhere(Clima.texts, {
@@ -81,7 +112,6 @@ $.summernote.addPlugin({
 
 	        if (!textObj) {
 	            throw new Error("text not found: ", textId);
-	            return;
         	}
 
         	newContents[Clima.lang] = $editableElem.code();
@@ -89,20 +119,53 @@ $.summernote.addPlugin({
 	        var dataObj = {
 	            id: textId,
 	            contents: _.extend(textObj.contents, newContents),
-	            tags: textObj.tags
+	            //tags: textObj.tags
+	            tags: []
 	        };
 
 
             console.log(dataObj);
-
+//debugger;
             $editorElem.find(".btn-save").prop('disabled', true);
             $editorElem.find(".btn-save-text").html("Saving...");
-            
-            //$editorElem.css("border-color", "green");
-            alert("data was saved!");
 
-            $editorElem.find(".btn-save").prop('disabled', false);
-            $editorElem.find(".btn-save-text").html("Save");
+            var msg = "";
+	        Q(
+                $.ajax({
+                    url: "/api/texts/" + textId,
+                    type: "PUT",
+                    data: dataObj
+                })
+            )
+            .delay(400)
+            .done(
+                function(val) {
+                	msg = Clima.lang === "pt" ? "As alterações foram gravadas com sucesso." : "Changes were successfully saved.";
+                	alert(msg);
+
+		            $editorElem.find(".btn-save").prop('disabled', false);
+		            $editorElem.find(".btn-save-text").html("Save");                	
+                },
+                function(err) {
+                	msg = Clima.lang === "pt" ? "ERRO: as alterações ao texto não foram gravadas." : "ERRO: changes to the text were not saved.";
+                	alert(msg);
+
+		            $editorElem.find(".btn-save").prop('disabled', false);
+		            $editorElem.find(".btn-save-text").html("Save");
+                }
+            );
+
+            
+
+
+        },
+
+        "close-editor": function(event, editor, layoutInfo) {
+//        	debugger;
+			var $editableElem = $(event.target).closest(".note-editor").prev();
+			$editableElem.destroy();
+
+			event.preventDefault();
         }
     }
 });

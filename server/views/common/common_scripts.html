@@ -1,3 +1,7 @@
+   
+<script src="/common/js/jquery-1.11.2.js"></script>
+<script src="/common/js/bootstrap-3.3.2.js"></script>
+
 <script type="text/javascript">
 
     window.Clima = window.Clima || {};
@@ -39,8 +43,9 @@
 		});
 	}
 
+	// set the height of left and right columns (to make the gradient visible)
+	Clima.mainContentHeight = $("#main-content").height();
+	$("#left-column").height(Clima.mainContentHeight + "px");
+	$("#right-column").height(Clima.mainContentHeight + "px");
 
 </script>
-    
-<script src="/common/js/jquery-1.11.2.js"></script>
-<script src="/common/js/bootstrap-3.3.2.js"></script>
