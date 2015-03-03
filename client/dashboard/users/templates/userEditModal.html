@@ -1,0 +1,45 @@
+<div class="modal-header">
+    <h4 class="modal-title">Edit user #{{ id }}</h4>
+</div>
+
+
+<div class="modal-body">
+    <form>
+
+        <div class="form-group">
+            <label for="js-first-name">First Name</label>
+            <textarea id="js-first-name" class="form-control" name="firstName" rows="1">{{ firstName }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="js-last-name">Last Name</label>
+            <textarea id="js-last-name" class="form-control" name="lastName" rows="1">{{ lastName }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="js-email">Email</label>
+            <textarea id="js-email" class="form-control" name="email" rows="1">{{ email }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>id</label>
+            <input type="text" class="form-control" value="{{ id }}" disabled>
+        </div>
+        <div class="form-group">
+            <label>Created At</label>
+            <input type="text" class="form-control" value="{{ createdAt }}" disabled>
+        </div>
+
+
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary js-modal-save">Gravar</button>
+    <button type="button" class="btn btn-default js-modal-cancel">Cancelar</button>
+
+    <div id="message-status" style="margin-top: 35px;"></div>
+    <div id="" style="margin-top: 10px;">
+        <h5 id="message-links"></h5>
+    </div>
+</div>

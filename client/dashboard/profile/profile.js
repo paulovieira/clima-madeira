@@ -3,16 +3,19 @@ var UserM = Backbone.Model.extend({
 	defaults: {
 		"firstName": "",
 		"lastName": "",
-		"email": ""
+		"email": "",
+		"createdAt": undefined
 	},
 	initialize: function(){
+
 	},
 	parse: function(resp){
 		if(_.isArray(resp)){ resp = resp[0]; }
 //debugger;
-
+		resp.createdAt = moment(resp.createdAt).format('YYYY-MM-DD HH:mm:ss');
 		return resp;
-	}
+	},
+
 });
 
 

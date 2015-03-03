@@ -1,5 +1,21 @@
 {
-  "dependencies": {
-    "backbone.marionette": "^2.4.0"
+  "devDependencies": {
+    "browserify-shim": "^3.8.3"
+  },
+
+  "browserify-shim": {
+    "jQuery": "global:jQuery",
+    "Underscore": "global:_",
+    "Backbone": "global:Backbone",
+    "Marionette": "global:Marionette",
+    "Q": "global:Q",
+    "moment": "global:moment"
+    
+  },
+  "browserify": {
+    "transform": [ "browserify-shim" ]
+  },
+  "scripts": {
+    "build-dashboard-2": "watchify index.js -d -o app-dev.js -v" 
   }
 }

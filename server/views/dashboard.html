@@ -36,8 +36,8 @@
 
 {% block scripts %}
 
+{# NOTE: libraries that are loaded in all pages: jquery, bootstrap, underscore, q #}
 
-    <script src="/common/js/underscore-1.6.0.js"></script>
     <script src="/common/js/json2.js"></script>
 
     <script src="/common/js/backbone.js"></script>
@@ -47,11 +47,12 @@
     <script src="/common/js/backbone.syphon.js"></script>
     <script src="/common/js/backbone_override.js"></script>
 
-    <script src="/common/js/q-1.1.2.js"></script>
     <script src="/common/js/nunjucks-slim.js"></script>
     <script src="/common/js/moment_2.9.0.js"></script>
 
+
     <script src="/dashboard/templates.js"></script>
+
 
     <script type="text/javascript">
         window.Clima = window.Clima || {};
@@ -61,10 +62,19 @@
         Clima.userId = {{ ctx.auth.credentials.id }};
     </script>
 
-
     <script src="/dashboard/texts/texts.js"></script>
     <script src="/dashboard/profile/profile.js"></script>
+    <script src="/dashboard/users/users.js"></script>
     <script src="/dashboard/index.js"></script>
-
+{#
+#}
+{#
+    <script src="/dashboard/texts/texts.js"></script>
+    <script src="/dashboard/profile/profile.js"></script>
+    <script src="/dashboard2/index.js"></script>
+#}
+{#
+    <script src="/dashboard2/app-dev.js"></script>
+#}
 
 {% endblock %}

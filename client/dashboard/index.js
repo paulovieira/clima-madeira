@@ -329,14 +329,12 @@ var MainLayout = Mn.LayoutView.extend({
 	},
 
 	showAllUsers: function(){
-debugger;
 		var usersTableCV = new UsersTableCV({
 			collection: usersC
 		});
 
 		var fulfilled = _.bind(
 				function(){ 
-					//console.log(textsC.toJSON()); 
 					this.mainRightRegion.show(usersTableCV); 
 				}, 
 			this);

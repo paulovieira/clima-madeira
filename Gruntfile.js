@@ -37,35 +37,38 @@ module.exports = function(grunt) {
                 }
             },
 
-            "test-dev": {
-                src: ["client/test/js/**/*.js"],
-                dest: "client/test/app.js",
-                options: {
-                	external: ['jQuery'],
-                    browserifyOptions: {
-                        debug: true
-                    }
-                },
-            },
+            // "test-dev": {
+            //     src: ["client/test/js/**/*.js"],
+            //     dest: "client/test/app.js",
+            //     options: {
+            //     	external: ['jQuery'],
+            //         browserifyOptions: {
+            //             debug: true
+            //         }
+            //     },
+            // },
 
-            "test-prod": {
-                src: ["client/test/js/**/*.js"],
-                dest: "client/test/app.js",
-                //exclude: "client/test/app.js",
-                options: {
-                    banner: "/** this is the banner for the prod version **/",
-                	external: ['jQuery'],
-                    browserifyOptions: {
-                        debug: false
-                    }
-                }
-            },
+            // "test-prod": {
+            //     src: ["client/test/js/**/*.js"],
+            //     dest: "client/test/app.js",
+            //     //exclude: "client/test/app.js",
+            //     options: {
+            //         banner: "/** this is the banner for the prod version **/",
+            //     	external: ['jQuery'],
+            //         browserifyOptions: {
+            //             debug: false
+            //         }
+            //     }
+            // },
 
             "dashboard2-dev": {
-                src: ["client/dashboard2/js/**/*.js"],
-                dest: "client/dashboard2/app.js",
+                //src: ["client/dashboard2/js/**/*.js"],
+                src: "client/dashboard2/index.js",
+                dest: "client/dashboard2/app-dev.js",
+                //exclude: ["client/dashboard2/app-dev.js", "client/dashboard2/app-prod.js"],
                 options: {
                     //external: ['jQuery'],
+                    banner: "/** dev version **/",
                     browserifyOptions: {
                         debug: true
                     }
@@ -73,11 +76,12 @@ module.exports = function(grunt) {
             },
 
             "dashboard2-prod": {
-                src: ["client/dashboard2/js/**/*.js"],
-                dest: "client/dashboard2/app.js",
-                //exclude: "client/test/app.js",
+                //src: ["client/dashboard2/js/**/*.js"],
+                src: "client/dashboard2/index.js",
+                dest: "client/dashboard2/app-prod.js",
+                //exclude: ["client/dashboard2/app-dev.js", "client/dashboard2/app-prod.js"],
                 options: {
-                    banner: "/** this is the banner for the prod version **/",
+                    banner: "/** prod version **/",
                     //external: ['jQuery'],
                     browserifyOptions: {
                         debug: false
@@ -98,13 +102,21 @@ module.exports = function(grunt) {
                 files: 'client/ferramenta/**/*.html',
                 tasks: ['nunjucks:ferramenta']
             },
-            "compile-js-dev test": {
-                files: 'client/test/js/**/*.js',
-                tasks: ['browserify:test-dev']
-            },
-            "compile-js-dev dashboard2": {
-                files: 'client/dashboard2/**/*.js',
-                tasks: ['browserify:dashboard2-dev']
+            // "compile-js-dev test": {
+            //     files: 'client/test/js/**/*.js',
+            //     tasks: ['browserify:test-dev']
+            // },
+            "compile-js dashboard2": {
+                files: [
+                    'client/dashboard2/**/*.js', 
+                    '!client/dashboard2/node_modules/**/*.js', 
+                    '!client/dashboard2/app-dev.js', 
+                    '!client/dashboard2/app-prod.js'
+                ],
+                tasks: [
+                    'browserify:dashboard2-dev', 
+                    'browserify:dashboard2-prod'
+                ]
             },
         }
     });
@@ -118,10 +130,7 @@ module.exports = function(grunt) {
     // NOTE: "grunt compile-js:test" and "grunt browserify:test" are equivalent (will execute the same task:target)
     grunt.registerTask('default', ['watch']);
     grunt.registerTask('compile-templates', ['nunjucks:dashboard', 'nunjucks:ferramenta']);
-
-    //grunt.registerTask('compile-js-dev',  ['browserify:dashboard2-dev']);
-    //grunt.registerTask('compile-js-prod', ['browserify:dashboard2-prod']);
-
+    grunt.registerTask('compile-dashboard', ['browserify:dashboard2-dev', 'browserify:dashboard2-prod']);
 
 
 };

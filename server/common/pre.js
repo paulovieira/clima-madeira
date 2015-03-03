@@ -33,6 +33,30 @@ var preRequisites = {
 			assign: "usersC"
 		},
 
+		read_users_groups: {
+			method: function(request, reply){
+				console.log("pre: db.read_users_groups");
+		        var usersGroupsC = new BaseC();
+
+		        usersGroupsC
+		            .execute({
+		                query: {
+		                    command: "select * from users_groups_read()",
+		                },
+		            })
+		            .done(
+		                function() {
+		                	return reply(usersGroupsC);
+		                },
+		                function(err) {
+		                	console.log(err);
+		                    return reply(Boom.badImplementation());
+		                }
+			        );
+			},
+			assign: "usersGroupsC"
+		},
+
 		// returns a collection of users with 1 element; first checks if there is a param "email" and uses it;
 		// if not, checks in request.auth.credential.email
 		read_user_by_email: {

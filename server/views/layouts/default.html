@@ -1,7 +1,10 @@
 {# top-level variables - to be used in the pages and includes #}
-{% set jquery_is_loaded     = false %}
+
+{#
+{% set jquery_is_loaded     = false %} 
 {% set underscore_is_loaded = false %}
 {% set q_is_loaded          = false %}
+#}
 
 <!DOCTYPE html>
 <html lang="{{ lang }}">
@@ -49,7 +52,7 @@
 
 
     {# common javascript (included in all pages) #}
-    {% include "common/common_scripts.html" %}
+    {% include "common/common_scripts.html" %} 
 
     {# custom scripts (specific for each page - to be overriden in that page) #}    
     {% block scripts %}{% endblock %}

@@ -315,38 +315,49 @@ debugger;
                 var usersC = new UsersC(request.payload);
                 var dbUsersC = request.pre.usersC;
 
-                usersC.forEach(function(model){
-debugger;
-                    // this endpoint might be called from the update profile menu,
-                    // or from the users menu; if we are updating the profile, then
-                    // we force the id value to be the one in the credentials
-                    if(model.get("update_profile") === true){
-                        model.set("id", request.auth.credentials.id);
+                var usersGroupsC = request.pre.usersGroupsC;
 
-                        var userM = dbUsersC.findWhere({ id: request.auth.credentials.id});
+                if(usersC.length!==1){
+                    return reply(Boom.conflict("The collection should have only 1 model."));
+                }
 
-                        if(model.get("current_pw")){
-                            // 1. verify that the current password match with the one
-                            // in the database
-                            var res = Bcrypt.compareSync(model.get("current_pw"), userM.get("pwHash"));
+                var model = usersC.at(0);
 
-                            // 2. if so set the new password in the correct key
-                            if(res){
-                                model.set("pw_hash", Bcrypt.hashSync(model.get("new_pw"), 10))
-                            }
-                            else{
-                                return reply(Boom.conflict("The current password does not match."))   
-                            }
 
+                // this endpoint might be called from 2 places: a) the update profile menu,
+                // or b) from the users menu; 
+
+                // if it is from the update profile, then we force the id value to be the one in the credentials object
+                if(model.get("update_profile") === true || model.get("id") === request.auth.credentials.id){
+                    model.set("id", request.auth.credentials.id);
+
+                    var userM = dbUsersC.findWhere({ id: request.auth.credentials.id});
+
+                    if(model.get("current_pw")){
+                        // 1. verify that the current password match with the one
+                        // in the database
+                        var res = Bcrypt.compareSync(model.get("current_pw"), userM.get("pwHash"));
+
+                        // 2. if so set the new password in the correct key
+                        if(res){
+                            model.set("pw_hash", Bcrypt.hashSync(model.get("new_pw"), 10))
                         }
-                    }
-                    else{
-                        // TODO: make sure request.auth.credentials.id is relative
-                        // to a user in the admin group (the ones who can change the profile
-                        // of others users)
-                    }
-                });
+                        else{
+                            return reply(Boom.conflict("The current password does not match."))   
+                        }
 
+                    }
+                }
+                // if it called from the users menu, then we verify if the user is admin
+                else{
+                    var adminGroupCode = 99;
+                    var isAdmin = usersGroupsC.findWhere({userId: request.auth.credentials.id, groupCode: adminGroupCode });
+                    if(!isAdmin){
+                        return reply(Boom.conflict("To edit the details of other users you must be in the admin group"));    
+                    }
+                }
+
+                usersC.reset([model]);
                 var dbData = JSON.stringify(usersC.toJSON());
 
                 usersC.execute({
@@ -384,7 +395,7 @@ debugger;
 
                 pre: [
                     pre.abortIfNotAuthenticated,
-                    pre.db.read_users
+                    [pre.db.read_users, pre.db.read_users_groups]
                 ],
 
                 description: 'Put (short description)',
@@ -392,7 +403,7 @@ debugger;
                 tags: ['api'],
             }
         });
-/*
+
         // DELETE (one or more)
         server.route({
             method: 'DELETE',
@@ -410,7 +421,8 @@ debugger;
                     query: {
                         command: "select * from users_delete($1)",
                         arguments: [dbData]
-                    }
+                    },
+                    reset: true
                 })
                 .done(
                     function(){
@@ -429,14 +441,15 @@ debugger;
                 validate: {
                     params: internals.validateIds,
                 },
-                auth: utils.getAuthConfig("required"),
+                pre: [pre.abortIfNotAuthenticated],
+                auth: config.get('hapi.auth'),
 
                 description: 'Delete (short description)',
                 notes: 'Delete (long description)',
                 tags: ['api'],
             }
         });
-    */
+/*    */
 
 
     // CREATE A PASSWORD TOKEN

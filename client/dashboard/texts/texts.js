@@ -67,7 +67,7 @@ var TextEditModalIV = Mn.ItemView.extend({
 
 		this.model.set(data);
 		
-		Q(this.model.save()).then(
+		Q(this.model.save()).delay(100).then(
 			function(data){
 debugger;
 				Dashboard.$modal.modal("hide");
@@ -101,7 +101,7 @@ var TextDeleteModalIV = Mn.ItemView.extend({
 			},
 			function(err){
 				debugger;
-				console.log("ERROR: the modal has not been destroyed");
+				console.log("ERROR: the model has not been destroyed");
 			}
 		);
 	}
