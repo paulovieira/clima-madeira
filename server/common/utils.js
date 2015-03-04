@@ -68,7 +68,15 @@ module.exports = {
             },
             {
                 param1: "sectores",
+                param2: "recursos-hidricos"
+            },
+            {
+                param1: "sectores",
                 param2: "agricultura-florestas"
+            },
+            {
+                param1: "sectores",
+                param2: "agricultura-florestas-2"
             }
         ];
 

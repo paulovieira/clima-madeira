@@ -30,5 +30,16 @@
 		"id": 6,
 		"email": "user_energia@gmail.com",
 		"groupCode": 98
+	},
+
+	{
+		"id": 7,
+		"email": "clima@clima.com",
+		"groupCode": 99
+	},
+	{
+		"id": 8,
+		"email": "clima@clima.com",
+		"groupCode": 98
 	}
 ]

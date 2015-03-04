@@ -19,5 +19,12 @@
 		"lastName": "energia",
 		"email": "user_energia@gmail.com",
 		"pwHash": "abc"
+	},
+	{
+		"id": 4,
+		"firstName": "clima",
+		"lastName": "apelido",
+		"email": "clima@clima.com",
+		"pwHash": "abc"
 	}
 ]

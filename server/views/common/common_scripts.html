@@ -9,7 +9,7 @@
     //Clima.lang = "{{ lang }}";
     //Clima.texts  = {{ ctx.textsArray | stringify }};
 
-	// simple polyfill for addEventListener (not available in IE8)
+	{#  simple polyfill for addEventListener (because it is not available in IE8)  #}
 	Clima.addEvent = function(evnt, elem, func) {
 	   if (elem.addEventListener)  // W3C DOM
 	      elem.addEventListener(evnt,func,false);
@@ -21,7 +21,13 @@
 	   }
 	}
 
-	// button from the navbar - login
+	{#  button from the navbar - login/logout  #}
+	{#  
+		NOTE: we add a click handler here because in the navbar we cant use <a class='btn'>. More details here:
+		http://getbootstrap.com/css/#buttons
+		While button classes can be used on <a> and <button> elements, only <button> elements are supported
+		 within our nav and navbar components.
+	#}
 	Clima.loginBtn = document.getElementById("js-login-nav");
 	if(!!Clima.loginBtn){
 		Clima.addEvent("click", Clima.loginBtn, function(){
@@ -29,7 +35,14 @@
 		});
 	}
 
-	// button from the navbar - lang
+	Clima.logoutBtn = document.getElementById("js-logout-nav");
+	if(!!Clima.logoutBtn){
+		Clima.addEvent("click", Clima.logoutBtn, function(){
+			window.location.href = "/{{ lang }}/logout";
+		});
+	}
+
+	{# button from the navbar - lang #}
 	Clima.langBtn = document.getElementById("js-lang-nav");
 	if(!!Clima.langBtn){
 		Clima.addEvent("click", Clima.langBtn, function(){
@@ -44,9 +57,20 @@
 		});
 	}
 
-	// set the height of left and right columns (to make the gradient visible)
-	Clima.mainContentHeight = $("#main-content").height();
+	{# set the height of left and right columns (to make the gradient visible vertically) #}
+
+	Clima.mainContentHeight = $("#main-content").height() + 40;
 	$("#left-column").height(Clima.mainContentHeight + "px");
 	$("#right-column").height(Clima.mainContentHeight + "px");
+
+	{# this is used only for the agricultura-florestas-2 page (temporary) #}
+	$(".side-column").height(Clima.mainContentHeight + "px");
+
+
+	{# activate the bootstrap tooltips (top bar, login and lanaguage buttons) #}
+	if($(document).width() > 710){
+		$('[data-toggle="tooltip"]').tooltip();
+	}
+	
 
 </script>

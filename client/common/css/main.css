@@ -35,6 +35,11 @@ body {
 	display: block;
 }
 
+.side-column {
+  background-image: url('/common/images/bg-paper.png');
+  height: 400px;
+}
+
 .main-menu-text {
   font-size: 18px;
   font-weight: bold;

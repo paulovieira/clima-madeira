@@ -76,28 +76,75 @@
 #}
 
 	            <ul class="nav navbar-nav navbar-right">
+	
+		            <li style="margin-left: 15px;">
 
-		            <li style="margin-right: 15px;">
-		            	<button type="button" class="btn btn-default navbar-btn" id="js-login-nav">
-		            		<span class="glyphicon glyphicon-user"></span> 
+						{# set the correct icon and tooltip relative to the login/logout button #}
+		            	{% if ctx.auth.isAuthenticated %}
+
+		            		{% set dashboard_id = "js-logout-nav" %} 
+		            		{% set dashboard_icon_class = "glyphicon-log-out" %} 
+
+		            		{% if lang == "pt" %}
+			            		{% set dashboard_tooltip = "Clique para terminar a sessão" %} 
+		            		{% else %}
+			            		{% set dashboard_tooltip = "Click to log out from the session" %} 
+		            		{% endif %}
+
+		            	{% else %}
+
+		            		{% set dashboard_id = "js-login-nav" %} 
+		            		{% set dashboard_icon_class = "glyphicon-user" %} 
+
+		            		{% if lang == "pt" %}
+			            		{% set dashboard_tooltip = "Área reservada" %} 
+		            		{% else %}
+			            		{% set dashboard_tooltip = "Reserved area" %} 
+		            		{% endif %}
+
+		            	{% endif %}
+
+		            	<button type="button" class="btn btn-default navbar-btn" id="{{ dashboard_id }}" data-toggle="tooltip" data-placement="bottom" title="{{ dashboard_tooltip }}">
+		            		<span class="glyphicon {{ dashboard_icon_class }}"></span> 
 		            	</button>
+
+
+
+						{# set the correct icon (flag) and tooltip relative to the language button #}
+		            	{% if lang == "pt" %}
+		            		{% set language_icon_class = "flag-icon-gb"    %} 
+		            		{% set language_tooltip    = "Read in english" %} 
+		            	{% else %}
+		            		{% set language_icon_class = "flag-icon-pt"     %} 
+		            		{% set language_tooltip    = "Ler em português" %} 
+		            	{% endif %}
+
+	            		<button type="button" class="btn btn-default navbar-btn" id="js-lang-nav" data-toggle="tooltip" data-placement="bottom" title="{{ language_tooltip }}">
+	            			<span class="flag-icon {{ language_icon_class }}"></span>
+	            		</button>
+
 		            </li>
 
-
-		            <li>
-		            	{% if lang == "pt" %}
-		            		<button type="button" class="btn btn-default navbar-btn" id="js-lang-nav"><span class="flag-icon flag-icon-gb"></span></button>
-		            	{% else %}
-		            		<button type="button" class="btn btn-default navbar-btn" id="js-lang-nav"><span class="flag-icon flag-icon-pt"></span></button>
-		            	{% endif %}
+{# set the correct icon (flag) and tooltip relative to the language button #}
 {#
+		            <li>
+
+						
 		            	{% if lang == "pt" %}
-		            		<button type="button" class="btn btn-primary navbar-btn" id="js-lang-nav">&nbsp;&nbsp;English&nbsp;&nbsp;</button>
+		            		{% set language_icon_class = "flag-icon-gb"    %} 
+		            		{% set language_tooltip    = "Read in english" %} 
 		            	{% else %}
-		            		<button type="button" class="btn btn-primary navbar-btn" id="js-lang-nav">&nbsp;&nbsp;Português&nbsp;&nbsp;</button>
+		            		{% set language_icon_class = "flag-icon-pt"     %} 
+		            		{% set language_tooltip    = "Ler em português" %} 
 		            	{% endif %}
-#}
+
+	            		<button type="button" class="btn btn-default navbar-btn" id="js-lang-nav" data-toggle="tooltip" data-placement="bottom" title="{{ language_tooltip }}">
+	            			<span class="flag-icon {{ language_icon_class }}"></span>
+	            		</button>
+
 		            </li>
+#}
+
 	            </ul>
 
            
