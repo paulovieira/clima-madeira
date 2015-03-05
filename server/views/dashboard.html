@@ -1,6 +1,6 @@
 {% extends 'layouts/default.html' %}
 {% from "macros/navigation.html" import navigation %}
-{% set page_name = "dashboard" %}
+
 
 {% block title %}Área pessoal{% endblock %}
 
@@ -10,7 +10,7 @@
 
 {% block navigation %}
 
-{{ navigation(ctx, page_name) }}
+{{ navigation(ctx) }}
 
 {% endblock %}
 

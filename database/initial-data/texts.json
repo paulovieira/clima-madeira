@@ -1,4 +1,6 @@
 [
+
+    /* texts 0 - 499 are NOT meant to be editable */
     {
         "id": 0,
         "tags": [],
@@ -801,8 +803,110 @@
             "en": "Go back to the home page"
         },
         "author_email": "paulovieira@gmail.com"
-    }
+    },
 
+    {
+        "id": 79,
+        "tags": [],
+        "contents": {
+            "pt": "Clique para terminar a sessão",
+            "en": "Click to log out from the session"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+    {
+        "id": 80,
+        "tags": [],
+        "contents": {
+            "pt": "Read in english",
+            "en": "Ler em português"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+    {
+        "id": 81,
+        "tags": [],
+        "contents": {
+            "pt": "Entrar na área reservada",
+            "en": "Restricted area"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+    {
+        "id": 82,
+        "tags": [],
+        "contents": {
+            "pt": "Ir para o dashboard",
+            "en": "Show the dashboard"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+    {
+        "id": 83,
+        "tags": [],
+        "contents": {
+            "pt": "Mensagem de boas-vindas",
+            "en": "Welcome message"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+    {
+        "id": 84,
+        "tags": [],
+        "contents": {
+            "pt": "Metodologia",
+            "en": "Framework"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+    {
+        "id": 85,
+        "tags": [],
+        "contents": {
+            "pt": "Sumário executivo",
+            "en": "Executive summary"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+
+
+    /* texts 500- 1000 are meant to be editable */
+    {
+        "id": 500,
+        "tags": [],
+        "contents": {
+            "pt": "Metodologia",
+            "en": "Framework"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+    {
+        "id": 501,
+        "tags": [],
+        "contents": {
+            "pt": "Sumário executivo",
+            "en": "Executive summary"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+    {
+        "id": 502,
+        "tags": [],
+        "contents": {
+            "pt": "Estratégia de Adaptação",
+            "en": "Adaptation strategy"
+        },
+        "author_email": "paulovieira@gmail.com"
+    }
 
 
 /*

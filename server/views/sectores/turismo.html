@@ -2,15 +2,13 @@
 {% extends "layouts/default.html"          %}
 {% from "macros/navigation.html" import navigation %}
 
-{% set page_name = "sectores" %}
-{% set sector_name = "turismo" %}
 
 {% block title %}{{ ctx.texts[15][lang] }} - Turismo{% endblock %} 
 
 
 {% block navigation %}
 
-{{ navigation(ctx, page_name, sector_name) }}
+{{ navigation(ctx) }}
 
 {% endblock %}
 

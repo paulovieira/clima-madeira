@@ -35,6 +35,7 @@ var handlers = {
 
 
     generalPage: function(request, reply) {
+debugger;
         utils.logHandlerInfo("generalPage", request);
         debugger;
 
@@ -52,6 +53,8 @@ var handlers = {
             files: request.pre.files,
             images: request.pre.images,
             
+            urlParam1: request.params.page1,
+            urlParam2: request.params.page2,
             auth: request.auth,
         };
 
@@ -72,6 +75,8 @@ var handlers = {
         var context = {
             texts: request.pre.texts,
             auth: request.auth,
+
+            urlParam1: "login",
             lfr: request.query.lfr || "" // login fail reason
         }
 
@@ -209,6 +214,7 @@ debugger;
             files:      request.pre.files,
             filesArray: request.pre.filesArray,
             auth:       request.auth,
+            urlParam1:  "dashboard",
         };
 
         return reply.view('dashboard', {
@@ -226,6 +232,7 @@ debugger;
 
         var context = {
             texts: request.pre.texts,
+            urlParam1: "recover",
         };
 
         if(usersC.length === 0){
@@ -255,7 +262,8 @@ debugger;
         debugger;
 
         var context = {
-            texts: request.pre.texts
+            texts: request.pre.texts,
+            urlParam1: "404",
         }
 
         return reply.view('404', {

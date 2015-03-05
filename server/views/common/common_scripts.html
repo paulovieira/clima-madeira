@@ -21,28 +21,46 @@
 	   }
 	}
 
-	{#  button from the navbar - login/logout  #}
 	{#  
-		NOTE: we add a click handler here because in the navbar we cant use <a class='btn'>. More details here:
+		NOTE: we add click handlers for buttons in the navbar because we cant use <a class='btn'>. More details here:
 		http://getbootstrap.com/css/#buttons
-		While button classes can be used on <a> and <button> elements, only <button> elements are supported
-		 within our nav and navbar components.
+		"While button classes can be used on <a> and <button> elements, only <button> elements are supported
+		 within our nav and navbar components."
 	#}
+
+
+	{#  button from the navbar - login  #}
+
 	Clima.loginBtn = document.getElementById("js-login-nav");
 	if(!!Clima.loginBtn){
+		console.log("Clima.loginBtn");
 		Clima.addEvent("click", Clima.loginBtn, function(){
 			window.location.href = "/{{ lang }}/login";
 		});
 	}
 
+	{#  button from the navbar - logout  #}
+
 	Clima.logoutBtn = document.getElementById("js-logout-nav");
 	if(!!Clima.logoutBtn){
+		console.log("Clima.logoutBtn");
 		Clima.addEvent("click", Clima.logoutBtn, function(){
 			window.location.href = "/{{ lang }}/logout";
 		});
 	}
 
+	{#  button from the navbar - dashboard  #}
+
+	Clima.dashboardBtn = document.getElementById("js-dashboard-nav");
+	if(!!Clima.dashboardBtn){
+		console.log("Clima.dashboardBtn");
+		Clima.addEvent("click", Clima.dashboardBtn, function(){
+			window.location.href = "/{{ lang }}/dashboard";
+		});
+	}
+
 	{# button from the navbar - lang #}
+
 	Clima.langBtn = document.getElementById("js-lang-nav");
 	if(!!Clima.langBtn){
 		Clima.addEvent("click", Clima.langBtn, function(){
@@ -59,9 +77,19 @@
 
 	{# set the height of left and right columns (to make the gradient visible vertically) #}
 
-	Clima.mainContentHeight = $("#main-content").height() + 40;
-	$("#left-column").height(Clima.mainContentHeight + "px");
-	$("#right-column").height(Clima.mainContentHeight + "px");
+	$(document).height() - ($(".footer").height() + $("#main-content").height())
+
+	Clima.mainContentHeight = $("#main-content").outerHeight(true);
+	Clima.footerHeight = $(".footer").height();
+	Clima.documentHeight = $(document).height();
+
+	if(Clima.documentHeight - (Clima.footerHeight + Clima.mainContentHeight) > 0){
+		$("#main-content").height(Clima.documentHeight - Clima.footerHeight + "px");
+		Clima.mainContentHeight = $("#main-content").outerHeight(true);
+	}
+
+	//$("#left-column").height(Clima.mainContentHeight + "px");
+	//$("#right-column").height(Clima.mainContentHeight + "px");
 
 	{# this is used only for the agricultura-florestas-2 page (temporary) #}
 	$(".side-column").height(Clima.mainContentHeight + "px");

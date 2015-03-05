@@ -26,26 +26,31 @@ module.exports = {
                 param1: "",
                 param2: ""
             },
+
+            // ----------------------
+            
             {
                 param1: "introducao",
-                param2: ""
+                param2: "mensagem"
             },
             {
-                param1: "mapa",
-                param2: ""
+                param1: "introducao",
+                param2: "metodologia"
             },
             {
-                param1: "equipa",
-                param2: ""
+                param1: "introducao",
+                param2: "equipa"
             },
+
+            // ----------------------
+            
             {
-                param1: "adaptacao",
+                param1: "sumario-executivo",
                 param2: ""
             },
-            {
-                param1: "cartografia",
-                param2: ""
-            },
+
+            // ----------------------
+            
             {
                 param1: "sectores",
                 param2: "saude"
@@ -77,7 +82,22 @@ module.exports = {
             {
                 param1: "sectores",
                 param2: "agricultura-florestas-2"
+            },
+
+            // ----------------------
+            
+            {
+                param1: "cartografia",
+                param2: ""
+            },
+
+            // ----------------------
+            
+            {
+                param1: "estrategia-adaptacao",
+                param2: ""
             }
+
         ];
 
         var route = _.findWhere(recognizedRoutes, {param1: param1, param2: param2});

@@ -36,8 +36,27 @@ body {
 }
 
 .side-column {
-  background-image: url('/common/images/bg-paper.png');
+  background-image: url('/common/images/bg/gplaypattern_@2X.png');
+  background-image: url('/common/images/bg/gplaypattern.png');
+  background-image: url('/common/images/bg/grid_noise_@2X.png');
+  background-image: url('/common/images/bg/grid_noise.png');
+  background-image: url('/common/images/bg/paper_@2X.png');
+  background-image: url('/common/images/bg/paper.png');
+  background-image: url('/common/images/bg/polaroid_@2X.png');
+  background-image: url('/common/images/bg/polaroid.png');
+  background-image: url('/common/images/bg/shattered_@2X.png');
+  background-image: url('/common/images/bg/shattered.png');
+
+
+  background-image: url('/common/images/bg/grid_noise.png');
+
+
   height: 400px;
+
+
+
+
+
 }
 
 .main-menu-text {

@@ -1,7 +1,7 @@
 {#  NOTE: lang is a global variable #}
 {% extends "layouts/default.html"          %}
 {% from "macros/navigation.html" import navigation %}
-{% set page_name = "cartografia" %}
+
 
 {% block title %}{{ ctx.texts[15][lang] }} - Ferramenta{% endblock %} 
 
@@ -18,7 +18,7 @@
 
 {% block navigation %}
 
-  {{ navigation(ctx, page_name) }}  
+{{ navigation(ctx) }}
 
 {% endblock %}
 

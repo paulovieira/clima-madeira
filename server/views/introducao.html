@@ -1,14 +1,14 @@
 {#  NOTE: lang is a global variable #}
 {% extends "layouts/default.html"          %}
 {% from "macros/navigation.html" import navigation %}
-{% set page_name = "introducao" %}
+
 
 {% block title %}{{ ctx.texts[15][lang] }} - introdução{% endblock %} 
 
 
 {% block navigation %}
 
-{{ navigation(ctx, page_name) }}
+{{ navigation(ctx) }}
 
 {% endblock %}
 

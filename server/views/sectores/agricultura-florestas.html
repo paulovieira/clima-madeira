@@ -4,15 +4,14 @@
 {# #} 
 {% from "macros/sectores/home_sector.html" import home_sector %} 
 
-{% set page_name = "sectores" %}
-{% set sector_name = "agricultura-florestas" %}
+
 
 {% block title %}{{ ctx.texts[15][lang] }} - agricultura e florestas{% endblock %} 
 
 {#
 {% block navigation %}
 
-{{ navigation(ctx, page_name, sector_name) }}
+{{ navigation(ctx) }}
 
 {% endblock %}
 #}
@@ -26,9 +25,9 @@
     <div class="hidden-xs col-sm-2 col-md-2 " id="left-column" style=""></div>
     <div class="col-xs-12 col-sm-8 col-md-8 " id="main-content" style="margin-top: 20px;">
 
-		{{ navigation(ctx, page_name, sector_name) }}
+		{{ navigation(ctx) }}
 
-		{{ home_sector(ctx, 'agricultura-florestas') }}
+		{{ home_sector(ctx, ctx.urlParam2) }}
 
     </div>
     <div class="hidden-xs col-sm-2 col-md-2" id="right-column" style=""></div>
