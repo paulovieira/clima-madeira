@@ -47,7 +47,7 @@ with forever (the app will execute in "deamon mode"):
 
     export NODE_ENV=prod
 
-    sudo forever start -m 50 -l forever_output.log -o server_stdout.log -e server_stderr.log --append --verbose --spinSleepTime 2000 --minUptime 1000  --uid "clima" server.js
+    sudo forever start -m 50 -l forever_output.log -o server_stdout.log -e server_stderr.log --append --verbose --spinSleepTime 2000 --minUptime 1000  --uid "clima" index.js
 
 # 4. Commands to manage the process with forever
 
