@@ -1,26 +1,19 @@
-{#  NOTE: lang is a global variable #}
-{% extends "layouts/default.html"          %}
-{% from "macros/navigation.html" import navigation %}
+{% extends "layouts/general-page.html"          %}
 
 {% block title %}{{ ctx.texts[15][lang] }} - {{ ctx.texts[20][lang] }}{% endblock %} 
 
 
-{% block navigation %}
 
-{{ navigation(ctx) }}
 
-{% endblock %}
+{% block mainColumnContent %}
 
-{% block content %}
 
 <div class="row">
     <div class="col-sm-12 text-center">
-		<h1>{{ ctx.texts[502][lang] }}</h1>
+		<h1>{{ ctx.texts[503][lang] }}</h1>
     </div>
 </div>
 
 
-
-{% endblock %}
-
+{% endblock %} 
 

@@ -104,47 +104,14 @@
 		</div>
 #}
 
+{#
 		<div class="row">
 			<div class="col-sm-12 col-md-12 col-lg-12 col-xlg-10 col-xlg-offset-1" style="margin-top: 270px; xborder: 1px solid blue;">
 
 				<ul class="nav nav-pills nav-justified" style="margin-top: 75px; margin-bottom: 45px;">
-{#
- 					<li class="home-pills">
-						<a href="/{{ lang }}/" class="main-menu-text 
-							main-menu-active">
-							<i class="icon-home-outline"></i> &nbsp;
-							<span class="es-editable" data-text-id="18">{{ ctx.texts[18][lang] }}</span>
-						</a>
-					</li> 
-					<li class="home-pills">
-						<a href="/{{ lang }}/introducao" class="main-menu-text 
-							main-menu{% if(ctx.page != 'introducao') %}-not{% endif %}-active">
-							<i class="icon-lightbulb"></i> &nbsp;
-							<span class="is-editable" data-text-id="17">{{ ctx.texts[17][lang] }}</span>
-						</a>
-					</li>
-					<li class="home-pills">
-						<a href="/{{ lang }}/mapa" class="main-menu-text 
-							main-menu{% if(ctx.page != 'vulnerabilidades') %}-not{% endif %}-active">
-							<i class="icon-map"></i> &nbsp;
-							<span class="is-editable" data-text-id="19">{{ ctx.texts[19][lang] }}</span>
-						</a>
-					</li>
-					<li class="home-pills">
-						<a href="/{{ lang }}/adaptacao" class="main-menu-text 
-							main-menu{% if(ctx.page != 'adaptacao') %}-not{% endif %}-active">
-							<i class="icon-cubes"></i> &nbsp;
-							<span class="is-editable" data-text-id="20">{{ ctx.texts[20][lang] }}</span>
-						</a>
-					</li>
-					<li class="home-pills">
-						<a href="/{{ lang }}/equipa" class="main-menu-text 
-							main-menu{% if(ctx.page != 'equipa') %}-not{% endif %}-active">
-							<i class="icon-users"></i> &nbsp;
-							<span class="is-editable" data-text-id="21">{{ ctx.texts[21][lang] }}</span>
-						</a>
-					</li>
-#}
+
+
+
 
 
 
@@ -178,7 +145,72 @@
 					</li>
 				</ul>
 
+
+
+
 			</div>
+		</div>
+#}
+
+		<div class="row" style="margin: 270px 0px 20px 0px; padding-left: 40px; padding-right: 30px;">
+
+
+
+				<div class="btn-group col-xs-6 col-sm-3 container-home-menu">
+				    <button type="button" class="btn btn-default btn-block btn-lg dropdown-toggle btn-home-menu" data-toggle="dropdown" aria-expanded="false">
+				    	<i class="icon-lightbulb" style="margin-right: 3px;"></i> 
+				        {{ ctx.texts[17][lang] }} <span class="caret"></span>
+				    </button>
+				    <ul class="dropdown-menu" role="menu">
+				        <li>
+				        	<a href="/{{ lang }}/introducao/mensagem">{{ ctx.texts[83][lang] }}</a>
+				        </li>
+				        <li>
+				        	<a href="/{{ lang }}/introducao/metodologia">{{ ctx.texts[84][lang] }}</a>
+				        </li>
+				        <li>
+				        	<a href="/{{ lang }}/introducao/equipa">{{ ctx.texts[21][lang] }}</a>
+				        </li>
+				    </ul>
+				</div>
+
+				<div class="col-xs-6 col-sm-3 container-home-menu">
+					<a class="btn btn-default btn-lg btn-block btn-home-menu" role="button" href="/{{ lang }}/sumario-executivo">
+						<span class="glyphicon glyphicon-pencil" style="margin-right: 3px;"></span>
+						{{ ctx.texts[85][lang] }}							
+
+					</a>
+				</div>
+
+				<div class="col-xs-6 col-sm-3 container-home-menu">
+					<a role="button" class="btn btn-default btn-lg btn-block btn-home-menu" href="/{{ lang }}/cartografia">
+						<i class="icon-map" style="margin-right: 3px;"></i>
+						{{ ctx.texts[19][lang] }}
+					</a>
+				</div>
+
+
+				<div class="col-xs-6 col-sm-3 container-home-menu">
+					<a role="button" class="btn btn-default btn-lg btn-block btn-home-menu" href="/{{ lang }}/estrategia-adaptacao">
+						<i class="icon-cubes" style="margin-right: 5px;"></i>
+						{{ ctx.texts[20][lang] }}
+					</a>
+				</div>
+
+		</div>
+
+
+		<div class="row" style="padding: 0px 20px;">
+			
+
+
+
+
+
+
+
+
+
 		</div>
 	</div>
 </div>

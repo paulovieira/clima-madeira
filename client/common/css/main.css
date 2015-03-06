@@ -59,6 +59,9 @@ body {
 
 }
 
+
+
+
 .main-menu-text {
   font-size: 18px;
   font-weight: bold;
@@ -522,4 +525,29 @@ th {
   .carousel-indicators {
     bottom: 10px;
   }
+}
+
+
+.breadcrumb {
+  border-radius: 0px;
+  padding: 4px 15px;
+}
+
+.btn-home-menu {
+   font-size: 18px;
+  font-weight: bold;
+  color: #3c85c4 !important;
+ /* background-color: #dde5ec !important;*/
+  text-shadow: 1px 0px 0px white;
+  border-radius: 0;
+  border: 1px solid #333;
+}
+
+.btn-home-menu {
+ border: 1px solid #333 !important; 
+}
+
+.container-home-menu {
+  padding-left: 0;  
+  margin-bottom: 10px;
 }

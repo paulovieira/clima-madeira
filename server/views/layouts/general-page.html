@@ -5,15 +5,15 @@
 {% block content %}
 
 <div class="row">
-    <div class="hidden-xs col-sm-2 col-md-2 side-column" style=""></div>
+    <div class="hidden-xs col-sm-1 col-lg-1 side-column" style=""></div>
 
-    <div class="col-xs-12 col-sm-8 col-md-8 " id="main-content" style="z-index: 999; padding: 35px 30px 20px 30px; box-shadow: 0 0 60px rgba(186, 203, 224, 0.5);">
+    <div class="col-xs-12 col-sm-10 col-lg-10" id="main-content" style="z-index: 999; padding: 35px 30px 20px 30px; box-shadow: 0 0 60px rgba(186, 203, 224, 0.5);">
 		{{ navigation(ctx) }}
 
 		{% block mainColumnContent %}{% endblock %}
 	</div>
 
-    <div class="hidden-xs col-sm-2 col-md-2 side-column" style=""></div>
+    <div class="hidden-xs col-sm-1 col-lg-1 side-column" style=""></div>
 </div>
 
 {% endblock %}
