@@ -47,6 +47,10 @@ debugger;
         }
 
 
+//console.log("user-agent:", request.plugins.scooter.toJSON());
+request.log(['databasex', 'read'], "this is the message");
+request.log(['databasex', 'read'], "this is the message2");
+
         var context = {
             texts: request.pre.texts,
             textsArray: request.pre.textsArray,
@@ -57,10 +61,22 @@ debugger;
             urlParam2: request.params.page2,
             auth: request.auth,
         };
+                return reply.view(viewFile, {
+                    ctx: context
+                });
 
-        return reply.view(viewFile, {
-            ctx: context
-        });
+        Q.delay(2000).then(
+            function(){
+                return reply.view(viewFile, {
+                    ctx: context
+                });
+            }
+        )
+
+
+        // return reply.view(viewFile, {
+        //     ctx: context
+        // });
     },
 
     login: function(request, reply) {

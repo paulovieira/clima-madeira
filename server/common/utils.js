@@ -193,6 +193,8 @@ module.exports = {
     registerPlugins: function(server) {
         require(global.rootPath + "server/plugins/hapi-auth-cookie.js")(server);
         require(global.rootPath + "server/plugins/hapi-swagger.js")(server);
+        require(global.rootPath + "server/plugins/scooter.js")(server);
+//        require(global.rootPath + "server/plugins/good.js")(server);
         //		require("../plugins/tv.js")(server);
     },
 

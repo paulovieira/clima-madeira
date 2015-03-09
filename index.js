@@ -17,3 +17,11 @@ if(process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "debug-no-a
 // load the main server module; this is where the Hapi server object is created
 require(global.rootPath + "server/server.js");
 
+
+// detect and find memory leaks - https://github.com/lloyd/node-memwatch
+// TODO: log to a leak file
+var memwatch = require('memwatch');
+
+memwatch.on('leak', function(info) { 
+	console.log("possible memory leak:\n", info);
+});

@@ -2,6 +2,7 @@ var Boom = require('boom');
 var _ = require('underscore');
 var config = require('config');
 
+
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 //var utils = require(global.rootPath +  "server/common/utils.js");
 var transforms = require(global.rootPath +  "server/common/transforms.js");
@@ -161,6 +162,38 @@ var preRequisites = {
 			},
 			assign: "filesC",
 		},
+
+		// to delete
+		saveUserAgent: {
+			method: function(request, reply){
+				console.log("user-agent:", request.plugins.scooter.toJSON());
+				
+				//console.log("common log: ", toCommonLogFormat(request));
+			    var userAgentC = new BaseC();
+
+				//console.log("common log: ", request.plugins.scooter.toCommonLogFormat(request));
+				return reply();
+		    
+
+		        // textsC
+		        //     .execute({
+		        //         query: {
+		        //             command: "select * from texts_read()"
+		        //         },
+		        //     })
+		        //     .done(
+		        //         function() {
+		        //         	return reply(textsC);
+		        //         },
+		        //         function(err) {
+		        //         	console.log(err);
+		        //             return reply(err);
+		        //         }
+			       //  );
+			},
+			//assign: "textsC",
+		},
+
 
 	},
 

@@ -1,6 +1,8 @@
 var Hapi = require('hapi'),
     Nunjucks = require('hapi-nunjucks'),
     _ = require('underscore'),
+    toCommonLogFormat = require('hapi-common-log'),
+    moment = require("moment"),
 
     config = require("config"),
     utils = require(global.rootPath + "server/common/utils.js");
@@ -65,6 +67,46 @@ server.register(
 server.ext("onPostAuth", function(request, reply){
     request.auth.credentials = request.auth.credentials || {};
     return reply.continue();
+});
+
+
+server.on('tail', function (request) {
+
+    var lang = request.path.substring(1,3),
+        logData = {};
+
+    if(lang === "pt" || lang === "en"){
+        logData.id = request.id;
+        logData.time = moment().format();  // date in ISO8601 format
+        logData.method = request.method;
+        logData.path = request.path;
+        logData.responseStatusCode = request.response.statusCode;
+        logData.duration = request.info.responded - request.info.received;
+        logData.remoteAddress = request.info.remoteAddress;
+        logData.remotePort = request.info.remotePort;
+        logData.referrer = request.info.referrer;
+        logData.host = request.info.host;
+        logData.hostname = request.info.hostname;
+
+
+        //console.log(request.plugins.scooter.toJSON());
+//        console.log(logData);
+    }
+
+
+});
+
+server.on('request-error', function (request, err) {
+    // console.log("--------------------------");
+    // console.log("reqId: ", request.id);
+    // console.log("message: ", err.message);
+    // console.log("stack: ", err.stack);
+    // console.log("--------------------------");
+});
+
+server.on('request-internal', function (request, event, tags) {
+
+//    console.log("tags: ", tags);
 });
 
 // 6. Start the server
