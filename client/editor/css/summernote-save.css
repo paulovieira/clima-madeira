@@ -1,8 +1,11 @@
 .is-editable {
+/*
 	background-color: transparent;
 	border-style: dashed;
 	border-color: #191919;
 	border-radius: 6px;
+*/
+	outline: 2px dashed #191919; 
 }
 
 .note-editor {

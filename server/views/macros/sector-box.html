@@ -2,12 +2,22 @@
 {% macro sectorBox(ctx, title, sectorDesc, sectorPath, sectorImg) %}
 
 <div class="sector-box">
-	<h4 class="text-center sector-title is-editable" data-text-id="{{ title }}">{{ ctx.texts[title][lang] | upper }}</h4>
-	<img src="{{ ctx.files[sectorImg].fullPath }}" class="img-responsive img-thumbnail center-block" alt="Responsive image">
-	<p class="is-editable" data-text-id="{{ sectorDesc }}">{{ ctx.texts[sectorDesc][lang] }}</p>
+	<span class="is-editable" data-text-id="{{ title }}"> 
+		<h4 class="text-center sector-title" >{{ ctx.texts[title][lang] | upper }}</h4>
+	</span>
+
+	<!-- <img src="{{ ctx.files[sectorImg].fullPath }}" class="img-responsive img-thumbnail center-block" alt="Responsive image"> -->
+	<span class="is-editable" data-text-id="{{ sectorImg }}">
+		{# IMPORTANT: the img tag itself is part of the text (including all the required classes); this makes the html coupled with the databasem, but will allow the user to change the image using summernote#}
+		{{ ctx.texts[sectorImg][lang] }}  
+	</span>
+	<span class="is-editable" data-text-id="{{ sectorDesc }}">
+		<p>{{ ctx.texts[sectorDesc][lang] }}</p>
+	</span>
+
 	<div class="text-center">
 		<a href="/{{ lang }}/{{ sectorPath }}" class="btn btn-info" style="padding: 4px 30px; letter-spacing: 1px;" role="button">
-			<span class="is-editable" data-text-id="6">{{ ctx.texts[6][lang] }}</span>
+			{{ ctx.texts[6][lang] }}
 		</a>
 	</div>
 </div>

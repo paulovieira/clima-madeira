@@ -13,7 +13,6 @@
 	                <span class="icon-bar"></span>
 	            </button>
 	            <a class="navbar-brand" href="/{{ lang }}" style="padding-left: 30px; padding-right: 30px;">
-	            	
 	            	{{ ctx.texts[0]["pt"] }}
 	            </a>
 	        </div>
@@ -37,6 +36,10 @@
 	                        	<a href="/{{ lang }}/introducao/metodologia">{{ ctx.texts[84][lang] }}</a>
 	                        </li>
 
+	                        <li class="{% if ctx.urlParam1=='introducao' and ctx.urlParam2=='workshops' %}active{% endif %}">
+	                        	<a href="/{{ lang }}/introducao/workshops">{{ ctx.texts[92][lang] }}</a>
+	                        </li>
+
 	                        <li class="{% if ctx.urlParam1=='introducao' and ctx.urlParam2=='equipa' %}active{% endif %}">
 	                        	<a href="/{{ lang }}/introducao/equipa">{{ ctx.texts[21][lang] }}</a>
 	                        </li>
@@ -55,12 +58,16 @@
 
 	                    <ul class="dropdown-menu" role="menu">
 
-	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='biodiversidade' %}active{% endif %}">
-	                        	<a href="/{{ lang }}/sectores/biodiversidade">{{ ctx.texts[33][lang] }}</a>
+	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='clima' %}active{% endif %}">
+	                        	<a href="/{{ lang }}/sectores/clima">{{ ctx.texts[95][lang] }}</a>
 	                        </li>
 
-	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='recursos-hidricos' %}active{% endif %}">
-	                        	<a href="/{{ lang }}/sectores/recursos-hidricos">{{ ctx.texts[37][lang] }}</a>
+	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='adaptacao' %}active{% endif %}">
+	                        	<a href="/{{ lang }}/sectores/adaptacao">{{ ctx.texts[96][lang] }}</a>
+	                        </li>
+
+	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='biodiversidade' %}active{% endif %}">
+	                        	<a href="/{{ lang }}/sectores/biodiversidade">{{ ctx.texts[33][lang] }}</a>
 	                        </li>
 
 	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='saude' %}active{% endif %}">
@@ -77,6 +84,14 @@
 
 	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='energia' %}active{% endif %}">
 	                        	<a href="/{{ lang }}/sectores/energia">{{ ctx.texts[53][lang] }}</a>
+	                        </li>
+
+	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='risco-hidrologico' %}active{% endif %}">
+	                        	<a href="/{{ lang }}/sectores/risco-hidrologico">{{ ctx.texts[93][lang] }}</a>
+	                        </li>
+
+	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='qualidade-disponibilidade-agua' %}active{% endif %}">
+	                        	<a href="/{{ lang }}/sectores/qualidade-disponibilidade-agua">{{ ctx.texts[94][lang] }}</a>
 	                        </li>
 	                    </ul>
 

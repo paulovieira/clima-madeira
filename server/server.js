@@ -1,7 +1,6 @@
 var Hapi = require('hapi'),
     Nunjucks = require('hapi-nunjucks'),
     _ = require('underscore'),
-    toCommonLogFormat = require('hapi-common-log'),
     moment = require("moment"),
 
     config = require("config"),

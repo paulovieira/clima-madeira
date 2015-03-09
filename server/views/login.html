@@ -24,7 +24,7 @@
 
                 {% if ctx.lfr == 2 %}
                 <div class="alert alert-danger text-center" style="margin-bottom: 30px;" role="alert">
-                <strong>{{ ctx.texts[75][lang] }} fwfw f wfwe
+                <strong>{{ ctx.texts[75][lang] }}
                     </strong>
                 </div>
                 {% elif ctx.lfr == 3 %}
@@ -107,17 +107,17 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">Recuperação de password</h4>
+                <h4 class="modal-title">{{ ctx.texts[89][lang] }}</h4>
             </div>
             <div class="modal-body">
 
-                Insira o endereço de email utilizado na sua área pessoa na plataforma. Ser-lhe-á enviada uma mensagem com o link de recuperação.
+                {{ ctx.texts[86][lang] }}
 
                 <div class="row" style="margin-top: 25px;">
                     <div class="col-sm-8 col-sm-offset-2">
                         <form>
                             <div class="form-group">
-                                <input type="email" class="form-control" id="email" placeholder="Endereço de email">
+                                <input type="email" class="form-control" id="email" placeholder="{{ ctx.texts[87][lang] }}">
                             </div>
                         </form>
                     </div>
@@ -128,7 +128,7 @@
 
                 <div class="row">
                     <div class="col-sm-6 col-sm-offset-3" style="text-align: center;">
-                        <button id="btn-recover-pw" class="btn btn-primary btn-block" href="/{{ lang }}" role="button">Recuperar a password</button>
+                        <button id="btn-recover-pw" class="btn btn-primary btn-block" href="/{{ lang }}" role="button">{{ ctx.texts[88][lang] }}</button>
                     </div>
                 </div>
 
@@ -176,7 +176,7 @@ $("#btn-recover-pw").on("click", function(e){
     	emailAddress = $("#email").val().trim();
 
     if(emailAddress === ""){
-        alert("Please insert an email address.");
+        alert({{ ctx.texts[91][lang] }});
         return;
     }
 
@@ -219,13 +219,13 @@ $("#btn-recover-pw").on("click", function(e){
         	debugger;
         	if(err.status === 400){
         		$("#message-status").addClass("text-left").html("O endereço de email não está no formato correcto. Tente novamente.");
-        		$this.removeClass("disabled").html("Recuperar a password");
+        		$this.removeClass("disabled").html({{ ctx.texts[88][lang] }});
         		return;
         	}
 
         	if(err.status === 404){
         		$("#message-status").addClass("text-left").html("Este endereço de email não está registado na plataforma. Tente novamente.");
-        		$this.removeClass("disabled").html("Recuperar a password");
+        		$this.removeClass("disabled").html({{ ctx.texts[88][lang] }});
         		return;
         	}
 
@@ -236,13 +236,13 @@ $("#btn-recover-pw").on("click", function(e){
     );
 
     // immediately after the button has been clicked, disable the button
-    $this.addClass("disabled").html("Aguarde por favor...");
+    $this.addClass("disabled").html({{ ctx.texts[90][lang] }});
 });
 
 
 $("#modal-recover-pw").on("show.bs.modal", function resetModal(e){
 	// reset the state of the input and button in the modal (it might have been changed if the user opened the modal before)
-	$("#btn-recover-pw").removeClass("btn-danger disabled").addClass("btn-primary").html("Recuperar a password");
+	$("#btn-recover-pw").removeClass("btn-danger disabled").addClass("btn-primary").html({{ ctx.texts[88][lang] }});
 	$("#email").val("");
 	$("#message-status").html("");
 	$("#message-links").html("");

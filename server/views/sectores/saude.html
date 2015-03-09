@@ -1,27 +1,35 @@
-{#  NOTE: lang is a global variable #}
-{% extends "layouts/default.html"          %}
-{% from "macros/navigation.html" import navigation %}
+{% extends "layouts/general-page.html"          %}
+{% from "macros/sectores/home_sector.html" import home_sector %} 
+
+{% set data = {
+    sectorName: "saude", 
+    title: 511,
+    introParagraph: 512,
+    restOfParagraph: 513
+    } 
+%}
 
 
-{% block title %}{{ ctx.texts[15][lang] }} - Saúde{% endblock %} 
+{% block title %}{{ ctx.texts[15][lang] }} - {{ ctx.texts[41][lang] }}{% endblock %} 
 
 
-{% block navigation %}
-
-{{ navigation(ctx) }}
-
-{% endblock %}
-
-{% block content %}
+{% block mainColumnContent %}
 
 <div class="row">
-    <div class="col-sm-12 text-center">
-		<h1>Saúde</h1>
+
+    <div class="col-sm-12">
+        <ol class="breadcrumb">
+            <li><a href="#">Home</a>
+            </li>
+            <li>{{ ctx.texts[23][lang] }}
+            </li>
+            <li class="active">{{ ctx.texts[41][lang] }}</li>
+        </ol>
     </div>
 </div>
 
+{{ home_sector(ctx, data) }}
 
-
-{% endblock %}
+{% endblock %} 
 
 

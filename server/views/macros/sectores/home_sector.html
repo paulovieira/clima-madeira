@@ -1,19 +1,5 @@
-{% macro home_sector(ctx, sectorName) %}
+{% macro home_sector(ctx, data) %}
 
-
-
-<div class="row">
-
-    <div class="col-sm-12">
-        <ol class="breadcrumb">
-            <li><a href="#">Home</a>
-            </li>
-            <li>{{ ctx.texts[23][lang] }}
-            </li>
-            <li class="active">{{ ctx.texts[49][lang] }}</li>
-        </ol>
-    </div>
-</div>
 
 <div class="row">
     <div class="col-sm-4">
@@ -35,21 +21,21 @@
 
 
                 <div class="item active">
-                    <img src="{{ ctx.images[sectorName][0].fullPath }}" alt="...">
+                    <img src="{{ ctx.images[data.sectorName][0].fullPath }}" alt="...">
                     <div class="carousel-caption">
                         caption 1
                     </div>
                 </div>
 
                 <div class="item">
-                    <img src="{{ ctx.images[sectorName][1].fullPath }}" class="img-responsive img-rounded" alt="">
+                    <img src="{{ ctx.images[data.sectorName][1].fullPath }}" class="img-responsive img-rounded" alt="">
                     <div class="carousel-caption">
                         caption 2
                     </div>
                 </div>
 
                 <div class="item">
-                    <img src="{{ ctx.images[sectorName][2].fullPath }}" class="img-responsive img-rounded" alt="">
+                    <img src="{{ ctx.images[data.sectorName][2].fullPath }}" class="img-responsive img-rounded" alt="">
                     <div class="carousel-caption">
                         caption 3
                     </div>
@@ -70,26 +56,17 @@
 
     <div class="col-sm-8">
         <div>
-            <h1><span class="is-editable" data-text-id="49">{{ ctx.texts[49][lang] }}</span></h1>
+            <span class="is-editable" data-text-id="49"><h1>{{ ctx.texts[data.title][lang] }}</h1></span>
         </div>
 
-        <p><span class="is-editable" data-text-id="16">{{ ctx.texts[16][lang] }}</span></p>
-
-        <p><span class="is-editable" data-text-id="16">{{ ctx.texts[16][lang] }}</span></p>
-
+        <span class="is-editable" data-text-id="506">{{ ctx.texts[data.introParagraph][lang] }}</span>
 
         <div class="collapse" id="hidden">
-            <p><span class="is-editable" data-text-id="16">{{ ctx.texts[16][lang] }}</span></p>
-
-            <p><span class="is-editable" data-text-id="16">{{ ctx.texts[16][lang] }}</span></p>
-
-            <p><span class="is-editable" data-text-id="16">{{ ctx.texts[16][lang] }}</span></p>
-
-            <p><span class="is-editable" data-text-id="16">{{ ctx.texts[16][lang] }}</span></p>
+            <span class="is-editable" data-text-id="507">{{ ctx.texts[data.restOfParagraph][lang] }}</span>
         </div>
 
 
-        <button type="button" class="center-block btn btn-primary btn-sm" data-toggle="collapse" data-target="#hidden" style="padding-left: 20px; padding-right: 20px; font-size: 16px; line-height: 1.2;">Ler mais</button>
+        <button type="button" class="center-block btn btn-primary btn-sm" data-toggle="collapse" data-target="#hidden" style="padding-left: 20px; padding-right: 20px; font-size: 16px; line-height: 1.2;">{{ ctx.texts[1][lang] }}</button>
 
     </div>
 </div>
@@ -147,4 +124,5 @@
 
 
 </div>
+
 {% endmacro %}

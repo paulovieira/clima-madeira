@@ -39,6 +39,9 @@ module.exports = {
             },
             {
                 param1: "introducao",
+                param2: "workshops"
+            },            {
+                param1: "introducao",
                 param2: "equipa"
             },
 
@@ -50,7 +53,14 @@ module.exports = {
             },
 
             // ----------------------
-            
+            {
+                param1: "sectores",
+                param2: "clima"
+            },            
+            {
+                param1: "sectores",
+                param2: "adaptacao"
+            },
             {
                 param1: "sectores",
                 param2: "saude"
@@ -69,20 +79,17 @@ module.exports = {
             },
             {
                 param1: "sectores",
-                param2: "recursos-hidricos"
+                param2: "risco-hidrologico"
             },
             {
                 param1: "sectores",
-                param2: "recursos-hidricos"
+                param2: "qualidade-disponibilidade-agua"
             },
             {
                 param1: "sectores",
                 param2: "agricultura-florestas"
             },
-            {
-                param1: "sectores",
-                param2: "agricultura-florestas-2"
-            },
+
 
             // ----------------------
             

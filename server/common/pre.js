@@ -281,22 +281,28 @@ var preRequisites = {
 
 			var images = {};
 			images["biodiversidade"]        = [];
-			images["recursos-hidricos"]     = [];
+			images["qualidade-disponibilidade-agua"]     = [];
+			images["risco-hidrologico"]     = [];
 			images["saude"]                 = [];
 			images["turismo"]               = [];
 			images["agricultura-florestas"] = [];
 			images["energia"]               = [];
+			images["adaptacao"]               = [];
+			images["clima"]               = [];
 
 			_.each(request.pre.files, function(obj){
 				var tags = obj.tags;
 				if(_.contains(tags, "image") && _.contains(tags, "carousel")){
 
 					if(_.contains(tags, "biodiversidade")){             images["biodiversidade"].push(obj); }
-					else if(_.contains(tags, "recursos-hidricos")){     images["recursos-hidricos"].push(obj); }
+					else if(_.contains(tags, "qualidade-disponibilidade-agua")){     images["qualidade-disponibilidade-agua"].push(obj); }
+					else if(_.contains(tags, "risco-hidrologico")){     images["risco-hidrologico"].push(obj); }
 					else if(_.contains(tags, "saude")){                 images["saude"].push(obj); }
 					else if(_.contains(tags, "turismo")){               images["turismo"].push(obj); }
 					else if(_.contains(tags, "agricultura-florestas")){ images["agricultura-florestas"].push(obj); }
 					else if(_.contains(tags, "energia")){               images["energia"].push(obj); }
+					else if(_.contains(tags, "clima")){                   images["clima"].push(obj); }
+					else if(_.contains(tags, "adaptacao")){               images["adaptacao"].push(obj); }
 				}
 			});
 

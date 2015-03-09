@@ -98,12 +98,13 @@ The landing page has 3 main sections
 
 
 
-		<div class="col-sm-12" style="margin: 60px 0px 30px 0px; xborder: 1px solid #c5c5c5; xpadding: 0px 200px 0px 200px;">
+<!-- 		<div class="col-sm-12" style="margin: 60px 0px 30px 0px; xborder: 1px solid #c5c5c5; xpadding: 0px 200px 0px 200px;">
 
 			<div class="row" style="">
 
-
-				<div class="col-sm-4" style="xborder: 1px solid red; padding: 0px 30px 0px 60px;">
+ -->
+ 			<div style="margin: 60px 0px 30px 0px">
+				<div class="col-sm-6 col-md-4" style="xborder: 1px solid red; padding: 0px 30px 0px 60px;">
 
 					<div class="row" style="">
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
@@ -112,7 +113,7 @@ The landing page has 3 main sections
 		    					33,
 								35, 
 		    					"sectores/biodiversidade", 
-								1) 
+								57) 
 		    				}} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
@@ -121,7 +122,16 @@ The landing page has 3 main sections
 		    					45, 
 								47, 
 		    					"sectores/turismo", 
-								4) 
+								60) 
+		    				}} 
+    					</div>
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sectorBox(
+		    					ctx,
+		    					94, 
+								97, 
+		    					"sectores/qualidade-disponibilidade-agua", 
+								100) 
 		    				}} 
     					</div>
     				</div>
@@ -129,17 +139,19 @@ The landing page has 3 main sections
 				</div>
 
 
-				<div class="col-sm-4" style="xborder: 1px solid blue; padding: 0px 45px 0px 45px;">
+				<div class="col-sm-6 col-md-4" style="xborder: 1px solid blue; padding: 0px 45px 0px 45px;">
 
 					<div class="row" style="">
+
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sectorBox(
 		    					ctx,
-		    					37, 
-								39, 
-		    					"sectores/recursos-hidricos", 
-								2) 
+		    					53, 
+								55, 
+		    					"sectores/energia", 
+								62) 
 		    				}} 
+
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sectorBox(
@@ -147,7 +159,18 @@ The landing page has 3 main sections
 		    					49, 
 								51, 
 		    					"sectores/agricultura-florestas", 
-								5) 
+								61) 
+		    				}} 
+
+    					</div>
+
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sectorBox(
+		    					ctx,
+		    					95, 
+								51, 
+		    					"sectores/clima", 
+								101) 
 		    				}} 
 
     					</div>
@@ -156,7 +179,7 @@ The landing page has 3 main sections
 				</div>
 
 
-				<div class="col-sm-4" style="xborder: 1px solid orange; padding: 0px 60px 0px 30px;">
+				<div class="col-sm-6 col-md-4" style="xborder: 1px solid orange; padding: 0px 60px 0px 30px;">
 
 					<div class="row" style="">
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
@@ -165,28 +188,38 @@ The landing page has 3 main sections
 		    					41, 
 								43, 
 		    					"sectores/saude", 
-								3)
+								59)
 		    				}} 
     					</div>
+
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sectorBox(
 		    					ctx,
-		    					53, 
-								55, 
-		    					"sectores/energia", 
-								6) 
+		    					93, 
+								39, 
+		    					"sectores/risco-hidrologico", 
+								58) 
 		    				}} 
+    					</div>
 
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sectorBox(
+		    					ctx,
+		    					96, 
+								99, 
+		    					"sectores/adaptacao", 
+								102) 
+		    				}} 
     					</div>
     				</div>
 
 				</div>
-
-
 			</div>
 
+<!-- 			</div>
 
-		</div>
+
+		</div> -->
 {# #}
 
 
@@ -202,3 +235,14 @@ The landing page has 3 main sections
 {% endblock %}
 
 
+
+{% block scripts %}
+
+
+    <script type="text/javascript">
+        window.Clima = window.Clima || {};
+        Clima.lang = "{{ lang }}";
+        Clima.texts  = {{ ctx.textsArray | stringify }};
+    </script>
+
+{% endblock %}
