@@ -1,4 +1,4 @@
-{% macro home_sector(ctx, data) %}
+{% macro sectorHome(ctx, data) %}
 
 
 <div class="row">
@@ -56,13 +56,15 @@
 
     <div class="col-sm-8">
         <div>
-            <span class="is-editable" data-text-id="49"><h1>{{ ctx.texts[data.title][lang] }}</h1></span>
+            <h1>
+                <span class="is-editable" data-text-id="{{ data.title }}">{{ ctx.texts[data.title][lang] }}</span>
+            </h1>
         </div>
 
-        <span class="is-editable" data-text-id="506">{{ ctx.texts[data.introParagraph][lang] }}</span>
+        <span class="is-editable" data-text-id="{{ data.introParagraph }}">{{ ctx.texts[data.introParagraph][lang] }}</span>
 
         <div class="collapse" id="hidden">
-            <span class="is-editable" data-text-id="507">{{ ctx.texts[data.restOfParagraph][lang] }}</span>
+            <span class="is-editable" data-text-id="{{ data.restOfParagraph }}">{{ ctx.texts[data.restOfParagraph][lang] }}</span>
         </div>
 
 

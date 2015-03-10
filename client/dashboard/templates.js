@@ -20,7 +20,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"row\">\n\n    <div class=\"col-sm-2\" id=\"main-left-region\">\n    </div>\n\n    <div class=\"col-sm-10\" id=\"main-right-region\">\n    </div>\n\n</div>\n";
+output += "<div class=\"row\" style=\"padding-top: 20px;\">\n\n    <div class=\"col-sm-3\" id=\"main-left-region\">\n    </div>\n\n    <div class=\"col-sm-9\" id=\"main-right-region\">\n    </div>\n\n</div>\n";
 cb(null, output);
 ;
 } catch (e) {

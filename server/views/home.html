@@ -1,7 +1,10 @@
 {#  NOTE: lang is a global variable #}
 {% extends "layouts/default.html"          %}
+
+
 {% from "macros/sector-box.html" import sectorBox %}
-{% from "macros/grupo.html"  import grupo  %}
+{#
+  {% from "macros/grupo.html"  import grupo  %}  #}
 
 
 
@@ -107,33 +110,46 @@ The landing page has 3 main sections
 				<div class="col-sm-6 col-md-4" style="xborder: 1px solid red; padding: 0px 30px 0px 60px;">
 
 					<div class="row" style="">
+
+{% 
+set biodiversidadeBoxData = {
+    title: 33,
+    sectorDesc: 35,
+    sectorImg: 57,
+    sectorPath: "sectores/biodiversidade"
+}
+%}
+
+{% 
+set turismoBoxData = {
+    title: 45,
+    sectorDesc: 47,
+    sectorImg: 60,
+    sectorPath: "sectores/turismo"
+}
+
+%}
+
+{% 
+set qualidadeDisponibilidadeAguaBoxData = {
+    title: 94,
+    sectorDesc: 97,
+    sectorImg: 100,
+    sectorPath: "sectores/qualidade-disponibilidade-agua"
+}
+%}
+
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					33,
-								35, 
-		    					"sectores/biodiversidade", 
-								57) 
-		    				}} 
+		    				{{ sectorBox(ctx, biodiversidadeBoxData) }} 
+    					</div>
+
+ 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sectorBox(ctx, turismoBoxData) }} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					45, 
-								47, 
-		    					"sectores/turismo", 
-								60) 
-		    				}} 
-    					</div>
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					94, 
-								97, 
-		    					"sectores/qualidade-disponibilidade-agua", 
-								100) 
-		    				}} 
-    					</div>
+		    				{{ sectorBox(ctx, qualidadeDisponibilidadeAguaBoxData) }} 
+    					</div> 
+
     				</div>
 
 				</div>
@@ -143,37 +159,45 @@ The landing page has 3 main sections
 
 					<div class="row" style="">
 
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					53, 
-								55, 
-		    					"sectores/energia", 
-								62) 
-		    				}} 
+{% 
+set energiaBoxData = {
+    title: 53,
+    sectorDesc: 55,
+    sectorImg: 62,
+    sectorPath: "sectores/energia"
+}
+%}
 
+{% 
+set agriculturaFlorestasBoxData = {
+    title: 49,
+    sectorDesc: 51,
+    sectorImg: 61,
+    sectorPath: "sectores/agricultura-florestas"
+}
+
+%}
+
+{% 
+set climaBoxData = {
+    title: 95,
+    sectorDesc: 51,
+    sectorImg: 101,
+    sectorPath: "sectores/clima"
+}
+%}
+
+						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sectorBox(ctx, energiaBoxData) }} 
     					</div>
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					49, 
-								51, 
-		    					"sectores/agricultura-florestas", 
-								61) 
-		    				}} 
-
+		    				{{ sectorBox(ctx, agriculturaFlorestasBoxData) }} 
     					</div>
 
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					95, 
-								51, 
-		    					"sectores/clima", 
-								101) 
-		    				}} 
+		    				{{ sectorBox(ctx, climaBoxData) }} 
+    					</div> 
 
-    					</div>
     				</div>
     				
 				</div>
@@ -182,35 +206,48 @@ The landing page has 3 main sections
 				<div class="col-sm-6 col-md-4" style="xborder: 1px solid orange; padding: 0px 60px 0px 30px;">
 
 					<div class="row" style="">
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					41, 
-								43, 
-		    					"sectores/saude", 
-								59)
-		    				}} 
+
+{% 
+set saudeBoxData = {
+    title: 41,
+    sectorDesc: 43,
+    sectorImg: 59,
+    sectorPath: "sectores/saude"
+}
+%}
+
+{% 
+set riscoHidrologicoBoxData = {
+    title: 93,
+    sectorDesc: 39,
+    sectorImg: 58,
+    sectorPath: "sectores/risco-hidrologico"
+}
+
+%}
+
+{% 
+set adaptacaoBoxData = {
+    title: 96,
+    sectorDesc: 99,
+    sectorImg: 102,
+    sectorPath: "sectores/adaptacao"
+}
+%}
+
+
+ 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+		    				{{ sectorBox(ctx, saudeBoxData) }} 
     					</div>
 
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					93, 
-								39, 
-		    					"sectores/risco-hidrologico", 
-								58) 
-		    				}} 
+		    				{{ sectorBox(ctx, riscoHidrologicoBoxData) }} 
     					</div>
 
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(
-		    					ctx,
-		    					96, 
-								99, 
-		    					"sectores/adaptacao", 
-								102) 
-		    				}} 
-    					</div>
+		    				{{ sectorBox(ctx, adaptacaoBoxData) }} 
+    					</div> 
+
     				</div>
 
 				</div>

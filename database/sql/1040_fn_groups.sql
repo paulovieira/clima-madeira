@@ -15,7 +15,7 @@ We return
 */
 
 
-DROP FUNCTION groups_read(json);
+DROP FUNCTION IF EXISTS groups_read(json);
 
 CREATE FUNCTION groups_read(options json DEFAULT '[{}]')
 
@@ -130,7 +130,7 @@ select * from  groups_read('[{"id":"1"}]');
 */
 
 
-DROP FUNCTION groups_create(json, json);
+DROP FUNCTION IF EXISTS groups_create(json, json);
 
 CREATE FUNCTION groups_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF groups AS
@@ -224,7 +224,7 @@ The time is clearly growing linearly;
 */
 
 
-DROP FUNCTION groups_update(json, json);
+DROP FUNCTION IF EXISTS groups_update(json, json);
 
 CREATE FUNCTION groups_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF groups AS
@@ -309,7 +309,7 @@ Update 30 rows: 40ms
 */
 
 
-DROP FUNCTION groups_delete(json);
+DROP FUNCTION IF EXISTS groups_delete(json);
 
 CREATE FUNCTION groups_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS

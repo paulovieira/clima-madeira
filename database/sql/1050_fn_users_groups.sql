@@ -9,7 +9,7 @@
 */
 
 
-DROP FUNCTION users_groups_read(json);
+DROP FUNCTION IF EXISTS users_groups_read(json);
 
 CREATE FUNCTION users_groups_read(options json DEFAULT '[{}]')
 
@@ -97,7 +97,7 @@ select * from  users_groups_read('[{"user_id":"1"}, {"user_id":"2"}]');
 */
 
 
-DROP FUNCTION users_groups_create(json, json);
+DROP FUNCTION IF EXISTS users_groups_create(json, json);
 
 CREATE FUNCTION users_groups_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF users_groups AS
@@ -173,7 +173,7 @@ select * from users_groups_create('[
 */
 
 
-DROP FUNCTION users_groups_update(json, json);
+DROP FUNCTION IF EXISTS users_groups_update(json, json);
 
 CREATE FUNCTION users_groups_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF users_groups AS
@@ -242,7 +242,7 @@ select * from users_groups_update('[
 
 */
 
-DROP FUNCTION users_groups_delete(json);
+DROP FUNCTION IF EXISTS users_groups_delete(json);
 
 CREATE FUNCTION users_groups_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS

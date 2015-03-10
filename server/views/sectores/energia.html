@@ -1,14 +1,14 @@
 {% extends "layouts/general-page.html"          %}
-{% from "macros/sectores/home_sector.html" import home_sector %} 
 
-{% set data = {
+{% from "sectores/macros/sector-home.html" import sectorHome %} 
+
+{% set sectorData = {
     sectorName: "energia", 
     title: 517,
     introParagraph: 518,
     restOfParagraph: 519
     } 
 %}
-
 
 {% block title %}{{ ctx.texts[15][lang] }} - {{ ctx.texts[53][lang] }}{% endblock %} 
 
@@ -28,7 +28,8 @@
     </div>
 </div>
 
-{{ home_sector(ctx, data) }}
+
+{{ sectorHome(ctx, sectorData) }}
 
 {% endblock %} 
 

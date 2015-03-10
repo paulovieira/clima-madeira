@@ -331,6 +331,9 @@ debugger;
             auth: config.get('hapi.auth'),
             pre: [pre.abortIfNotAuthenticated],
 
+            payload: {
+                maxBytes: 1048576*3  // 3 megabytes
+            },
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
 			tags: ['api'],
@@ -405,7 +408,10 @@ debugger;
             ],
 
             auth: config.get('hapi.auth'),
-
+            
+            payload: {
+                maxBytes: 1048576*3  // 3 megabytes
+            },
 			description: 'Put (short description)',
 			notes: 'Put (long description)',
 			tags: ['api'],

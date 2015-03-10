@@ -1,19 +1,26 @@
-{% extends "layouts/general-page.html"          %}
-
+{% extends 'layouts/default.html' %}
 {% from "macros/navigation.html" import navigation %}
 
 
-{% block title %}{{ ctx.texts[15][lang] }} - {{ ctx.texts[103][lang] }}{% endblock %} 
+{% block title %}Área pessoal{% endblock %}
 
 {% block css %}
     <link href="/dashboard/css/dashboard.css" rel="stylesheet" />
 {% endblock %}
 
+{% block navigation %}
 
-{% block mainColumnContent %}
+{{ navigation(ctx) }}
 
+{% endblock %}
 
-    <div id="main-region" ></div>
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1" id="main-region" >
+
+        </div>
+    </div>
 
 
     <div class="modal xfade" id="modal" tabindex="-1" role="dialog">

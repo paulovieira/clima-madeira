@@ -1,7 +1,7 @@
 {% extends "layouts/general-page.html"          %}
-{% from "macros/sectores/home_sector.html" import home_sector %} 
+{% from "sectores/macros/sector-home.html" import sectorHome %} 
 
-{% set data = {
+{% set sectorData = {
     sectorName: "agricultura-florestas", 
     title: 505,
     introParagraph: 506,
@@ -28,7 +28,7 @@
     </div>
 </div>
 
-{{ home_sector(ctx, data) }}
+{{ sectorHome(ctx, sectorData) }}
 
 {% endblock %} 
 

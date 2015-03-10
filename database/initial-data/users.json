@@ -8,9 +8,9 @@
 	},
 	{
 		"id": 2,
-		"firstName": "pedro",
-		"lastName": "garrett",
-		"email": "pmagarrett@gmail.com",
+		"firstName": "Pedro",
+		"lastName": "Garrett",
+		"email": "pmagarrett@fc.ul.pt",
 		"pwHash": "abc"
 	},
 	{
@@ -25,6 +25,27 @@
 		"firstName": "clima",
 		"lastName": "apelido",
 		"email": "clima@clima.com",
+		"pwHash": "abc"
+	},
+	{
+		"id": 5,
+		"firstName": "David",
+		"lastName": "Avelar",
+		"email": "dnavelar@fc.ul.pt",
+		"pwHash": "abc"
+	},
+	{
+		"id": 6,
+		"firstName": "Hugo",
+		"lastName": "Costa",
+		"email": "hpcosta@fc.ul.pt",
+		"pwHash": "abc"
+	},
+	{
+		"id": 7,
+		"firstName": "Ana",
+		"lastName": "Gomes",
+		"email": "anaferradagomes@gmail.com",
 		"pwHash": "abc"
 	}
 ]

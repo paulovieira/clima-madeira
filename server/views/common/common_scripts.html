@@ -75,24 +75,22 @@
 		});
 	}
 
-	{# set the height of left and right columns (to make the gradient visible vertically) #}
+	{# manually adjust the height of main column (but not in the dashboard page) #}
 
-	//$(document).height() - ($(".footer").height() + $("#main-content").height())
+	{% if ctx.urlParam1 != "dashboard" %}
 
-	Clima.mainContentHeight = $("#main-content").outerHeight(true);
-	Clima.footerHeight = $(".footer").height();
-	Clima.documentHeight = $(document).height();
+	Clima.mainContainerHeight = $("#main-container").outerHeight(true);
+	Clima.mainContainerPaddingTop = parseInt($("#main-container").css("padding-top"), 10);
+	Clima.mainContainerPaddingBottom = parseInt($("#main-container").css("padding-bottom"), 10);
 
-	if(Clima.documentHeight - (Clima.footerHeight + Clima.mainContentHeight) > 0){
-		$("#main-content").height(Clima.documentHeight - Clima.footerHeight + "px");
-		Clima.mainContentHeight = $("#main-content").outerHeight(true);
+	Clima.footerHeight = $(".footer").outerHeight(true);
+	Clima.documentHeight = $(document).outerHeight(true);
+
+	if(Clima.mainContainerHeight < Clima.documentHeight - Clima.footerHeight){
+		$("#main-container").height((Clima.documentHeight - Clima.footerHeight - Clima.mainContainerPaddingTop - Clima.mainContainerPaddingBottom ) + "px");
 	}
 
-	//$("#left-column").height(Clima.mainContentHeight + "px");
-	//$("#right-column").height(Clima.mainContentHeight + "px");
-
-	{# this is used only for the agricultura-florestas-2 page (temporary) #}
-	$(".side-column").height(Clima.mainContentHeight + "px");
+	{% endif %}
 
 
 	{# activate the bootstrap tooltips (top bar, login and lanaguage buttons) #}

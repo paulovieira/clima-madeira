@@ -8,7 +8,7 @@
 
 -- NOTE: we explicitely execute a DROP FUNCTION (instead of CREATE OR REPLACE) because the replacement will not work if the output changes; by calling DROP wemake sure the function definition will really be updated
 
-DROP FUNCTION config_read(json);
+DROP FUNCTION IF EXISTS config_read(json);
 
 CREATE FUNCTION config_read(options json DEFAULT '[{}]')
 
@@ -98,7 +98,7 @@ select * from  config_read('[{"config_data_key": "adminEmail"}, {"config_data_ke
 
 */
 
-DROP FUNCTION config_create(json, json);
+DROP FUNCTION IF EXISTS config_create(json, json);
 
 CREATE FUNCTION config_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF config AS
@@ -155,7 +155,7 @@ select * from config_create('[
 
 */
 
-DROP FUNCTION config_update(json, json);
+DROP FUNCTION IF EXISTS config_update(json, json);
 
 CREATE FUNCTION config_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF config AS
@@ -219,7 +219,7 @@ select * from config_update('[
 
 */
 
-DROP FUNCTION config_delete(json);
+DROP FUNCTION IF EXISTS config_delete(json);
 
 CREATE FUNCTION config_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS

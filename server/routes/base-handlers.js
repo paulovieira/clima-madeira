@@ -48,8 +48,8 @@ debugger;
 
 
 //console.log("user-agent:", request.plugins.scooter.toJSON());
-request.log(['databasex', 'read'], "this is the message");
-request.log(['databasex', 'read'], "this is the message2");
+//request.log(['databasex', 'read'], "this is the message");
+//request.log(['databasex', 'read'], "this is the message2");
 
         var context = {
             texts: request.pre.texts,
@@ -141,6 +141,7 @@ request.log(['databasex', 'read'], "this is the message2");
             })
             .done(
                 function() {
+console.log("usersC: ", usersC.toJSON());
                     debugger;
                     if (usersC.length === 0) {
                         status_code = 3;  // "username does not exist" 

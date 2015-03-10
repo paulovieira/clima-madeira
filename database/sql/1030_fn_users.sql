@@ -26,7 +26,7 @@ We use two CTEs to pre-compute these json array. The CTEs have 2 fields:
 */
 
 
-DROP FUNCTION users_read(json);
+DROP FUNCTION IF EXISTS users_read(json);
 
 CREATE FUNCTION users_read(options json DEFAULT '[{}]')
 
@@ -184,7 +184,7 @@ select * from  users_read('[{"email_like": "pau"}]');
 
 */
 
-DROP FUNCTION users_create(json, json);
+DROP FUNCTION IF EXISTS users_create(json, json);
 
 CREATE FUNCTION users_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF users AS
@@ -284,7 +284,7 @@ The time is clearly growing linearly;
 */
 
 
-DROP FUNCTION users_update(json, json);
+DROP FUNCTION IF EXISTS users_update(json, json);
 
 CREATE FUNCTION users_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF users AS
@@ -387,7 +387,7 @@ Update 30 rows: 40ms
 */
 
 
-DROP FUNCTION users_delete(json);
+DROP FUNCTION IF EXISTS users_delete(json);
 
 CREATE FUNCTION users_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS

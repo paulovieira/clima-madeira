@@ -14,7 +14,7 @@ We return
 */
 
 
-DROP FUNCTION texts_read(json);
+DROP FUNCTION IF EXISTS texts_read(json);
 
 CREATE FUNCTION texts_read(options json DEFAULT '[{}]')
 
@@ -135,7 +135,7 @@ select * from  texts_read('[{"id":"1"}]');
 */
 
 
-DROP FUNCTION texts_create(json, json);
+DROP FUNCTION IF EXISTS texts_create(json, json);
 
 CREATE FUNCTION texts_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF texts AS
@@ -219,7 +219,7 @@ select * from texts_create('[
 */
 
 
-DROP FUNCTION texts_update(json, json);
+DROP FUNCTION IF EXISTS texts_update(json, json);
 
 CREATE FUNCTION texts_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF texts AS
@@ -299,7 +299,7 @@ select * from texts_update('[{"id": 1, "tags": ["tag7"], "contents": {"pt": "xxx
 */
 
 
-DROP FUNCTION texts_delete(json);
+DROP FUNCTION IF EXISTS texts_delete(json);
 
 CREATE FUNCTION texts_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS

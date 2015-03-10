@@ -60,6 +60,14 @@ body {
 }
 
 
+body {
+  background-image: url('/common/images/bg/grid_noise.png') ;
+}
+
+#main-container {
+  background-color: white;
+}
+
 
 
 .main-menu-text {
@@ -551,3 +559,51 @@ th {
   padding-left: 0;  
   margin-bottom: 10px;
 }
+
+
+
+/* the xl grid size (only with 2 and 10 columns) */
+.col-xl-2, .col-xl-8 .col-xxl-2, .col-xxl-8 .col-xxxl-2, .col-xxxl-8 {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+
+@media (min-width: 1250px) {
+  .col-xl-8 {
+    width: 78%;
+  }
+  .col-xl-offset-2 {
+    margin-left: 12%;
+  }
+
+}
+
+@media (min-width: 1370px) {
+  .col-xxl-8 {
+    width: 72%;
+  }
+  .col-xxl-offset-2 {
+    margin-left: 14%;
+  }
+
+}
+
+@media (min-width: 1600px) {
+  .col-xxxl-8 {
+    width: 60%;
+  }
+  .col-xxxl-offset-2 {
+    margin-left: 20%;
+  }
+
+}
+
+
+
+
+
+
+

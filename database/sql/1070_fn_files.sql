@@ -6,7 +6,7 @@
 */
 
 
-DROP FUNCTION files_read(json);
+DROP FUNCTION IF EXISTS files_read(json);
 
 CREATE FUNCTION files_read(options json DEFAULT '[{}]')
 
@@ -152,7 +152,7 @@ select * from  files_read('[{"owner_id":"2"}]');
 */
 
 
-DROP FUNCTION files_create(json, json);
+DROP FUNCTION IF EXISTS files_create(json, json);
 
 CREATE FUNCTION files_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF files AS
@@ -252,7 +252,7 @@ select * from files_create('[
 */
 
 
-DROP FUNCTION files_update(json, json);
+DROP FUNCTION IF EXISTS files_update(json, json);
 
 CREATE FUNCTION files_update(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF files AS
@@ -334,7 +334,7 @@ select * from files_update('[{"id": 1, "tags": ["tag7"] }]');
 */
 
 
-DROP FUNCTION files_delete(json);
+DROP FUNCTION IF EXISTS files_delete(json);
 
 CREATE FUNCTION files_delete(options json DEFAULT '[{}]')
 RETURNS TABLE(deleted_id int) AS
