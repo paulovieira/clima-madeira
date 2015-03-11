@@ -1062,6 +1062,17 @@
     },
 
 
+    {
+        "id": 104,
+        "tags": [],
+        "contents": {
+            "pt": "Aumento da floresta",
+            "en": "Forest growth"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
+
+
     /* texts 500- 1000 are meant to be editable */
     {
         "id": 500,

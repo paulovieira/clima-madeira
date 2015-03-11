@@ -90,6 +90,29 @@ var routes = [
 
 
     {
+        path: "/{lang}/{page1}/{page2}/{page3}",
+        method: "GET",
+        handler: baseHandlers.generalPage,
+
+        config: {
+            auth: {
+                mode: "try"
+            },
+
+            validate: {
+                params: validate.params.lang
+            },
+
+            pre: [
+                [pre.db.read_texts, pre.db.read_files],
+                [pre.transform.texts, pre.transform.textsArray, pre.transform.files],
+                [pre.filterImages]
+            ]
+        }
+    },
+
+
+    {
         method: "GET",
         path: "/{lang}/recover",
         handler: baseHandlers.recover,

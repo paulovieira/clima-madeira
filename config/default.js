@@ -89,6 +89,165 @@ module.exports = {
                         this.database;
             }
         },
-    }
+    },
+
+    availableRoutes: [
+
+        {
+            param1: "",
+            param2: "",
+            param3: ""
+        },
+
+        // ----------------------
+        
+        {
+            param1: "introducao",
+            param2: "mensagem",
+            param3: ""
+        },
+        {
+            param1: "introducao",
+            param2: "metodologia",
+            param3: ""
+        },
+        {
+            param1: "introducao",
+            param2: "workshops",
+            param3: ""
+        },            {
+            param1: "introducao",
+            param2: "equipa",
+            param3: ""
+        },
+
+        // ----------------------
+        
+        {
+            param1: "sumario-executivo",
+            param2: "",
+            param3: ""
+        },
+
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "clima",
+            param3: ""
+        },            
+        {
+            param1: "sectores",
+            param2: "clima",
+            param3: "forest-growth"
+        },            
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "adaptacao",
+            param3: ""
+        },
+        {
+            param1: "sectores",
+            param2: "adaptacao",
+            param3: "forest-growth"
+        },
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "saude",
+            param3: ""
+        },
+        {
+            param1: "sectores",
+            param2: "saude",
+            param3: "forest-growth"
+        },
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "turismo",
+            param3: ""
+        },
+        {
+            param1: "sectores",
+            param2: "turismo",
+            param3: "forest-growth"
+        },
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "energia",
+            param3: ""
+        },
+        {
+            param1: "sectores",
+            param2: "energia",
+            param3: "forest-growth"
+        },
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "biodiversidade",
+            param3: ""
+        },
+        {
+            param1: "sectores",
+            param2: "biodiversidade",
+            param3: "forest-growth" 
+        },
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "risco-hidrologico",
+            param3: ""
+        },
+        {
+            param1: "sectores",
+            param2: "risco-hidrologico",
+            param3: "forest-growth"
+        },
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "qualidade-disponibilidade-agua",
+            param3: ""
+        },
+        {
+            param1: "sectores",
+            param2: "qualidade-disponibilidade-agua",
+            param3: "forest-growth"
+        },
+        // ----------------------
+        {
+            param1: "sectores",
+            param2: "agricultura-florestas",
+            param3: ""
+        },
+        {
+            param1: "sectores",
+            param2: "agricultura-florestas",
+            param3: "forest-growth"
+        },
+
+        // ----------------------
+
+        // ----------------------
+        
+        {
+            param1: "cartografia",
+            param2: "",
+            param3: ""
+        },
+
+        // ----------------------
+        
+        {
+            param1: "estrategia-adaptacao",
+            param2: "",
+            param3: ""
+        }
+
+    ]
+
 
 };

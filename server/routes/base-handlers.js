@@ -39,8 +39,8 @@ debugger;
         utils.logHandlerInfo("generalPage", request);
         debugger;
 
-        var viewFile = utils.getView(request.params.page1 || "", request.params.page2 || "");
-
+        var viewFile = utils.getView(request.params.page1 || "", request.params.page2 || "", request.params.page3 || "");
+console.log("viewFile: ", viewFile);
         // if the page params are not recognized, the empty string will be returned
         if(!viewFile){
             return reply.redirect("/" + request.params.lang + "/404");
@@ -141,8 +141,7 @@ debugger;
             })
             .done(
                 function() {
-console.log("usersC: ", usersC.toJSON());
-                    debugger;
+
                     if (usersC.length === 0) {
                         status_code = 3;  // "username does not exist" 
                         return reply.redirect("/" + request.params.lang + "/login?lfr=" + status_code);
@@ -156,7 +155,7 @@ console.log("usersC: ", usersC.toJSON());
                     }
 
                     // if we get here, the username and password match
-                    console.log("    authentication succeeded!".green);
+                    console.log( ("    authentication succeeded for " + usersC.at(0).get("email")).green);
 debugger;
                     var credentials = {
                         id:           usersC.at(0).get("id"),
@@ -164,10 +163,10 @@ debugger;
                         lastName:     usersC.at(0).get("lastName"),
                         email:        usersC.at(0).get("email"),
 
-                        // set to true if the user belongs to the group "admin"
+                        // will be true if the user belongs to the group "admin"
                         isAdmin:      !!_.findWhere(usersC.at(0).get("userGroups"), {code: 99}),  
 
-                        // set to true if the user belongs to the group "can_edit_texts"
+                        // will be true if the user belongs to the group "can_edit_texts"
                         canEditTexts: !!_.findWhere(usersC.at(0).get("userGroups"), {code: 98})
                     };
 
