@@ -41,5 +41,38 @@
 		"id": 8,
 		"email": "clima@clima.com",
 		"groupCode": 98
+	},
+
+	{
+		"id": 9,
+		"email": "dnavelar@fc.ul.pt",
+		"groupCode": 99
+	},
+	{
+		"id": 10,
+		"email": "dnavelar@fc.ul.pt",
+		"groupCode": 98
+	},
+
+	{
+		"id": 11,
+		"email": "hpcosta@fc.ul.pt",
+		"groupCode": 99
+	},
+	{
+		"id": 12,
+		"email": "hpcosta@fc.ul.pt",
+		"groupCode": 98
+	},
+
+	{
+		"id": 13,
+		"email": "anaferradagomes@gmail.com",
+		"groupCode": 99
+	},
+	{
+		"id": 14,
+		"email": "anaferradagomes@gmail.com",
+		"groupCode": 98
 	}
 ]
