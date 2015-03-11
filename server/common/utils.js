@@ -4,7 +4,7 @@ var Path = require('path');
 var fs = require("fs");
 var cheerio = require('cheerio');
 var ent = require("ent");
-
+var config = require("config");
 var rootPath = Path.normalize(__dirname + "/../..");
 
 module.exports = {
@@ -18,99 +18,18 @@ module.exports = {
 
     // return the correct html filename (in server/views) associated with the "param1/param2" parameters 
     // (the typical url will be "/{lang}/{page1}/{page2}" )
-    getView: function(param1, param2) {
+    getView: function(param1, param2, param3) {
 
-        var htmlFile = "";
-        var recognizedRoutes = [
-            {
-                param1: "",
-                param2: ""
-            },
+        var htmlFile = "",
+            availableRoutes = config.get("availableRoutes");
 
-            // ----------------------
-            
-            {
-                param1: "introducao",
-                param2: "mensagem"
-            },
-            {
-                param1: "introducao",
-                param2: "metodologia"
-            },
-            {
-                param1: "introducao",
-                param2: "workshops"
-            },            {
-                param1: "introducao",
-                param2: "equipa"
-            },
-
-            // ----------------------
-            
-            {
-                param1: "sumario-executivo",
-                param2: ""
-            },
-
-            // ----------------------
-            {
-                param1: "sectores",
-                param2: "clima"
-            },            
-            {
-                param1: "sectores",
-                param2: "adaptacao"
-            },
-            {
-                param1: "sectores",
-                param2: "saude"
-            },
-            {
-                param1: "sectores",
-                param2: "turismo"
-            },
-            {
-                param1: "sectores",
-                param2: "energia"
-            },
-            {
-                param1: "sectores",
-                param2: "biodiversidade"
-            },
-            {
-                param1: "sectores",
-                param2: "risco-hidrologico"
-            },
-            {
-                param1: "sectores",
-                param2: "qualidade-disponibilidade-agua"
-            },
-            {
-                param1: "sectores",
-                param2: "agricultura-florestas"
-            },
-
-
-            // ----------------------
-            
-            {
-                param1: "cartografia",
-                param2: ""
-            },
-
-            // ----------------------
-            
-            {
-                param1: "estrategia-adaptacao",
-                param2: ""
-            }
-
-        ];
-
-        var route = _.findWhere(recognizedRoutes, {param1: param1, param2: param2});
+        var route = _.findWhere(availableRoutes, {param1: param1, param2: param2, param3: param3});
 
         if(route){
-            htmlFile = (route.param1 + (route.param2 ? "/" + route.param2 : "")) || "home";
+            htmlFile = (route.param1 + 
+                            (route.param2 ? "/" + route.param2 : "") + 
+                            (route.param3 ? "/" + route.param3 : "")
+                        ) || "home";
         }
 
         return htmlFile;

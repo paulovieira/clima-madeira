@@ -34,7 +34,7 @@ body {
 	z-index: -1;
 	display: block;
 }
-
+/*
 .side-column {
   background-image: url('/common/images/bg/gplaypattern_@2X.png');
   background-image: url('/common/images/bg/gplaypattern.png');
@@ -52,13 +52,8 @@ body {
 
 
   height: 400px;
-
-
-
-
-
 }
-
+*/
 
 body {
   background-image: url('/common/images/bg/grid_noise.png') ;
