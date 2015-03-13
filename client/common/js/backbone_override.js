@@ -86,25 +86,3 @@ debugger;
 	return promise;
 };
 
-
-Marionette.Renderer = {
-
-	render: function(template, data) {
-  
-		if (!template) {
-			throw new Marionette.Error({
-				name: 'TemplateNotFoundError',
-				message: 'Cannot render the template since its false, null or undefined.'
-			});
-		}
-
-		var templateFunc;
-		if (typeof template === 'function') {
-			return templateFunc(data);
-		} 
-
-		return nunjucks.render(template, data)
-	}
-};
-
-

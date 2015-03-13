@@ -2,13 +2,14 @@
 var Boom = require('boom');
 var Joi = require('joi');
 var config = require('config');
+var fs = require('fs');
 
 //var ent = require("ent");
 var _ = require('underscore');
 var _s = require('underscore.string');
 var changeCaseKeys = require('change-case-keys');
 
-var TextsC = require("../../server/models/base-model.js").collection;
+var FilesC = require("../../server/models/base-model.js").collection;
 var utils = require('../../server/common/utils.js');
 var transforms = require('../../server/common/transforms.js');
 var pre = require('../../server/common/pre.js');
@@ -18,8 +19,8 @@ var pre = require('../../server/common/pre.js');
 var internals = {};
 /*** RESOURCE CONFIGURATION ***/
 
-internals.resourceName = "texts";
-internals.resourcePath = "/texts";
+internals.resourceName = "files";
+internals.resourcePath = "/files";
 
 // decode and trim white spaces
 /*
@@ -114,21 +115,19 @@ internals.validatePayloadForUpdate = function(value, options, next){
     console.log("validatePayloadForUpdate");
 
     var schemaUpdate = Joi.object().keys({
-        id: Joi.number().integer().min(0).required(),
+        id: Joi.number().integer().min(0),
 
-        contents: Joi.object().keys({
-            pt: Joi.string().allow("").required(),
-            en: Joi.string().allow("").required()
-        }).required(),
+        name: Joi.string(),
+
+        path: Joi.string(),
 
         tags: Joi.array().unique().min(0).includes(Joi.string()),
 
-        contentsDesc: Joi.object().keys({
+        description: Joi.object().keys({
             pt: Joi.string().required(),
             en: Joi.string().required()
         }),
 
-        active: Joi.boolean()
     });
 
     return internals.validatePayload(value, options, next, schemaUpdate);
@@ -143,6 +142,7 @@ debugger;
     if(_.isObject(value) && !_.isArray(value)){  value = [value];  }
 
     // validate the elements of the array using the given schema
+
     var validation = Joi.validate(value, Joi.array().includes(schema), config.get('hapi.joi'));
 
     if(validation.error){  return next(validation.error); }
@@ -155,6 +155,7 @@ debugger;
     if(ids){
         for(var i=0, l=validation.value.length; i<l; i++){
             // ids in the URL param and ids in the payload must be in the same order
+
             if(ids[i] !== validation.value[i].id){
                 return next(Boom.conflict("The ids given in the payload and in the URI must match (including the order)."));
             }
@@ -182,20 +183,21 @@ exports.register = function(server, options, next) {
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-        	var textsC = new TextsC();
+        	var filesC = new FilesC();
 
-        	textsC.execute({
+        	filesC.execute({
 				query: {
-                    command: "select * from texts_read()"
+                    command: "select * from files_read()"
 				}
         	})
         	.done(
         		function(){
-                    var resp         = textsC.toJSON();
-                    var transformMap = transforms.maps.text;
+                    var resp         = filesC.toJSON();
+                    var transformMap = transforms.maps.files;
                     var transform    = transforms.transformArray;
 
                     return reply(transform(resp, transformMap));
+                    //return reply(resp);
         		},
                 function(err){
 debugger;
@@ -218,6 +220,9 @@ debugger;
         }
     });
 
+
+
+
 	// READ (one or more, but not all)
     server.route({
         method: 'GET',
@@ -226,25 +231,23 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
 debugger;
 
-
-            var textsC = new TextsC();
+            var queryOptions = [];
             request.params.ids.forEach(function(id){
-                textsC.add({id: id});
+                queryOptions.push({id: id});
             });
 
-            var queryOptions = JSON.stringify(textsC.toJSON());
-
-            textsC.execute({
+            var filesC = new FilesC();
+            filesC.execute({
                 query: {
-                    command: "select * from texts_read($1)",
-                    arguments: [queryOptions]
+                    command: "select * from files_read($1)",
+                    arguments: [ JSON.stringify(queryOptions) ]
                 }
             })
             .done(
                 function(){
 debugger;
-                    var resp         = textsC.toJSON();
-                    var transformMap = transforms.maps.text;
+                    var resp         = filesC.toJSON();
+                    var transformMap = transforms.maps.files;
                     var transform    = transforms.transformArray;
 
                     return reply(transform(resp, transformMap));
@@ -271,7 +274,7 @@ debugger;
 
         }
     });
-
+/**/
     // CREATE (one or more)
     server.route({
         method: 'POST',
@@ -279,19 +282,34 @@ debugger;
         handler: function (request, reply) {
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
+            console.log("request.payload: ", request.payload);
+
+            var ws = fs.createWriteStream("/home/pvieira/github/clima-madeira/data/uploads/public/temp");
+            request.payload.newfile.pipe(ws);
 
 
-        	var textsC = new TextsC(request.payload);
-
-            textsC.forEach(function(model){
-                model.set("author_id", request.auth.credentials.id);
+            ws.on("finish", function(){
+                return reply ("ok!");
             });
 
-            var dbData = JSON.stringify(textsC.toJSON());
+            ws.on("error", function(err){
+                var boomErr = internals.parseError(err);
+                return reply(boomErr);
+            });
 
-        	textsC.execute({
+            // TODO: save the meta-data in the database (tags, etc)
+
+
+/*
+            var queryOptions = request.payload;
+            console.log("queryOptions: ", queryOptions);
+
+
+
+            var filesC = new FilesC(request.payload);
+        	filesC.execute({
 				query: {
-                    command: "select * from texts_create($1);",
+                    command: "select * from files_create($1);",
                     arguments: [dbData]
                 },
                 reset: true
@@ -299,7 +317,7 @@ debugger;
         	.done(
         		function(){
 debugger;
-                    var resp = textsC.toJSON();
+                    var resp = filesC.toJSON();
 
                     // add the author information (directly from the credentials)
                     utils.extend(resp, {
@@ -322,16 +340,19 @@ debugger;
                     return reply(boomErr);
                 }
         	);
+*/
 
         },
         config: {
         	validate: {
-                payload: internals.validatePayloadForCreate
+                //payload: internals.validatePayloadForCreate
         	},
             auth: config.get('hapi.auth'),
             pre: [pre.abortIfNotAuthenticated],
 
             payload: {
+                output: "stream",
+                parse: true,
                 maxBytes: 1048576*3  // 3 megabytes
             },
 			description: 'Post (short description)',
@@ -349,29 +370,20 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-            // if the "contents" html has images, they are encoded in base64; this method
-            // will decoded them (to /data/uploads/public/images) and update the <img> tag accordingly
-            utils.decodeImg(request.payload[0].contents);
+            var queryOptions = request.payload;
 
-            var textsC = new TextsC(request.payload);
-
-            textsC.forEach(function(model){
-                model.set("author_id", request.auth.credentials.id);
-            });
-
-            var dbData = JSON.stringify(textsC.toJSON());
-
-        	textsC.execute({
+            var filesC = new FilesC();
+        	filesC.execute({
 				query: {
-				  	command: "select * from texts_update($1);",
-                    arguments: [dbData]
+				  	command: "select * from files_update($1);",
+                    arguments: [ JSON.stringify(queryOptions) ]
 				},
                 reset: true
         	})
         	.done(
         		function(){
 debugger;
-                    var resp = textsC.toJSON();
+                    var resp = filesC.toJSON();
 
                     // add the author information (directly from the credentials)
                     utils.extend(resp, {
@@ -382,7 +394,7 @@ debugger;
                         }
                     });
 
-                    var transformMap = transforms.maps.text;
+                    var transformMap = transforms.maps.files;
                     var transform    = transforms.transformArray;
 
                     return reply(transform(resp, transformMap));
@@ -425,24 +437,23 @@ debugger;
         handler: function (request, reply) {
 debugger;
 
-            var textsC = new TextsC();
+            var queryOptions = [];
             request.params.ids.forEach(function(id){
-                textsC.add({id: id});
-            })
+                queryOptions.push({id: id});
+            });
 
-            var dbData = JSON.stringify(textsC.toJSON());
-
-            textsC.execute({
+            var filesC = new FilesC();
+            filesC.execute({
                 query: {
-                    command: "select * from texts_delete($1)",
-                    arguments: [dbData]
+                    command: "select * from files_delete($1)",
+                    arguments: [ JSON.stringify(queryOptions) ]
                 },
                 reset: true
             })
             .done(
                 function(){
 debugger;
-                    return reply(textsC.toJSON());
+                    return reply(filesC.toJSON());
                 },
                 function(err){
 debugger;

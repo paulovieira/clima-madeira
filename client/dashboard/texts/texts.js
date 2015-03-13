@@ -145,6 +145,10 @@ var TextsTableCV = Mn.CompositeView.extend({
 	template: "texts/templates/textsTable.html",
 	childView: TextRowLV,
 	childViewContainer: "tbody",
+	onRender: function(){
+		debugger;
+		var x = this;
+	}
 });
 
 var TextNewLV = Mn.LayoutView.extend({

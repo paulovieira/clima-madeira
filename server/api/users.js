@@ -43,7 +43,7 @@ internals.parseDbErrMsg = function(msg) {
 internals.parseError = function(err) {
     if (internals.isDbError(err)) {
         var errMsg = internals.parseDbErrMsg(err.message);
-        return Boom.conflict(errMsg);
+        return Boom.badImplementation(errMsg);
     }
 
     return Boom.badImplementation(err.message);

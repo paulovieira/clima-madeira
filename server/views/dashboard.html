@@ -6,6 +6,7 @@
 {% block title %}{{ ctx.texts[15][lang] }} - {{ ctx.texts[103][lang] }}{% endblock %} 
 
 {% block css %}
+    <link href="/dashboard/css/fileinput.css" rel="stylesheet" />
     <link href="/dashboard/css/dashboard.css" rel="stylesheet" />
 {% endblock %}
 
@@ -30,8 +31,11 @@
 {% block scripts %}
 
 {# NOTE: libraries that are loaded in all pages: jquery, bootstrap, underscore, q #}
+    <script src="/dashboard/fileinput.js"></script>
 
     <script src="/common/js/json2.js"></script>
+    <script src="/common/js/moment_2.9.0.js"></script>
+    <script src="/common/js/nunjucks-slim.js"></script>
 
     <script src="/common/js/backbone.js"></script>
     <script src="/common/js/backbone.radio.js"></script>
@@ -40,11 +44,9 @@
     <script src="/common/js/backbone.syphon.js"></script>
     <script src="/common/js/backbone_override.js"></script>
 
-    <script src="/common/js/nunjucks-slim.js"></script>
-    <script src="/common/js/moment_2.9.0.js"></script>
-
-
+    <script src="/common/js/renderer-nunjucks.js"></script>
     <script src="/dashboard/templates.js"></script>
+    <script src="/dashboard/behaviors.js"></script>
 
 
     <script type="text/javascript">
@@ -58,7 +60,9 @@
     <script src="/dashboard/texts/texts.js"></script>
     <script src="/dashboard/profile/profile.js"></script>
     <script src="/dashboard/users/users.js"></script>
+    <script src="/dashboard/files/files.js"></script>
     <script src="/dashboard/index.js"></script>
+    
 {#
 #}
 {#

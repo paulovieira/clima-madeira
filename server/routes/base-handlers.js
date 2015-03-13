@@ -61,22 +61,10 @@ console.log("viewFile: ", viewFile);
             urlParam2: request.params.page2,
             auth: request.auth,
         };
-                return reply.view(viewFile, {
-                    ctx: context
-                });
 
-        Q.delay(2000).then(
-            function(){
-                return reply.view(viewFile, {
-                    ctx: context
-                });
-            }
-        )
-
-
-        // return reply.view(viewFile, {
-        //     ctx: context
-        // });
+        return reply.view(viewFile, {
+            ctx: context
+        });
     },
 
     login: function(request, reply) {
@@ -210,7 +198,7 @@ debugger;
 
         debugger;
 
-        // when NODE_ENV is "debug-no-auth", the route's auth configuration is set to false
+        // when NODE_ENV is "dev-no-auth", the route's auth configuration is set to false
         if(config.get('hapi.auth')!==false){
             if(!request.auth.isAuthenticated){
                 console.log("    not authenticated, will now redirect to /lang/login");

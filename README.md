@@ -1,3 +1,6 @@
+## 0. Install node packages
+
+    sudo npm install
 
 ## 1. Prepare the database
 
@@ -7,21 +10,28 @@ Create the database using the same user (might be necessary to change the login 
 
 Run the initial scripts (create tables, sql functions, views, etc): 
    
-    cd database && ./run_sql.sh test_150111
+    cd database 
+    ./run_sql.sh test_150111
 
-Update the configuration settings for the database (user, password and database name) in the config/prod.js (or whatever environment will be used)
+Set the environment:
+
+    cd .. 
+    export NODE_ENV=prod
+
+Update the configuration settings for the database (user, password and database name) for the environment that was defined:
+
+    emacs config/prod.js
+    (edit the values in db.postgres)
  
 Insert the initial data: 
 
-    cd ..
-    export NODE_ENV=prod && node database/initial-data/populate/index.js 
+    node database/initial-data/populate/index.js 
 
 
 ## 2. Set the required configurations in config/prod.js
 
-publicUri
-publicPort
-
+    emacs config/prod.js
+    (edit publicUri and publicPort)
 
 
 ## 3. Start the application
@@ -31,32 +41,24 @@ Make sure the required global modules are installed (nodemon, forever)
     sudo npm install forever -g
     sudo npm install nodemon -g
 
-Make sure all the local modules are installed:
-
-    sudo npm install 
-
-Set the environment and start.
-
-with nodemon:
-
-    export NODE_ENV=prod
+Test quickly with nodemon:
 
     nodemon -e html,js index.js
 
-with forever (the app will execute in "deamon mode"):
+Run with forever (the app will execute in "deamon mode"):
 
-    export NODE_ENV=prod
+    export NODE_APP_NAME=clima
 
-    sudo forever start -m 50 -l forever_output.log -o server_stdout.log -e server_stderr.log --append --verbose --spinSleepTime 2000 --minUptime 1000  --uid "clima" index.js
+    sudo forever start -m 50 -l forever_output.log -o server_stdout.log -e server_stderr.log --append --verbose --spinSleepTime 2000 --minUptime 1000  --uid "$NODE_APP_NAME" index.js
 
-# 4. Commands to manage the process with forever
+## 4. Commands to manage the process with forever
 
 List all the processes:
 
     sudo forever list
 
-Stop the process with the given reference (we named it "clima"):
+Stop the process with the given reference (stop it before any updates):
 
-    sudo forever stop clima
+    sudo forever stop $NODE_APP_NAME
 
 

@@ -8,10 +8,10 @@ global.rootPath = Path.normalize(__dirname) + "/";
 require('pretty-error').start();
 require('colors');
 
-// set there is no environment, set the default one ("debug") (see the diferent configuration in /config/env.js)
-if(process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "debug-no-auth"){
-	console.log("xxx");
-	process.env.NODE_ENV = "debug";
+// if there is no environment, set the default one ("production") (see the diferent configuration in /config)
+// this must be done before the config module is required
+if(process.env.NODE_ENV !== "dev" && process.env.NODE_ENV !== "dev-no-auth"){
+	process.env.NODE_ENV = "production";
 }
 
 // load the main server module; this is where the Hapi server object is created

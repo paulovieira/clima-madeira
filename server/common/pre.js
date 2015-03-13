@@ -316,7 +316,7 @@ var preRequisites = {
 		method: function(request, reply){
 			console.log("pre: abortIfNotAuthenticated");
 
-			// with NODE_ENV=debug-no-auth, all routes have "config: false"
+			// with NODE_ENV=dev-no-auth, all routes have "config: false"
 		    if(config.get('hapi.auth')!==false){
 		        if(!request.auth.credentials.id){
 		            return reply(Boom.unauthorized("To access this resource you must be authenticated.")).takeover();

@@ -270,6 +270,12 @@ var MainLayout = Mn.LayoutView.extend({
 			case "users-new":
 				this.showNewUser();
 				break;
+			case "files-all":
+				this.showAllFiles();
+				break;
+			case "files-new":
+				this.showNewFile();
+				break;
 			default:
 				throw new Error("showViewRight: unknown code");
 				break;
@@ -356,13 +362,39 @@ var MainLayout = Mn.LayoutView.extend({
 		});
 		this.mainRightRegion.show(newUserLV); 
 	},
+
+	showAllFiles: function(){
+
+		var filesTableCV = new FilesTableCV({
+			collection: filesC
+		});
+
+		var fulfilled = _.bind(
+				function(){ 
+					this.mainRightRegion.show(filesTableCV); 
+				}, 
+			this);
+
+		Q(filesC.fetch()).done(
+			fulfilled, 
+			function(err){
+				debugger;
+			}
+		);
+	},
+
+	showNewFile: function(){
+
+		var fileM = new FileM();
+		var fileNewLV = new FileNewLV({
+			model: fileM
+		});
+		this.mainRightRegion.show(fileNewLV); 
+	},
 });
 
 var mainLayout = new MainLayout();
 
 Dashboard.mainRegion.show(mainLayout);
-
-
-
 
 

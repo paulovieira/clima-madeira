@@ -1,0 +1,27 @@
+<td>
+	{{ id }}
+</td>
+
+<td>
+    {{ name }}
+</td>
+
+<td>
+	{{ path }}
+</td>
+
+<td>
+	{{ tags | join(', ') }}
+</td>
+
+<td>
+	{{ ownerData.firstName }} {{ ownerData.lastName }}
+</td>
+
+<td>
+    <button class="btn btn-primary btn-xs js-edit"><span class="glyphicon glyphicon-pencil"></span>
+    </button>
+    <button class="btn btn-danger btn-xs js-delete"><span class="glyphicon glyphicon-trash"></span>
+    </button>
+</td>
+
