@@ -1,7 +1,7 @@
 var TextM = Backbone.Model.extend({
 	urlRoot: "/api/texts",
 	defaults: {
-		"tags": [],
+		"tags": undefined,
 		"contents": {pt: "", en: ""},
 		"pt": "",
 		"en": "",
@@ -55,15 +55,15 @@ var TextEditModalIV = Mn.ItemView.extend({
 		var data = Backbone.Syphon.serialize(this);
 
 		// convert the tags string to array of string and trim white space
-		data.tags = data.tags.split(",");
-		for(var i=0, l=data.tags.length; i<l; i++){
-			data.tags[i] = $.trim(data.tags[i]);
-		}
+		// data.tags = data.tags.split(",");
+		// for(var i=0, l=data.tags.length; i<l; i++){
+		// 	data.tags[i] = $.trim(data.tags[i]);
+		// }
 
-		// if tags is the empty string, we get an array with 1 element (the empty string); we want the empty array instead
-		if(data.tags.length===1 && !data.tags[0]){
-			data.tags = [];
-		}
+		// // if tags is the empty string, we get an array with 1 element (the empty string); we want the empty array instead
+		// if(data.tags.length===1 && !data.tags[0]){
+		// 	data.tags = [];
+		// }
 
 		this.model.set(data);
 		
@@ -145,10 +145,6 @@ var TextsTableCV = Mn.CompositeView.extend({
 	template: "texts/templates/textsTable.html",
 	childView: TextRowLV,
 	childViewContainer: "tbody",
-	onRender: function(){
-		debugger;
-		var x = this;
-	}
 });
 
 var TextNewLV = Mn.LayoutView.extend({
@@ -167,10 +163,10 @@ debugger;
 		var data = Backbone.Syphon.serialize(this);
 
 		// convert the tags string to array of string and trim white space
-		data.tags = data.tags.split(",");
-		for(var i=0, l=data.tags.length; i<l; i++){
-			data.tags[i] = $.trim(data.tags[i]);
-		}
+		// data.tags = data.tags.split(",");
+		// for(var i=0, l=data.tags.length; i<l; i++){
+		// 	data.tags[i] = $.trim(data.tags[i]);
+		// }
 
 		this.model.set(data);
 	

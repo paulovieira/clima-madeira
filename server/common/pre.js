@@ -1,5 +1,6 @@
 var Boom = require('boom');
 var _ = require('underscore');
+var _s = require('underscore.string');
 var config = require('config');
 
 
@@ -275,6 +276,52 @@ var preRequisites = {
 		},
 	},
 
+
+	payload: {
+		extractTags: {
+			method: function(request, reply){
+				console.log("pre: extractTags");
+
+console.log("request.payload: ", request.payload);
+
+				// convert the tags string to an array of strings
+				var payloadObj, tagsArray = [];
+
+				if(_.isArray(request.payload) && typeof request.payload[0].tags === "string"){
+					payloadObj = request.payload[0];
+					tags = request.payload[0].tags;
+				}
+				else if(typeof request.payload.tags === "string"){
+					payloadObj = request.payload;
+					tags = request.payload.tags;
+				}
+
+				// if the payload has tags, process them
+				if(payloadObj){
+					tagsArray = payloadObj.tags.split(",");
+					for(var i=0, l=tagsArray.length; i<l; i++){
+						tagsArray[i] = _s.trim(tagsArray[i], " ");
+					}
+
+					// if the original tags string is the empty string, we end up with an array with 1 element (the empty string); we want the empty array instead
+					if(tagsArray.length===1 && tagsArray[0]===""){
+						tagsArray = [];
+					}
+
+					// update the property in request.payload
+					payloadObj.tags = tagsArray;
+
+				}
+				// console.log("after: ", request.payload.tags)
+				// console.log("after: ", payloadObj.tags)
+				// console.log("after: ", tagsArray)
+
+				reply();
+			}
+
+		}
+	},
+
 	filterImages: {
 		method: function(request, reply){
 			console.log("pre: filterImages");
@@ -311,6 +358,8 @@ var preRequisites = {
 
 		assign: "images"
 	},
+
+
 
 	abortIfNotAuthenticated: {
 		method: function(request, reply){

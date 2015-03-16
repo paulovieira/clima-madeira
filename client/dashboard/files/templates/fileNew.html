@@ -2,33 +2,25 @@
     <div class="col-sm-10 col-sm-offset-1" style="padding-top: 20px;">
 
         <h3 class="text-center">Upload de novo ficheiro</h3>
-        <form method="post" action="/api/files" enctype="multipart/form-data">
+
+<!--         <form method="post" action="/api/files" enctype="multipart/form-data"> -->
+		<form enctype="multipart/form-data">
 
             <div class="form-group">
-                <label for="js-new-text-tags">Tags (separar com vírgulas)</label>
-                <input type="text" id="js-new-text-tags" class="form-control" name="tags">
+
             </div>
-            
-            <div class="form-group">
-                <label for="js-new-file">Choose file</label>
-            	<input id="js-new-file" type="file" class="file" name="newfile">
-            	<input type="submit" value="Upload now!">
-            </div>
-        </form>
-{#
-        <form>
-            <div class="form-group">
-                <label for="js-new-text-tags">Tags (separar com vírgulas)</label>
-                <input type="text" id="js-new-text-tags" class="form-control" name="tags">
-            </div>
+
+			 <div class="form-group">
+                <label for="newfiletags">Tags (separar com vírgulas)</label>
+                <input type="text" id="newfiletags" class="form-control" name="tags">
+
+                <label for="newfile">Choose file</label>
+				<input id="newfile" name="newfile" type="file" multiple=false class="file">
+			</div>
+
         </form>
 
-        <div class="row" style="margin-top: 20px;">
-        	<div class="col-sm-6 col-sm-offset-3">
-            	<button type="button" class="btn btn-primary btn-block js-save">Gravar</button>
-            </div>
-        </div>
-#}
+
     </div>
 </div>
 

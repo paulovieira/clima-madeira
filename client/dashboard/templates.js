@@ -71,8 +71,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 20px;\">\n\n        <h3 class=\"text-center\">Upload de novo ficheiro</h3>\n        <form method=\"post\" action=\"/api/files\" enctype=\"multipart/form-data\">\n\n            <div class=\"form-group\">\n                <label for=\"js-new-text-tags\">Tags (separar com vírgulas)</label>\n                <input type=\"text\" id=\"js-new-text-tags\" class=\"form-control\" name=\"tags\">\n            </div>\n            \n            <div class=\"form-group\">\n                <label for=\"js-new-file\">Choose file</label>\n            \t<input id=\"js-new-file\" type=\"file\" class=\"file\" name=\"newfile\">\n            \t<input type=\"submit\" value=\"Upload now!\">\n            </div>\n        </form>\n";
-output += "\n    </div>\n</div>\n\n";
+output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 20px;\">\n\n        <h3 class=\"text-center\">Upload de novo ficheiro</h3>\n\n<!--         <form method=\"post\" action=\"/api/files\" enctype=\"multipart/form-data\"> -->\n\t\t<form enctype=\"multipart/form-data\">\n\n            <div class=\"form-group\">\n\n            </div>\n\n\t\t\t <div class=\"form-group\">\n                <label for=\"newfiletags\">Tags (separar com vírgulas)</label>\n                <input type=\"text\" id=\"newfiletags\" class=\"form-control\" name=\"tags\">\n\n                <label for=\"newfile\">Choose file</label>\n\t\t\t\t<input id=\"newfile\" name=\"newfile\" type=\"file\" multiple=false class=\"file\">\n\t\t\t</div>\n\n        </form>\n\n\n    </div>\n</div>\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -95,9 +94,8 @@ output += "\n</td>\n\n<td>\n    ";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "path"), env.autoesc);
-output += "\n</td>\n\n<td>\n\t";
-output += runtime.suppressValue(env.getFilter("join").call(context, runtime.contextOrFrameLookup(context, frame, "tags"),", "), env.autoesc);
-output += "\n</td>\n\n<td>\n\t";
+output += "\n</td>\n";
+output += "\n<td>\n\t";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"firstName", env.autoesc), env.autoesc);
 output += " ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"lastName", env.autoesc), env.autoesc);

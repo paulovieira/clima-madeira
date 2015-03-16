@@ -54,23 +54,9 @@ var FileEditModalIV = ModalIV.extend({
 	},
 
 	updateFile: function(){
-
+debugger;
 		var data = Backbone.Syphon.serialize(this);
-
-		// convert the tags string to array of string and trim white space
-		data.tags = data.tags.split(",");
-		for(var i=0, l=data.tags.length; i<l; i++){
-			data.tags[i] = $.trim(data.tags[i]);
-		}
-
-		// if tags is the empty string, we get an array with 1 element (the empty string); we want the empty array instead
-		if(data.tags.length===1 && !data.tags[0]){
-			data.tags = [];
-		}
-
 		this.model.set(data);
-
-//		console.log("data: ", data);
 
 		Q(this.model.save()).delay(100).then(
 			function(data){
@@ -101,6 +87,20 @@ var FileDeleteModalIV = ModalIV.extend({
 });
 
 var FileRowLV = Mn.LayoutView.extend({
+
+	// initialize: function(){
+	// 	console.log("initialize")
+	// 	var self = this;
+
+	// 	setInterval(function(){
+	// 		if(self.model.get("id")===2){
+	// 			console.log("will render @ " + Date.now())
+	// 			self.render();
+	// 		}
+	// 	}, 2000);
+		
+	// },
+
 	template: "files/templates/fileRow.html",
 	tagName: "tr",
 	ui: {
@@ -113,10 +113,17 @@ var FileRowLV = Mn.LayoutView.extend({
 	},
 
 	behaviors: {
-		ShowModal: {
+
+		ShowEditModal: {
 			behaviorClass: window.Behaviors.ShowModal,
-			editModalViewClass: FileEditModalIV,  // will listen for clicks on @ui.editModalBtn
-			deleteModalViewClass: FileDeleteModalIV  // will listen for clicks on @ui.deleteModalBtn
+			uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
+			viewClass: FileEditModalIV  // and will show this view
+		},
+
+		ShowDeleteModal: {
+			behaviorClass: window.Behaviors.ShowModal,
+			uiKey: "deleteModalBtn",
+			viewClass: FileDeleteModalIV 
 		},
 	},
 });
@@ -130,25 +137,14 @@ var FilesTableCV = Mn.CompositeView.extend({
 
 var FileNewLV = Mn.LayoutView.extend({
 	initialize: function(){
-		// $('#js-new-file').on('filelock', function(event, filestack, extraData) {
-		// 	debugger;
-		//     //var fstack = filestack.filter(function(n){ return n != undefined });
-		//     console.log('Files selected - ' + fstack.length);
-		// });
 	},
 
 	template: "files/templates/fileNew.html",
 
 	ui: {
-		saveBtn: "button.js-save"
 	},
 
 	events: {
-		"click @ui.saveBtn": "createResource"
-	},
-
-	triggers: {
-		//"filelock #js-new-file": "fileUpload"
 	},
 
 	onFileUpload: function(){
@@ -156,40 +152,55 @@ var FileNewLV = Mn.LayoutView.extend({
 	},
 
 	onAttach: function(){
-		// $("#js-new-file").fileinput({
-		// 	showPreview: false
+
+		$("#newfile").fileinput({
+		    uploadUrl: '/api/files',
+		    maxFileSize: 50000,  // in Kb
+		    showUpload: true,
+		    initialCaption: "Click the browse button on the right",
+		    showRemove: false,
+		    //overwriteInitial: false,
+		    //showCaption: false
+		    // ajaxSettings: {
+		    // 	success: function(data, status, jqxhr){
+		    // 		debugger;
+		    // 	},
+		    // 	error: function(jqxhr, status, err){
+		    // 		debugger;
+		    // 	}
+		    // },
+		    uploadExtraData: function(){
+				return { 
+					tags: $("#newfiletags").val()
+				}
+		    }
+
+		});
+
+		// $('#js-newfile').on('fileuploaded', function(event, data, previewId, index) {
+		// 	debugger;
 		// });
 
-		// $('#js-new-file').on('filelock', function(event, filestack, extraData) {
-		// 	debugger;
-		//     //var fstack = filestack.filter(function(n){ return n != undefined });
-		//     console.log('Files selected - ' + fstack.length);
+
+		// $('#js-newfile').on('fileuploaderror', function(event, data, previewId, index) {
+		// debugger;
 		// });
+
+		// // $('#js-newfile').on('filebatchuploadcomplete', function(event, files, extra) {
+		// //     debugger;
+		// // });
+
+		// $('#js-newfile').on('filelock', function(event, filestack, extraData) {
+		// 	debugger;
+		// });
+
+		// $('#js-newfile').on('fileunlock', function(event, filestack, extraData) {
+		// 	debugger;
+		// });
+
+
+
 	},
 
-	createResource: function(){
-debugger;
-		var data = Backbone.Syphon.serialize(this);
 
-		// convert the tags string to array of string and trim white space
-		data.tags = data.tags.split(",");
-		for(var i=0, l=data.tags.length; i<l; i++){
-			data.tags[i] = $.trim(data.tags[i]);
-		}
-
-		this.model.set(data);
-	
-		this.ui.saveBtn.prop("disabled", true);
-console.log("create")		;
-		// Q(this.model.save()).then(
-		// 	function(data){
-		// 		debugger;
-		// 		alert("O texto foi criado com sucesso.");
-		// 	},
-		// 	function(err){
-		// 		debugger;
-		// 		alert("ERRO: o texto não foi criado.");
-		// 	}
-		// );
-	}
 });

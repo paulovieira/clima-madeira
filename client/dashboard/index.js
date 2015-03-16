@@ -364,7 +364,6 @@ var MainLayout = Mn.LayoutView.extend({
 	},
 
 	showAllFiles: function(){
-
 		var filesTableCV = new FilesTableCV({
 			collection: filesC
 		});

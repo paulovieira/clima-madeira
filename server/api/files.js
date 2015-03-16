@@ -1,8 +1,9 @@
-
+var stream = require('stream');
 var Boom = require('boom');
 var Joi = require('joi');
 var config = require('config');
 var fs = require('fs');
+var Q = require("q");
 
 //var ent = require("ent");
 var _ = require('underscore');
@@ -89,21 +90,9 @@ internals.validatePayloadForCreate = function(value, options, next){
     console.log("validatePayloadForCreate");
 
     var schemaCreate = Joi.object().keys({
-        id: Joi.number().integer().min(0),
-
-        tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
-
-        contents: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
-        }).required(),
-
-        contentsDesc: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
-        }),
-
-        active: Joi.boolean()
+        tags: Joi.string().regex(/^$|^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
+        //newfile: Joi.object().type(stream.Readable).strict()
+        newfile: Joi.any().strict()
     });
 
     return internals.validatePayload(value, options, next, schemaCreate);
@@ -117,11 +106,12 @@ internals.validatePayloadForUpdate = function(value, options, next){
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0),
 
-        name: Joi.string(),
+        name: Joi.string().required(),
 
-        path: Joi.string(),
+        path: Joi.string().required(),
 
-        tags: Joi.array().unique().min(0).includes(Joi.string()),
+        //tags: Joi.array().unique().min(0).includes(Joi.string()),
+        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/), //.allow(""),
 
         description: Joi.object().keys({
             pt: Joi.string().required(),
@@ -139,11 +129,12 @@ internals.validatePayloadForUpdate = function(value, options, next){
 internals.validatePayload = function(value, options, next, schema){
 debugger;
 
-    if(_.isObject(value) && !_.isArray(value)){  value = [value];  }
+    //if(_.isObject(value) && !_.isArray(value)){  value = [value];  }
 
     // validate the elements of the array using the given schema
 
-    var validation = Joi.validate(value, Joi.array().includes(schema), config.get('hapi.joi'));
+    //var validation = Joi.validate(value, Joi.array().includes(schema), config.get('hapi.joi'));
+    var validation = Joi.validate(value, schema, config.get('hapi.joi'));
 
     if(validation.error){  return next(validation.error); }
 
@@ -152,13 +143,20 @@ debugger;
     var ids = options.context.params.ids;
 
     // finally, if the ids param is defined, make sure that the ids in the param and the ids in the payload are consistent
-    if(ids){
-        for(var i=0, l=validation.value.length; i<l; i++){
-            // ids in the URL param and ids in the payload must be in the same order
+    // if(ids){
+    //     for(var i=0, l=validation.value.length; i<l; i++){
+    //         // ids in the URL param and ids in the payload must be in the same order
 
-            if(ids[i] !== validation.value[i].id){
-                return next(Boom.conflict("The ids given in the payload and in the URI must match (including the order)."));
-            }
+    //         if(ids[i] !== validation.value[i].id){
+    //             return next(Boom.conflict("The ids given in the payload and in the URI must match (including the order)."));
+    //         }
+    //     }
+    // }
+
+    // finally, if the ids param is defined, make sure that the ids in the param and the ids in the payload are consistent
+    if(ids){
+        if(ids[0] !== validation.value.id){
+            return next(Boom.conflict("The ids given in the payload and in the URI must match (including the order)."));
         }
     }
 
@@ -184,7 +182,6 @@ exports.register = function(server, options, next) {
 debugger;
 
         	var filesC = new FilesC();
-
         	filesC.execute({
 				query: {
                     command: "select * from files_read()"
@@ -282,14 +279,44 @@ debugger;
         handler: function (request, reply) {
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
-            console.log("request.payload: ", request.payload);
 
-            var ws = fs.createWriteStream("/home/pvieira/github/clima-madeira/data/uploads/public/temp");
+//console.log("request.payload: ", request.payload);
+            var filename = request.payload.newfile.hapi.filename;
+            var filepath = "/uploads/public/";
+
+
+            var ws = fs.createWriteStream(filepath + filename);
             request.payload.newfile.pipe(ws);
 
-
             ws.on("finish", function(){
-                return reply ("ok!");
+
+                var dbData = [{
+                    name: filename,
+                    path: filepath,
+                    tags: request.payload.tags,
+                    ownerId: request.auth.credentials.id
+                }];
+
+                var filesC = new FilesC();
+                filesC.execute({
+                    query: {
+                        command: "select * from files_create($1);",
+                        arguments: [JSON.stringify(changeCaseKeys(dbData, "underscored"))]
+                    }
+                })
+                .done(
+                    function(){
+    debugger;
+                        var resp = filesC.toJSON();
+                        return reply(resp);
+                    },
+                    function(err){
+    debugger;
+                        var boomErr = internals.parseError(err);
+                        return reply(boomErr);
+                    }
+                );
+                
             });
 
             ws.on("error", function(err){
@@ -297,58 +324,20 @@ debugger;
                 return reply(boomErr);
             });
 
-            // TODO: save the meta-data in the database (tags, etc)
-
-
-/*
-            var queryOptions = request.payload;
-            console.log("queryOptions: ", queryOptions);
-
-
-
-            var filesC = new FilesC(request.payload);
-        	filesC.execute({
-				query: {
-                    command: "select * from files_create($1);",
-                    arguments: [dbData]
-                },
-                reset: true
-        	})
-        	.done(
-        		function(){
-debugger;
-                    var resp = filesC.toJSON();
-
-                    // add the author information (directly from the credentials)
-                    utils.extend(resp, {
-                        authorData: {
-                            id:        request.auth.credentials.id,
-                            firstName: request.auth.credentials.firstName,
-                            lastName:  request.auth.credentials.lastName  
-                        }
-                    });
-
-                    var transformMap = transforms.maps.text;
-                    var transform    = transforms.transformArray;
-
-                    return reply(transform(resp, transformMap));
-        		},
-                function(err){
-debugger;
-
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-        	);
-*/
 
         },
         config: {
         	validate: {
+                // NOTE: to cerate a new file we have to send the file itself in a form (multipart/form-data);
+                // if we do the validation the buffer will somehow be messed up
+
                 //payload: internals.validatePayloadForCreate
         	},
             auth: config.get('hapi.auth'),
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.payload.extractTags
+            ],
 
             payload: {
                 output: "stream",
@@ -415,8 +404,8 @@ debugger;
 			},
 
             pre: [
-//                pre.db.read_user_by_email,
-                pre.abortIfNotAuthenticated
+                pre.abortIfNotAuthenticated,
+                pre.payload.extractTags
             ],
 
             auth: config.get('hapi.auth'),

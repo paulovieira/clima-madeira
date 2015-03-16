@@ -2,39 +2,28 @@ window.Behaviors = window.Behaviors || {};
 
 window.Behaviors.ShowModal = Marionette.Behavior.extend({
 
-    // behaviors have events that are bound to the views DOM
-    events: {
-        "click @ui.editModalBtn": "showEditModal",
-        "click @ui.deleteModalBtn": "showDeleteModal"
+    events: function(){
+    	var eventsHash = {};
+    	eventsHash["click @ui." + this.options.uiKey] = "showModal";
+
+    	return eventsHash;
     },
 
-    showEditModal: function(){
-        var modalView = new this.options.editModalViewClass({
+    showModal: function(){
+    	debugger;
+        var view = new this.options.viewClass({
             model: this.view.model
         });
-
-    	this._showModal(modalView)
-    },
-
-    showDeleteModal: function(){
-        var modalView = new this.options.deleteModalViewClass({
-            model: this.view.model
-        });
-
-    	this._showModal(modalView)
-    },
-
-    _showModal: function(view) {
 
         // first set the content of the modal
         Dashboard.modalRegion.show(view);
 
         // then show the modal 
         Dashboard.$modal.modal("show");
-
     },
-
 });
+
+
 
 
 // close the modal and destroy the view

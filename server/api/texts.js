@@ -90,7 +90,8 @@ internals.validatePayloadForCreate = function(value, options, next){
     var schemaCreate = Joi.object().keys({
         id: Joi.number().integer().min(0),
 
-        tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
+        //tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
+        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
 
         contents: Joi.object().keys({
             pt: Joi.string().required(),
@@ -121,7 +122,8 @@ internals.validatePayloadForUpdate = function(value, options, next){
             en: Joi.string().allow("").required()
         }).required(),
 
-        tags: Joi.array().unique().min(0).includes(Joi.string()),
+        //tags: Joi.array().unique().min(0).includes(Joi.string()),
+        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
 
         contentsDesc: Joi.object().keys({
             pt: Joi.string().required(),
@@ -329,7 +331,10 @@ debugger;
                 payload: internals.validatePayloadForCreate
         	},
             auth: config.get('hapi.auth'),
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.payload.extractTags
+            ],
 
             payload: {
                 maxBytes: 1048576*3  // 3 megabytes
@@ -403,8 +408,8 @@ debugger;
 			},
 
             pre: [
-//                pre.db.read_user_by_email,
-                pre.abortIfNotAuthenticated
+                pre.abortIfNotAuthenticated,
+                pre.payload.extractTags
             ],
 
             auth: config.get('hapi.auth'),
