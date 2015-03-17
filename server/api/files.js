@@ -23,20 +23,6 @@ var internals = {};
 internals.resourceName = "files";
 internals.resourcePath = "/files";
 
-// decode and trim white spaces
-/*
-internals.decodeHtmlEntities = function(array){
-    var i,l;
-    for(i=0, l=array.length; i<l; i++){
-        if(array[i].contents){
-            array[i].contents["pt"] = _s.trim( ent.decode(array[i].contents["pt"]) );
-            array[i].contents["en"] = _s.trim( ent.decode(array[i].contents["en"]) );
-        }
-    }
-
-    return array;
-};
-*/
 
 internals.isDbError = function (err){
     return !!err.sqlState;
@@ -85,14 +71,15 @@ debugger;
 };
 
 
+// NOTE: not used for files
 internals.validatePayloadForCreate = function(value, options, next){
 
     console.log("validatePayloadForCreate");
 
     var schemaCreate = Joi.object().keys({
-        tags: Joi.string().regex(/^$|^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
+        //tags: Joi.string().regex(/^$|^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
         //newfile: Joi.object().type(stream.Readable).strict()
-        newfile: Joi.any().strict()
+        //newfile: Joi.any().strict()
     });
 
     return internals.validatePayload(value, options, next, schemaCreate);
@@ -111,7 +98,7 @@ internals.validatePayloadForUpdate = function(value, options, next){
         path: Joi.string().required(),
 
         //tags: Joi.array().unique().min(0).includes(Joi.string()),
-        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/), //.allow(""),
+        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
 
         description: Joi.object().keys({
             pt: Joi.string().required(),
@@ -125,15 +112,12 @@ internals.validatePayloadForUpdate = function(value, options, next){
 
 
 
-
+// NOTE: unlike the validations for other endpoints, here we don't convert to array (because that
+// will make things difficult for the creation of the file buffer)
 internals.validatePayload = function(value, options, next, schema){
 debugger;
 
-    //if(_.isObject(value) && !_.isArray(value)){  value = [value];  }
 
-    // validate the elements of the array using the given schema
-
-    //var validation = Joi.validate(value, Joi.array().includes(schema), config.get('hapi.joi'));
     var validation = Joi.validate(value, schema, config.get('hapi.joi'));
 
     if(validation.error){  return next(validation.error); }
@@ -141,17 +125,6 @@ debugger;
 
     // validateIds was executed before this one; the ids param (if defined) is now an array of integers
     var ids = options.context.params.ids;
-
-    // finally, if the ids param is defined, make sure that the ids in the param and the ids in the payload are consistent
-    // if(ids){
-    //     for(var i=0, l=validation.value.length; i<l; i++){
-    //         // ids in the URL param and ids in the payload must be in the same order
-
-    //         if(ids[i] !== validation.value[i].id){
-    //             return next(Boom.conflict("The ids given in the payload and in the URI must match (including the order)."));
-    //         }
-    //     }
-    // }
 
     // finally, if the ids param is defined, make sure that the ids in the param and the ids in the payload are consistent
     if(ids){
@@ -282,17 +255,18 @@ debugger;
 
 //console.log("request.payload: ", request.payload);
             var filename = request.payload.newfile.hapi.filename;
-            var filepath = "/uploads/public/";
+            var logicalPath = "/uploads/public/";
+            var physicalPath = global.rootPath + "data";
 
 
-            var ws = fs.createWriteStream(filepath + filename);
+            var ws = fs.createWriteStream(physicalPath + logicalPath + filename);
             request.payload.newfile.pipe(ws);
 
             ws.on("finish", function(){
 
                 var dbData = [{
                     name: filename,
-                    path: filepath,
+                    path: logicalPath,
                     tags: request.payload.tags,
                     ownerId: request.auth.credentials.id
                 }];
@@ -328,8 +302,9 @@ debugger;
         },
         config: {
         	validate: {
-                // NOTE: to cerate a new file we have to send the file itself in a form (multipart/form-data);
-                // if we do the validation the buffer will somehow be messed up
+                // NOTE: to crate a new file we have to send the file itself in a form (multipart/form-data);
+                // but if we do the validation the buffer will somehow be messed up by Joi; so here we don't
+                // do the validation
 
                 //payload: internals.validatePayloadForCreate
         	},
@@ -359,13 +334,14 @@ debugger;
             utils.logHandlerInfo("/api" + internals.resourcePath, request);
 debugger;
 
-            var queryOptions = request.payload;
+            var dbData = [request.payload];
+console.log("dbData: ", dbData);
 
             var filesC = new FilesC();
         	filesC.execute({
 				query: {
 				  	command: "select * from files_update($1);",
-                    arguments: [ JSON.stringify(queryOptions) ]
+                    arguments: [JSON.stringify(changeCaseKeys(dbData, "underscored"))]
 				},
                 reset: true
         	})
@@ -374,23 +350,14 @@ debugger;
 debugger;
                     var resp = filesC.toJSON();
 
-                    // add the author information (directly from the credentials)
-                    utils.extend(resp, {
-                        authorData: {
-                            id:        request.auth.credentials.id,
-                            firstName: request.auth.credentials.firstName,
-                            lastName:  request.auth.credentials.lastName  
-                        }
-                    });
+                    // var transformMap = transforms.maps.files;
+                    // var transform    = transforms.transformArray;
 
-                    var transformMap = transforms.maps.files;
-                    var transform    = transforms.transformArray;
-
-                    return reply(transform(resp, transformMap));
+                    // return reply(transform(resp, transformMap));
+                    return reply(resp);
         		},
                 function(err){
 debugger;
-
                     var boomErr = internals.parseError(err);
                     return reply(boomErr);
                 }   
@@ -400,7 +367,6 @@ debugger;
 			validate: {
 	            params: internals.validateIds,
                 payload: internals.validatePayloadForUpdate
-
 			},
 
             pre: [

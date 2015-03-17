@@ -54,17 +54,21 @@ var FileEditModalIV = ModalIV.extend({
 	},
 
 	updateFile: function(){
-debugger;
+//debugger;
 		var data = Backbone.Syphon.serialize(this);
-		this.model.set(data);
+		//this.model.set(data);
 
-		Q(this.model.save()).delay(100).then(
+		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
+		// model.set(atrrs); model.save();  this way the attributes will be updated
+		// only after the model has really been saved in the server
+		Q(this.model.save(data, {wait: true})).delay(100).then(
 			function(data){
-debugger;
+//debugger;
 				Dashboard.$modal.modal("hide");
 				this.destroy();
 			},
 			function(err){
+				alert("ERROR: data was not saved");
 				throw err;
 			}
 		);
@@ -136,20 +140,8 @@ var FilesTableCV = Mn.CompositeView.extend({
 
 
 var FileNewLV = Mn.LayoutView.extend({
-	initialize: function(){
-	},
 
 	template: "files/templates/fileNew.html",
-
-	ui: {
-	},
-
-	events: {
-	},
-
-	onFileUpload: function(){
-		debugger;
-	},
 
 	onAttach: function(){
 

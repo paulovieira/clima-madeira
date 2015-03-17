@@ -10,7 +10,7 @@ window.Behaviors.ShowModal = Marionette.Behavior.extend({
     },
 
     showModal: function(){
-    	debugger;
+//    	debugger;
         var view = new this.options.viewClass({
             model: this.view.model
         });

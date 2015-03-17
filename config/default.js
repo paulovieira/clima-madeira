@@ -40,7 +40,8 @@ module.exports = {
         joi: {
             abortEarly: false,  // returns all the errors found (does not stop on the first error)
             allowUnknown: true, // allows object to contain unknown keys (they will be deleted)
-            stripUnknown: true  // delete unknown keys
+            stripUnknown: true,  // delete unknown keys
+            convert: true
     /*
 
 
