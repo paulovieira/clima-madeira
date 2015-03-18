@@ -44,7 +44,7 @@ var routes = [
 
 
     {
-        path: "/{lang}/{page1}",
+        path: "/{lang}/{level1}",
         method: "GET",
         handler: baseHandlers.generalPage,
 
@@ -67,7 +67,7 @@ var routes = [
 
 
     {
-        path: "/{lang}/{page1}/{page2}",
+        path: "/{lang}/{level1}/{level2}",
         method: "GET",
         handler: baseHandlers.generalPage,
 
@@ -90,7 +90,7 @@ var routes = [
 
 
     {
-        path: "/{lang}/{page1}/{page2}/{page3}",
+        path: "/{lang}/{level1}/{level2}/{level3}",
         method: "GET",
         handler: baseHandlers.generalPage,
 

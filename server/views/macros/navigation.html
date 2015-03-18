@@ -118,10 +118,12 @@
 
 
 				{# 
-				NOTE: if the user is logged in, 2 buttons are shown: "go to dashboard" and "logout" (except in the dashboard page itself, where
-				only the "logout" button is shown); if not, only 1 button is shown: "login"
+				NOTE: the flag button is always shown; as for the other buttons, 2 situations can happen:
+				a) if the user is logged in, 2 buttons are shown: "go to dashboard" and "logout" (except in the dashboard page itself, 
+				where only the "logout" button is shown); 
+				b) if not, only 1 button is shown: "login"
 
-				Here we set the correct button id and icon class. The id is used to attach the click handler, which will then redirect the 
+				Below we set the correct button id and icon class. The id is used to attach the click handler, which will then redirect the 
 				the browser to the correct url. This is necessary because we can't use <a class='btn'> in the navbar. More details here:
 				http://getbootstrap.com/css/#buttons
 				#}
@@ -144,9 +146,9 @@
 
 				{# set the correct icon class for the button relative to the language (flag) #}
             	{% if lang == "pt" %}
-            		{% set language_icon_class = "flag-icon-gb"    %} 
-            	{% else %}
             		{% set language_icon_class = "flag-icon-pt"    %} 
+            	{% else %}
+            		{% set language_icon_class = "flag-icon-gb"    %} 
             	{% endif %}
 
 
@@ -179,10 +181,26 @@
 			            	{% endif %}
 
 			           	{% endif %}
-
+{#
 	            		<button style="margin-left: 5px; " type="button" class="btn btn-default navbar-btn" id="js-lang-nav" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[80][lang] }}">
 	            			<span class="flag-icon {{ language_icon_class }}"></span>
 	            		</button>
+
+#}
+						<div class="btn-group">
+						    <button style="margin-left: 5px; " type="button" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
+						        <span class="flag-icon {{ language_icon_class }}"></span>&nbsp;&nbsp;<span class="caret"></span>
+						    </button>
+						    <ul class="dropdown-menu" role="menu" style="min-width: 0">
+						        <li>
+						        	<a style="padding: 3px 15px;" href="/pt{{ ctx.urlWithoutLang }}">Português <span class="flag-icon flag-icon-pt"></span></a>
+						        </li>
+						        <li>
+						        	<a style="padding: 3px 15px;" href="/en{{ ctx.urlWithoutLang }}">Inglês <span class="flag-icon flag-icon-gb"></span></a>
+						        </li>
+						    </ul>
+						</div>
+
 
 		            </li>
 

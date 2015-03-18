@@ -16,25 +16,47 @@ module.exports = {
         }
     },
 
-    // return the correct html filename (in server/views) associated with the "param1/param2" parameters 
-    // (the typical url will be "/{lang}/{page1}/{page2}" )
-    getView: function(param1, param2, param3) {
+    // return the correct html filename (in server/views) associated with the "level1/level2/level3" parameters;
+    // the typical url will be:
+    //   /{lang}   (the homepage)
+    //   /{lang}/level1  
+    //   /{lang}/level1/level2  
+    //   /{lang}/level1/level2/level3
+
+    getView: function(params) {
 
         var htmlFile = "",
             availableRoutes = config.get("availableRoutes");
 
-        var route = _.findWhere(availableRoutes, {param1: param1, param2: param2, param3: param3});
+        var route = _.findWhere(availableRoutes, {level1: params.level1, level2: params.level2, level3: params.level3});
 
         if(route){
-            htmlFile = (route.param1 + 
-                            (route.param2 ? "/" + route.param2 : "") + 
-                            (route.param3 ? "/" + route.param3 : "")
+            htmlFile = (route.level1 + 
+                            (route.level2 ? "/" + route.level2 : "") + 
+                            (route.level3 ? "/" + route.level3 : "")
                         ) || "home";
         }
 
         return htmlFile;
     },
 
+
+    getUrlWithoutLang: function(params){
+        var urlWithoutLang = "/";
+
+        if(params.level1!==""){
+            urlWithoutLang = urlWithoutLang + params.level1 + "/"
+        }
+        if(params.level2!==""){
+            urlWithoutLang = urlWithoutLang + params.level2 + "/"
+        }
+        if(params.level3!==""){
+            urlWithoutLang = urlWithoutLang + params.level3 + "/"
+        }
+
+        // remove the "/" in the end
+        return urlWithoutLang.slice(0, -1);
+    },
 
     // call Hoek.transform in all objects of an array (of objects)
     transform: function(array, transform, options) {

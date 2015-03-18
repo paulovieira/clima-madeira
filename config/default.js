@@ -95,139 +95,139 @@ module.exports = {
     availableRoutes: [
 
         {
-            param1: "",
-            param2: "",
-            param3: ""
+            level1: "",
+            level2: "",
+            level3: ""
         },
 
         // ----------------------
         
         {
-            param1: "introducao",
-            param2: "mensagem",
-            param3: ""
+            level1: "introducao",
+            level2: "mensagem",
+            level3: ""
         },
         {
-            param1: "introducao",
-            param2: "metodologia",
-            param3: ""
+            level1: "introducao",
+            level2: "metodologia",
+            level3: ""
         },
         {
-            param1: "introducao",
-            param2: "workshops",
-            param3: ""
+            level1: "introducao",
+            level2: "workshops",
+            level3: ""
         },            {
-            param1: "introducao",
-            param2: "equipa",
-            param3: ""
+            level1: "introducao",
+            level2: "equipa",
+            level3: ""
         },
 
         // ----------------------
         
         {
-            param1: "sumario-executivo",
-            param2: "",
-            param3: ""
+            level1: "sumario-executivo",
+            level2: "",
+            level3: ""
         },
 
         // ----------------------
         {
-            param1: "sectores",
-            param2: "clima",
-            param3: ""
+            level1: "sectores",
+            level2: "clima",
+            level3: ""
         },            
         {
-            param1: "sectores",
-            param2: "clima",
-            param3: "forest-growth"
+            level1: "sectores",
+            level2: "clima",
+            level3: "forest-growth"
         },            
         // ----------------------
         {
-            param1: "sectores",
-            param2: "adaptacao",
-            param3: ""
+            level1: "sectores",
+            level2: "adaptacao",
+            level3: ""
         },
         {
-            param1: "sectores",
-            param2: "adaptacao",
-            param3: "forest-growth"
-        },
-        // ----------------------
-        {
-            param1: "sectores",
-            param2: "saude",
-            param3: ""
-        },
-        {
-            param1: "sectores",
-            param2: "saude",
-            param3: "forest-growth"
+            level1: "sectores",
+            level2: "adaptacao",
+            level3: "forest-growth"
         },
         // ----------------------
         {
-            param1: "sectores",
-            param2: "turismo",
-            param3: ""
+            level1: "sectores",
+            level2: "saude",
+            level3: ""
         },
         {
-            param1: "sectores",
-            param2: "turismo",
-            param3: "forest-growth"
-        },
-        // ----------------------
-        {
-            param1: "sectores",
-            param2: "energia",
-            param3: ""
-        },
-        {
-            param1: "sectores",
-            param2: "energia",
-            param3: "forest-growth"
+            level1: "sectores",
+            level2: "saude",
+            level3: "forest-growth"
         },
         // ----------------------
         {
-            param1: "sectores",
-            param2: "biodiversidade",
-            param3: ""
+            level1: "sectores",
+            level2: "turismo",
+            level3: ""
         },
         {
-            param1: "sectores",
-            param2: "biodiversidade",
-            param3: "forest-growth" 
-        },
-        // ----------------------
-        {
-            param1: "sectores",
-            param2: "risco-hidrologico",
-            param3: ""
-        },
-        {
-            param1: "sectores",
-            param2: "risco-hidrologico",
-            param3: "forest-growth"
+            level1: "sectores",
+            level2: "turismo",
+            level3: "forest-growth"
         },
         // ----------------------
         {
-            param1: "sectores",
-            param2: "qualidade-disponibilidade-agua",
-            param3: ""
+            level1: "sectores",
+            level2: "energia",
+            level3: ""
         },
         {
-            param1: "sectores",
-            param2: "qualidade-disponibilidade-agua",
-            param3: "forest-growth"
+            level1: "sectores",
+            level2: "energia",
+            level3: "forest-growth"
         },
         // ----------------------
         {
-            param1: "sectores",
-            param2: "agricultura-florestas",
-            param3: ""
+            level1: "sectores",
+            level2: "biodiversidade",
+            level3: ""
         },
         {
-            param1: "sectores",
-            param2: "agricultura-florestas",
-            param3: "forest-growth"
+            level1: "sectores",
+            level2: "biodiversidade",
+            level3: "forest-growth" 
+        },
+        // ----------------------
+        {
+            level1: "sectores",
+            level2: "risco-hidrologico",
+            level3: ""
+        },
+        {
+            level1: "sectores",
+            level2: "risco-hidrologico",
+            level3: "forest-growth"
+        },
+        // ----------------------
+        {
+            level1: "sectores",
+            level2: "qualidade-disponibilidade-agua",
+            level3: ""
+        },
+        {
+            level1: "sectores",
+            level2: "qualidade-disponibilidade-agua",
+            level3: "forest-growth"
+        },
+        // ----------------------
+        {
+            level1: "sectores",
+            level2: "agricultura-florestas",
+            level3: ""
+        },
+        {
+            level1: "sectores",
+            level2: "agricultura-florestas",
+            level3: "forest-growth"
         },
 
         // ----------------------
@@ -235,17 +235,17 @@ module.exports = {
         // ----------------------
         
         {
-            param1: "cartografia",
-            param2: "",
-            param3: ""
+            level1: "cartografia",
+            level2: "",
+            level3: ""
         },
 
         // ----------------------
         
         {
-            param1: "estrategia-adaptacao",
-            param2: "",
-            param3: ""
+            level1: "estrategia-adaptacao",
+            level2: "",
+            level3: ""
         }
 
     ]
