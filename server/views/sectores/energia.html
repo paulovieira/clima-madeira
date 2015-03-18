@@ -1,6 +1,6 @@
 {% extends "layouts/general-page.html"          %}
 
-{% from "sectores/macros/sector-home.html" import sectorHome %} 
+{% from "sectores/macros/sector-heading.html" import sectorHeading %} 
 
 {% set sectorData = {
     sectorName: "energia", 
@@ -19,7 +19,7 @@
 
     <div class="col-sm-12">
         <ol class="breadcrumb">
-            <li><a href="#">Home</a>
+            <li><a href="/{{ lang}}">Home</a>
             </li>
             <li>{{ ctx.texts[23][lang] }}
             </li>
@@ -29,7 +29,7 @@
 </div>
 
 
-{{ sectorHome(ctx, sectorData) }}
+{{ sectorHeading(ctx, sectorData) }}
 
 
 <hr>

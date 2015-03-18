@@ -2,7 +2,7 @@
 {% extends "layouts/default.html"          %}
 {% from "macros/navigation.html" import navigation %}
 {# #} 
-{% from "macros/sectores/sector-home.html" import sectorHome %} 
+{% from "macros/sectores/sector-heading.html" import sectorHeading %} 
 
 
 
@@ -27,7 +27,7 @@
 
 		{{ navigation(ctx) }}
 
-		{{ sectorHome(ctx, ctx.urlParam2) }}
+		{{ sectorHeading(ctx, ctx.urlParam2) }}
 
     </div>
     <div class="hidden-xs col-sm-2 col-md-2" id="right-column" style=""></div>
