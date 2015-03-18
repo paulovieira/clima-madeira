@@ -54,24 +54,27 @@ var FileEditModalIV = ModalIV.extend({
 	},
 
 	updateFile: function(){
-//debugger;
 		var data = Backbone.Syphon.serialize(this);
-		//this.model.set(data);
 
 		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
-		// model.set(atrrs); model.save();  this way the attributes will be updated
-		// only after the model has really been saved in the server
-		Q(this.model.save(data, {wait: true})).delay(100).then(
-			function(data){
-//debugger;
+		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
+		// after we get a 200 response from the server (meaning the row has actually been updated)
+
+		var self = this;
+		Q.delay(150)
+			.then(function(){
+				return self.model.save(data, {wait: true});  // returns a promise
+			})
+			.then(function(data){
 				Dashboard.$modal.modal("hide");
-				this.destroy();
-			},
-			function(err){
-				alert("ERROR: data was not saved");
-				throw err;
-			}
-		);
+				self.destroy();
+			})
+			.done(undefined,
+				function(err){
+					alert("ERROR: data was not updated.");
+					throw err;
+				}
+			)
 
 	},
 });

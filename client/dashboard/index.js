@@ -109,6 +109,29 @@ var menuLeftC = new Backbone.Collection([
 		}
 	]	
 },
+
+{
+	panelCode: "maps",
+	panelTitle: {pt: "mapas", en: "Maps"},
+	panelIcon: "glyphicon-map-marker",
+	panelItems: [
+		// {
+		// 	itemCode: "maps-all",
+		// 	itemTitle: { pt: "Todos os mapas", en: "All maps"},
+
+		// },
+		{
+			itemCode: "maps-new",
+			itemTitle: { pt: "Novo mapa", en: "New map"},
+
+		},
+		// {
+		// 	itemCode: "maps-general-config",
+		// 	itemTitle: { pt: "Configuração de mapas", en: "Map configuration"},
+
+		// }
+	]	
+},
 ]);
 
 menuLeftC.each(function(model){
@@ -254,6 +277,7 @@ var MainLayout = Mn.LayoutView.extend({
 	},
 
 	showViewRight: function(code){
+
 		switch(code){
 			case "profile":
 				this.showProfile();
@@ -275,6 +299,9 @@ var MainLayout = Mn.LayoutView.extend({
 				break;
 			case "files-new":
 				this.showNewFile();
+				break;
+			case "maps-new":
+				this.showNewMap();
 				break;
 			default:
 				throw new Error("showViewRight: unknown code");
@@ -389,6 +416,35 @@ var MainLayout = Mn.LayoutView.extend({
 			model: fileM
 		});
 		this.mainRightRegion.show(fileNewLV); 
+	},
+
+	showNewMap: function(){
+		var mapsTableCV = new FilesTableCV({
+			collection: filesC,
+			filter: function(child, index, collection) {
+				var hasMapTag = _.contains(child.get("tags"), "map") || 
+						_.contains(child.get("tags"), "maps") ||
+						_.contains(child.get("tags"), "mapa") ||
+						//_.contains(child.get("tags"), "placeholder") ||
+						_.contains(child.get("tags"), "mapas");
+
+				return hasMapTag;
+			}
+
+		});
+
+		var fulfilled = _.bind(
+				function(){ 
+					this.mainRightRegion.show(mapsTableCV); 
+				}, 
+			this);
+
+		Q(filesC.fetch()).done(
+			fulfilled, 
+			function(err){
+				debugger;
+			}
+		);
 	},
 });
 

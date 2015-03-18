@@ -51,18 +51,25 @@ window.Behaviors.DeleteResourceAndCloseModal = Marionette.Behavior.extend({
     },
 
 	deleteResource: function(){
+		// NOTE: we should always use model.destroy({wait: true}) instead of simply model.destroy();  
+		// this way the model will be destroyed (in the client) only after we get a 200 response
+		// from the server (meaning the row has actually been deleted)
 
-		Q(this.view.model.destroy({
-			wait: true
-		})).then(
-			function(data){
+		var self = this;
+		Q.delay(150)
+			.then(function(){
+				return self.view.model.destroy({ wait: true });  // returns a promise
+			})
+			.then(function(data){
 				Dashboard.$modal.modal("hide");
-				this.view.destroy();
-			},
-			function(err){
-				throw err;
-			}
-		);
+				self.view.destroy();
+			})
+			.done(undefined,
+				function(err){
+					alert("ERROR: the file was not deleted.");
+					throw err;
+				}
+			)
 	}
 
 });

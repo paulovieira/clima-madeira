@@ -397,6 +397,9 @@ debugger;
                 queryOptions.push({id: id});
             });
 
+                    // var boomErr = internals.parseError(err);
+                    // return reply(boomErr);
+
             var filesC = new FilesC();
             filesC.execute({
                 query: {

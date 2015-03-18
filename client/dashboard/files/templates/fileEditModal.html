@@ -5,15 +5,16 @@
 
 <div class="modal-body">
     <form>
-        <div class="form-group">
-            <label for="js-edit-name">Name</label>
-            <textarea id="js-edit-name" class="form-control" name="name" rows="3">{{ name }}</textarea>
-        </div>
+
         <div class="form-group">
             <label for="js-edit-tags">Tags</label>
             <input type="text" id="js-edit-tags" class="form-control" name="tags" value="{{ tags | join(', ') }}">
         </div>
 
+        <div class="form-group">
+            <label for="js-edit-name">Name</label>
+            <input type="text" id="js-edit-name" class="form-control" name="name" value="{{ name }}" disabled>
+        </div>
 
         <div class="form-group">
             <label>Path</label>
@@ -23,12 +24,12 @@
             <label>id</label>
             <input type="text" class="form-control" value="{{ id }}" disabled>
         </div>
-{#
+
         <div class="form-group">
-            <label>Last updated</label>
-            <input type="text" class="form-control" value="{{ lastUpdated }}" disabled>
+            <label>Uploaded at</label>
+            <input type="text" class="form-control" value="{{ uploadedAt }}" disabled>
         </div>
-#}
+
       <div class="form-group">
             <label>Owner</label>
             <input type="text" class="form-control" value="{{ ownerData.firstName }} {{ ownerData.lastName }}" disabled>
