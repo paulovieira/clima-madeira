@@ -566,32 +566,32 @@ th {
 }
 
 
-@media (min-width: 1250px) {
+@media (min-width: 1200px) {
   .col-xl-8 {
-    width: 78%;
+    width: 86%;
   }
   .col-xl-offset-2 {
-    margin-left: 12%;
+    margin-left: 7%;
   }
 
 }
 
 @media (min-width: 1370px) {
   .col-xxl-8 {
-    width: 72%;
+    width: 76%;
   }
   .col-xxl-offset-2 {
-    margin-left: 14%;
+    margin-left: 12%;
   }
 
 }
 
 @media (min-width: 1600px) {
   .col-xxxl-8 {
-    width: 60%;
+    width: 64%;
   }
   .col-xxxl-offset-2 {
-    margin-left: 20%;
+    margin-left: 18%;
   }
 
 }

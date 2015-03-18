@@ -16,9 +16,9 @@
 
 {# set the correct icon class for the button relative to the language (flag) #}
 {% if lang == "pt" %}
-	{% set language_icon_class = "flag-icon-gb"    %} 
-{% else %}
 	{% set language_icon_class = "flag-icon-pt"    %} 
+{% else %}
+	{% set language_icon_class = "flag-icon-gb"    %} 
 {% endif %}
 
 
@@ -41,27 +41,42 @@
 				<div class="row">
 					<div class="col-xs-12 text-right" style="xborder: 1px solid blue; padding-left: 0px; xpadding-right: 7px;">
 
+{#
+	            		<button type="button" style="margin-left: 6px;" class="btn btn-default navbar-btn" id="js-lang-nav" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[80][lang] }}">
+	            			<span class="flag-icon {{ language_icon_class }}"></span>
+	            		</button>
+#}
+						<div class="btn-group">
+						    <button type="button" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
+						        <span class="flag-icon {{ language_icon_class }}"></span>&nbsp;&nbsp;<span class="caret"></span>
+						    </button>
+						    <ul class="dropdown-menu" role="menu" style="min-width: 0">
+						        <li>
+						        	<a style="padding: 3px 15px;" href="/pt{{ ctx.urlWithoutLang }}">Português <span class="flag-icon flag-icon-pt"></span></a>
+						        </li>
+						        <li>
+						        	<a style="padding: 3px 15px;" href="/en{{ ctx.urlWithoutLang }}">Inglês <span class="flag-icon flag-icon-gb"></span></a>
+						        </li>
+						    </ul>
+						</div>
+
 					  	{% if ctx.auth.isAuthenticated %}
 
-			            	<button type="button" style="padding-left: 14px; padding-right: 14px;" class="btn btn-default navbar-btn" id="{{ dashboard_btn_id }}" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[82][lang] }}">
+			            	<button type="button" style="margin-left: 6px; padding-left: 18px; padding-right: 18px;" class="btn btn-default navbar-btn" id="{{ dashboard_btn_id }}" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[82][lang] }}">
 			            		<span class="glyphicon {{ dashboard_btn_icon_class }}"></span> 
 			            	</button>
 
-			            	<button type="button" style="margin-left: 6px; padding-left: 14px; padding-right: 14px;" class="btn btn-default navbar-btn" id="{{ logout_btn_id }}" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[79][lang] }}">
+			            	<button type="button" style="margin-left: 6px; padding-left: 18px; padding-right: 18px;" class="btn btn-default navbar-btn" id="{{ logout_btn_id }}" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[79][lang] }}">
 			            		<span class="glyphicon {{ logout_btn_icon_class }}"></span> 
 			            	</button>
 
 						{% else %}
 
-			            	<button type="button" style="padding-left: 14px; padding-right: 14px;" class="btn btn-default navbar-btn" id="{{ login_btn_id }}" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[81][lang] }}">
+			            	<button type="button" style="margin-left: 6px; padding-left: 18px; padding-right: 18px;" class="btn btn-default navbar-btn" id="{{ login_btn_id }}" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[81][lang] }}">
 			            		<span class="glyphicon {{ login_btn_icon_class }}"></span> 
 			            	</button>
 
 						{% endif %}
-
-	            		<button type="button" style="margin-left: 6px;" class="btn btn-default navbar-btn" id="js-lang-nav" data-toggle="tooltip" data-placement="bottom" title="{{ ctx.texts[80][lang] }}">
-	            			<span class="flag-icon {{ language_icon_class }}"></span>
-	            		</button>
 
 
 					</div>
