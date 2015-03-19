@@ -115,21 +115,21 @@ var menuLeftC = new Backbone.Collection([
 	panelTitle: {pt: "mapas", en: "Maps"},
 	panelIcon: "glyphicon-map-marker",
 	panelItems: [
-		// {
-		// 	itemCode: "maps-all",
-		// 	itemTitle: { pt: "Todos os mapas", en: "All maps"},
+		{
+			itemCode: "maps-all",
+			itemTitle: { pt: "Todos os mapas", en: "All maps"},
 
-		// },
+		},
 		{
 			itemCode: "maps-new",
 			itemTitle: { pt: "Novo mapa", en: "New map"},
 
 		},
-		// {
-		// 	itemCode: "maps-general-config",
-		// 	itemTitle: { pt: "Configuração de mapas", en: "Map configuration"},
+		{
+			itemCode: "maps-general-config",
+			itemTitle: { pt: "Configuração de mapas", en: "Map configuration"},
 
-		// }
+		}
 	]	
 },
 ]);
@@ -419,13 +419,13 @@ var MainLayout = Mn.LayoutView.extend({
 	},
 
 	showNewMap: function(){
-		var mapsTableCV = new FilesTableCV({
+		var mapsListNewTableCV = new MapsListNewTableCV({
 			collection: filesC,
 			filter: function(child, index, collection) {
 				var hasMapTag = _.contains(child.get("tags"), "map") || 
 						_.contains(child.get("tags"), "maps") ||
 						_.contains(child.get("tags"), "mapa") ||
-						//_.contains(child.get("tags"), "placeholder") ||
+						_.contains(child.get("tags"), "placeholder") ||
 						_.contains(child.get("tags"), "mapas");
 
 				return hasMapTag;
@@ -435,14 +435,15 @@ var MainLayout = Mn.LayoutView.extend({
 
 		var fulfilled = _.bind(
 				function(){ 
-					this.mainRightRegion.show(mapsTableCV); 
+					this.mainRightRegion.show(mapsListNewTableCV);
 				}, 
 			this);
 
 		Q(filesC.fetch()).done(
 			fulfilled, 
 			function(err){
-				debugger;
+				alert("ERROR: could not retrieve data from the server.")
+				throw err;
 			}
 		);
 	},

@@ -41,7 +41,7 @@ var filesC = new FilesC();
 
 
 var FileEditModalIV = ModalIV.extend({
-	template: "files/templates/fileEditModal.html",
+	template: "files/templates/file-edit-modal.html",
 
 	events: {
 		"click @ui.modalSaveBtn": "updateFile"
@@ -80,7 +80,7 @@ var FileEditModalIV = ModalIV.extend({
 });
 
 var FileDeleteModalIV = ModalIV.extend({
-	template: "files/templates/fileDeleteModal.html",
+	template: "files/templates/file-delete-modal.html",
 
 	behaviors: {
 		CloseModal: {
@@ -95,20 +95,9 @@ var FileDeleteModalIV = ModalIV.extend({
 
 var FileRowLV = Mn.LayoutView.extend({
 
-	// initialize: function(){
-	// 	console.log("initialize")
-	// 	var self = this;
 
-	// 	setInterval(function(){
-	// 		if(self.model.get("id")===2){
-	// 			console.log("will render @ " + Date.now())
-	// 			self.render();
-	// 		}
-	// 	}, 2000);
-		
-	// },
 
-	template: "files/templates/fileRow.html",
+	template: "files/templates/files-list-row.html",
 	tagName: "tr",
 	ui: {
 		"editModalBtn": "button.js-edit",
@@ -136,7 +125,7 @@ var FileRowLV = Mn.LayoutView.extend({
 });
 
 var FilesTableCV = Mn.CompositeView.extend({
-	template: "files/templates/filesTable.html",
+	template: "files/templates/files-list-table.html",
 	childView: FileRowLV,
 	childViewContainer: "tbody",
 });
@@ -144,7 +133,7 @@ var FilesTableCV = Mn.CompositeView.extend({
 
 var FileNewLV = Mn.LayoutView.extend({
 
-	template: "files/templates/fileNew.html",
+	template: "files/templates/file-new-form.html",
 
 	onAttach: function(){
 
