@@ -7,6 +7,19 @@ global.rootPath = Path.normalize(__dirname) + "/";
 // load general purpose modules
 require('pretty-error').start();
 require('colors');
+var chalk = require('chalk');
+require('debug-trace')({
+	always: true,
+	right: true,
+	dateFormat: "YY.MM.DD HH:mm:ss",
+
+});
+
+console.format = function(c) {
+	//return c.date + ": " + "[".cyan + c.filename.cyan + ":".cyan + ("" + c.getLineNumber()).cyan + "] " + c.functionName;
+	return c.date + ": " + "[" + chalk.cyan(c.filename) + ":" + ("" + c.getLineNumber()) + "] " + c.functionName;
+}
+
 
 // if there is no environment, set the default one ("production") (see the diferent configuration in /config)
 // this must be done before the config module is required

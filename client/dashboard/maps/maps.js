@@ -1,9 +1,4 @@
 var MapNewModalIV = ModalIV.extend({
-	initialize: function(){
-		//Cocktail.mixin(this, ModalIV.prototype.ui);
-		//console.log(this.ui);
-		console.log("cocktail");
-	},
 
 	template: "maps/templates/map-new-modal.html",
 
@@ -51,6 +46,10 @@ var MapNewModalIV = ModalIV.extend({
 	// },
 });
 
+Cocktail.mixin(MapNewModalIV.prototype, ModalMixins);
+
+
+
 var MapsListNewRowLV = Mn.LayoutView.extend({
 
 	// initialize: function(){
@@ -91,6 +90,7 @@ var MapsListNewRowLV = Mn.LayoutView.extend({
 		// },
 	},
 });
+
 
 var MapsListNewTableCV = Mn.CompositeView.extend({
 	template: "maps/templates/maps-list-new-table.html",

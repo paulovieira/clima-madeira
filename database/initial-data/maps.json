@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "name": {
+            "pt": "Energia - centrais energéticas",
+            "en": "Energy - power plants"
+        },
+        "category": "energia",
+        "tableName": "geo.temp",
+        "owner_id": 1
+    }
+
+
+
+    /*
+        {
+            "id": ...,
+            "name": "filename.pdf",
+            "path": "/uploads/",
+            "tags": ["tag1"],
+            "owner_id": 1
+        },
+
+
+    */
+
+
+
+]

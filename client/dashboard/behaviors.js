@@ -74,6 +74,13 @@ window.Behaviors.DeleteResourceAndCloseModal = Marionette.Behavior.extend({
 
 });
 
+var ModalMixins = {
+	ui: {
+		"modalCloseBtn":  "button.js-modal-cancel",
+		"modalDeleteBtn": "button.js-modal-delete",
+		"modalSaveBtn":   "button.js-modal-save"
+	}	
+};
 
 var ModalIV = Mn.ItemView.extend({
 	ui: {
