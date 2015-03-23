@@ -17,7 +17,9 @@ var MapNewModalIV = ModalIV.extend({
 	},
 
 	createMap: function(){
-		console.log("map will be craeted")
+		debugger;
+		var data = Backbone.Syphon.serialize(this);
+		//console.log("map will be craeted")
 	}
 
 	// updateFile: function(){

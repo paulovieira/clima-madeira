@@ -13,14 +13,16 @@ CREATE FUNCTION maps_read(options json DEFAULT '[{}]')
 -- return table, uses the definition of the maps table + extra data from the join
 RETURNS TABLE(
 	id INT,
-	name TEXT,
-	category TEXT,
-	table_name TEXT,
+	code TEXT,
+	title JSONB,
 	description JSONB,
 	properties JSONB,
+	category_id INT,
+	table_name TEXT,
 	owner_id INT,
 	created_at timestamptz,
-	owner_data JSON)
+	owner_data JSON,
+	category_data JSON)
 AS
 $BODY$
 
@@ -38,10 +40,13 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 	command := 'SELECT 
 			m.*, 
-			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data
+			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data,
+			(select row_to_json(_dummy_) from (select t.*) as _dummy_) as category_data
 		FROM maps m 
 		INNER JOIN users u
-		ON m.owner_id = u.id';
+		ON m.owner_id = u.id
+		INNER JOIN texts t
+		ON m.category_id = t.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id')           INTO id;
@@ -92,17 +97,16 @@ select * from  maps_read('[{"owner_id":"2"}]');
 
 */
 
-/*
+
 DROP FUNCTION IF EXISTS maps_create(json, json);
 
 CREATE FUNCTION maps_create(input_data json, options json DEFAULT '[{}]')
 RETURNS SETOF maps AS
 $BODY$
 DECLARE
-	new_row     maps%ROWTYPE;
-	input_row   maps%ROWTYPE;
+	new_row maps%ROWTYPE;
+	input_row maps%ROWTYPE;
 	current_row maps%ROWTYPE;
-
 	new_id INT;
 BEGIN
 
@@ -119,20 +123,22 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 
 		INSERT INTO maps(
 			id,
-			name,
-			path,
-			tags, 
-			description,
-			properties, 
+			code,
+			title, 
+			description, 
+			properties,
+			category_id,
+			table_name, 
 			owner_id
 			)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('maps', 'id'))),
-			input_row.name, 
-			input_row.path, 
-			input_row.tags, 
-			input_row.description, 
-			input_row.properties, 
+			input_row.code, 
+			COALESCE(input_row.title, '[]'::jsonb),
+			COALESCE(input_row.description, '{}'::jsonb),
+			COALESCE(input_row.properties, '{}'::jsonb),
+			input_row.category_id,
+			input_row.table_name, 
 			input_row.owner_id
 			)
 		RETURNING 
@@ -143,9 +149,8 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 		RETURN NEXT new_row;
 
 	ELSE
-
 		current_row.id = new_id;
-		current_row.name = '"WARNING: a row with the given id exists already present. Data will not be inserted."';
+		current_row.code = '"WARNING: a row with the given id exists already present. Data will not be inserted."';
 
 		RAISE WARNING 'A row with the given id exists already present. Data will not be inserted (id=%)', current_row.id;
 
@@ -159,171 +164,18 @@ RETURN;
 END;
 $BODY$
 LANGUAGE plpgsql;
-*/
 
 /*
 select * from maps order by id desc
 
 select * from maps_create('[
 {
-	"name": "relatório.pdf",
-	"path": "/upload/paulo",
-	"tags": ["tag3", "tag4"],
-	"owner_id": 2
-}
-]')
-
-
-select * from maps_create('[
-{
-	"name": "relatório3.pdf",
-	"path": "/upload/paulo",
+	"code": "precepitacao_ref",
+	"title": {"pt": "fwefwef", "en": "fwefwef fewfw"},
+	"category_id": 105,
 	"owner_id": 2,
-	"id": 1
+	"table_name": "geo.xyz"
 }
 ]')
 
 */
-
-
-
-/*
-
-	3. UPDATE
-
-*/
-
-/*
-DROP FUNCTION IF EXISTS maps_update(json, json);
-
-CREATE FUNCTION maps_update(input_data json, options json DEFAULT '[{}]')
-RETURNS SETOF maps AS
-$$
-DECLARE
-	updated_row maps%ROWTYPE;
-	input_row maps%ROWTYPE;
-	command text;
-BEGIN
-
-FOR input_row IN (select * from json_populate_recordset(null::maps, input_data)) LOOP
-
-	-- generate a dynamic command: first the base query
-	command := 'UPDATE maps SET ';
-
-	-- first use the fields that will always be updated
---	command = format(command || 'uploaded_at = %L, ', now());
-
-	-- then add (cumulatively) the fields to be updated; those fields must be present in the input_data json;
-	IF input_row.name IS NOT NULL THEN
-		command = format(command || 'name = %L, ', input_row.name);
-	END IF;
-	IF input_row.path IS NOT NULL THEN
-		command = format(command || 'path = %L, ', input_row.path);
-	END IF;
-	IF input_row.tags IS NOT NULL THEN
-		command = format(command || 'tags = %L, ', input_row.tags);
-	END IF;
-	IF input_row.description IS NOT NULL THEN
-		command = format(command || 'description = %L, ', input_row.description);
-	END IF;
-	IF input_row.properties IS NOT NULL THEN
-		command = format(command || 'properties = %L, ', input_row.properties);
-	END IF;
-	IF input_row.owner_id IS NOT NULL THEN
-		command = format(command || 'owner_id = %L, ', input_row.owner_id);
-	END IF;
-
-
-	-- remove the comma and space from the last if
-	command = left(command, -2);
-	command = format(command || ' WHERE id = %L RETURNING *;', input_row.id);
-
-	--RAISE NOTICE 'Dynamic command: %', command;
-
-	EXECUTE 
-		command
-
-	INTO STRICT
-		updated_row;
-
-	RETURN NEXT 
-		updated_row;
-END LOOP;
-
-RETURN;
-END;
-$$
-LANGUAGE plpgsql;
-*/
-
-/*
-select * from maps order by id desc
-
-select * from maps_update('[{"id": 1, "name": "relatório2.pdf", "tags": ["tag5"]}]');
-select * from maps_update('[{"id": 1, "tags": ["tag7"] }]');
-
-*/
-
-
-
-
-
-
-/*
-
-	4. DELETE
-
-*/
-
-/*
-DROP FUNCTION IF EXISTS maps_delete(json);
-
-CREATE FUNCTION maps_delete(options json DEFAULT '[{}]')
-RETURNS TABLE(deleted_id int) AS
-$$
-DECLARE
-	deleted_row maps%ROWTYPE;
-	options_row JSON;
-
-	-- fields to be used in WHERE clause
-	id_to_delete INT;
-BEGIN
-
-FOR options_row IN ( select json_array_elements(options) ) LOOP
-
-	-- extract values to be (optionally) used in the WHERE clause
-	SELECT json_extract_path_text(options_row, 'id') INTO id_to_delete;
-	
-	IF id_to_delete IS NOT NULL THEN
-		DELETE FROM maps
-		WHERE id = id_to_delete
-		RETURNING *
-		INTO deleted_row;
-
-		deleted_id   := deleted_row.id;
-
-		IF deleted_id IS NOT NULL THEN
-			RETURN NEXT;
-		END IF;
-	END IF;
-		
-END LOOP;
-
-RETURN;
-END;
-$$
-LANGUAGE plpgsql;
-*/
-
-
-/*
-
-select * from maps order by id desc;
-
-select * from maps_delete('[{"id": 253}, {"id": 253}]');
-select * from maps_delete('[{"id": 13}]');
-*/
-
-
-
-

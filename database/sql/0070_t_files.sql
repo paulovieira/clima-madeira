@@ -11,37 +11,6 @@ CREATE TABLE IF NOT EXISTS files(
 );
 
 
-
--- DO $$
--- DECLARE
--- 	_has_executed BOOLEAN;
--- 	_flag TEXT := 'create_table_files';
--- BEGIN
-
--- 	-- get the flag for this file
--- 	SELECT EXISTS (
--- 		SELECT 1 FROM code_has_executed WHERE code = _flag
--- 	) INTO _has_executed;
-
--- 	if _has_executed is false then
-
--- 		-- the following sql lines will be executed only the first time this file is run
--- 		PERFORM setval(pg_get_serial_sequence('files', 'id'), 1000);
--- 		PERFORM audit.audit_table('files');
-
--- 		-- add the flag to the table
--- 		INSERT INTO code_has_executed(code) VALUES(_flag);
--- 	end if;
--- END
--- $$
-
-
-
--- new version
-
-
-
-
 DO $$
 DECLARE
 	_has_executed BOOLEAN;
@@ -60,7 +29,7 @@ BEGIN
 	   SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = _table_name
 	) INTO _table_exists;
 
-	if _has_executed is false AND _table_exists is true then
+	if _table_exists is true AND _has_executed is false then
 
 		-- the following sql lines will be executed only the first time this file is run
 		PERFORM setval(pg_get_serial_sequence('files', 'id'), 1000);
@@ -68,8 +37,6 @@ BEGIN
 
 		-- add the flag to the table
 		INSERT INTO code_has_executed(code) VALUES(_flag);
-	else
-		RAISE NOTICE 'xxx';
 	end if;
 END
 $$

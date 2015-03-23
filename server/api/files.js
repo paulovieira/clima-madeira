@@ -151,7 +151,7 @@ exports.register = function(server, options, next) {
         method: 'GET',
         path: internals.resourcePath,
         handler: function (request, reply) {
-            utils.logHandlerInfo("/api" + internals.resourcePath, request);
+            console.log(utils.logHandlerInfo(request));
 debugger;
 
         	var filesC = new FilesC();
@@ -198,7 +198,7 @@ debugger;
         method: 'GET',
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
-            utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
+            console.log(utils.logHandlerInfo(request));
 debugger;
 
             var queryOptions = [];
@@ -250,7 +250,7 @@ debugger;
         method: 'POST',
         path: internals.resourcePath,
         handler: function (request, reply) {
-            utils.logHandlerInfo("/api" + internals.resourcePath, request);
+            console.log(utils.logHandlerInfo(request));
 debugger;
 
 //console.log("request.payload: ", request.payload);
@@ -331,7 +331,7 @@ debugger;
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
 
-            utils.logHandlerInfo("/api" + internals.resourcePath, request);
+            console.log(utils.logHandlerInfo(request));
 debugger;
 
             var dbData = [request.payload];

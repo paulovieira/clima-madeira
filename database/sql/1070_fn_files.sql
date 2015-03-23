@@ -189,9 +189,9 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 			COALESCE(new_id, nextval(pg_get_serial_sequence('files', 'id'))),
 			input_row.name, 
 			input_row.path, 
-			input_row.tags, 
-			input_row.description, 
-			input_row.properties, 
+			COALESCE(input_row.tags, '[]'::jsonb),
+			COALESCE(input_row.description, '{}'::jsonb),
+			COALESCE(input_row.properties, '{}'::jsonb),
 			input_row.owner_id
 			)
 		RETURNING 

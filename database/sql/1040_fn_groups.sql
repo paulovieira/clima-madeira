@@ -24,6 +24,8 @@ RETURNS TABLE(
 	id INT,
 	code INT,
 	name TEXT,
+	description JSONB,
+	permissions JSONB,
 	group_users JSON   -- join with the group_users CTE
 )
 AS
@@ -151,12 +153,16 @@ FOR input_row IN (select * from json_populate_recordset(null::groups, input_data
 		INSERT INTO groups(
 			id,
 			code, 
-			name
+			name,
+			description,
+			permissions
 			)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('groups', 'id'))),
 			input_row.code, 
-			input_row.name
+			input_row.name,
+			COALESCE(input_row.description, '{}'::jsonb),
+			COALESCE(input_row.permissions, '{}'::jsonb)
 			)
 		RETURNING 
 			*
@@ -188,30 +194,19 @@ LANGUAGE plpgsql;
 EXAMPLES:
 
 select * from groups order by id desc
-delete from groups where id >= 244
-
-select * from groups_create('[{"name": "admin", "code": 99},{"name": "energia", "code": 1},{"name": "biodiversidade", "code": 2}]');
-
-
 
 
 select * from groups_create('[
-{"email": "@500", "first_name": "", "pw_hash": ""},
-{"email": "@501", "first_name": "", "pw_hash": ""},
-{"email": "@502", "first_name": "", "pw_hash": ""},
-{"email": "@503", "first_name": "", "pw_hash": ""},
-{"email": "@504", "first_name": "", "pw_hash": ""}
-]'
-);
+{"name": "admin", "code": 99,  "description": {"pt": "desc pt", "en": "desc en"}},
+{"name": "energia", "code": 1,  "description": {"pt": "desc pt", "en": "desc en"}},
+{"name": "biodiversidade", "code": 2,  "description": {"pt": "desc pt", "en": "desc en"}, "permissions": { "canEditTexts": true } }
+]');
 
 
-NOTES: some quick benchmarks
-insert 5 rows: ~300ms
-insert 10 rows: ~700ms
-insert 20 rows: ~1400ms
-insert 30 rows: ~2100ms (!)
+select * from groups_create('[
+{"name": "xadmin", "code": 99,  "description": {"pt": "desc pt", "en": "desc en"}}
+]');
 
-The time is clearly growing linearly;
 */
 
 
@@ -247,7 +242,12 @@ FOR input_row IN (select * from json_populate_recordset(null::groups, input_data
 	IF input_row.name IS NOT NULL THEN
 		command = format(command || 'name = %L, ', input_row.name);
 	END IF;
-
+	IF input_row.description IS NOT NULL THEN
+		command = format(command || 'description = %L, ', input_row.description);
+	END IF;
+	IF input_row.permissions IS NOT NULL THEN
+		command = format(command || 'permissions = %L, ', input_row.permissions);
+	END IF;
 	-- remove the comma and space from the last if
 	command = left(command, -2);
 	command = format(command || ' WHERE id = %L RETURNING *;', input_row.id);
@@ -277,26 +277,13 @@ EXAMPLES:
 
 select * from groups order by id desc
 
-select * from groups_update('[{"id": "237", "email": "@237-2"}]');
-select * from groups_update('[{"id": "237", "email": "@237-5", "first_name": "237-3"}]');
-select * from groups_update('[{"id": "2370", "email": "@237-6", "recover": "zzz"}]');
 
 select * from groups_update('[
-{"id": "400", "email": "@400-#8", "recover": "#8"},
-{"id": "401", "email": "@401-#8", "recover": "#8"},
-{"id": "402", "email": "@402-#8", "recover": "#8"},
-{"id": "403", "email": "@403-#8", "recover": "#8"},
-{"id": "404", "email": "@404-#8", "recover": "#8"},
+{"id": "1", "name": "energiax"},
+{"id": "4", "description": {"pt": "desc pt", "en": "desc en"}, "permissions": { "canEditTexts": true } }
 ]');
 
 
-NOTES: results from a quick benchmark:
-Update 5 rows: 30ms
-Update 10 rows: 40ms
-Update 20 rows: 40ms
-Update 30 rows: 40ms
-
-(the number of rows doesn't seem to matter much)
 */
 
 

@@ -2,7 +2,6 @@ var fs = require("fs");
 var Path = require('path');
 var stripJsonComments = require("strip-json-comments");
 var jsonFormat = require('json-format');
-require("console-stamp")(console, "HH:mm:ss.l");
 //var _ = require('underscore');
 var Bcrypt = require("bcrypt");
 var changeCase = require("change-case-keys");
@@ -24,7 +23,7 @@ usersArray.forEach(function(obj){
 });
 
 
-changeCase(usersArray, "underscored");
+changeCase(usersArray, "underscored", 2);
 var dbData = JSON.stringify(usersArray);
 
 console.log("db data: ", JSON.stringify(baseC.toJSON()));
@@ -34,8 +33,7 @@ var promise =
 		query: {
 	        command: "select * from users_create($1);",
 		  	arguments: dbData
-		},
-		changeCase: false
+		}
 	})
 	.then(
 		function(resp){
@@ -43,7 +41,9 @@ var promise =
 			console.log(jsonFormat(baseC.toJSON())); 
 			return resp;
 		},
-	    function(err){  console.log(err);  throw err;}
+	    function(err){  
+			throw err;
+	    }
 	)
 	.finally(function(){ baseC.disconnect(); });
 

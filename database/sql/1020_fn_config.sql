@@ -106,22 +106,39 @@ $BODY$
 DECLARE
 	new_row config%ROWTYPE;
 	input_row config%ROWTYPE;
+	current_row config%ROWTYPE;
+	new_id INT;
 BEGIN
 
 FOR input_row IN (select * from json_populate_recordset(null::config, input_data)) LOOP
-	RAISE WARNING 'input_data: %',input_data;
-	INSERT INTO config(
-		config_data
-		)
-	VALUES (
-		input_row.config_data
-		)
-	RETURNING 
-		*
-	INTO STRICT 
-		new_row;
+
+	SELECT input_row.id INTO new_id;
+	IF new_id IS NULL OR NOT EXISTS (SELECT * FROM config WHERE id = new_id) THEN
+		INSERT INTO config(
+			id,
+			config_data
+			)
+		VALUES (
+			COALESCE(new_id, nextval(pg_get_serial_sequence('config', 'id'))),
+			input_row.config_data
+			)
+		RETURNING 
+			*
+		INTO STRICT 
+			new_row;
 	
-	RETURN NEXT new_row;
+		RETURN NEXT new_row;
+	ELSE
+
+		current_row.id = new_id;
+		current_row.config_data = '"WARNING: a row with the given id exists already present. Data will not be inserted."';
+
+		RAISE WARNING 'A row with the given id exists already present. Data will not be inserted (id=%)', current_row.id;
+
+		RETURN NEXT current_row;
+
+	END IF;
+
 END LOOP;
 
 RETURN;

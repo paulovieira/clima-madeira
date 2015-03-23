@@ -3,6 +3,7 @@
 // Cookie authentication provides a simple cookie-based session management.
 // https://github.com/hapijs/hapi-auth-cookie
 
+var chalk = require("chalk");
 module.exports = function registerHapiAuthCookie(server){
 
     server.register(
@@ -32,16 +33,16 @@ debugger;
                     cache.get(session.sid, function (err, cached) {
 debugger;
                         if (err) {
-                            console.log("    validateFunc @ hapi-auth-cookie: error to get data from catbox".red);
+                            console.log(chalk.bgRed("    validateFunc @ hapi-auth-cookie: error to get data from catbox"));
                             return callback(err, false);
                         }
 
                         if (!cached) {
-                            console.log("    validateFunc @ hapi-auth-cookie: received cookie but it's invalid. Authentication failed.".red);
+                            console.log(chalk.bgRed("    validateFunc @ hapi-auth-cookie: received cookie but it's invalid. Authentication failed."));
                             return callback(null, false);
                         }
 
-                        console.log("    validateFunc @ hapi-auth-cookie: received valid cookie. Authentication succeeded.".green);
+                        console.log(chalk.bgGreen("    validateFunc @ hapi-auth-cookie: received valid cookie. Authentication succeeded."));
                         return callback(null, true, cached.account)
                     })
                 }

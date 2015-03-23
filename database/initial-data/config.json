@@ -1,0 +1,14 @@
+[
+	{
+		"id": 1,
+		"configData": {
+			"adminEmail": "paulovieira@gmail.com"
+		} 
+	},
+	{
+		"id": 2,
+		"configData": {
+			"noRowsForInitialData": 1000
+		} 
+	}
+]

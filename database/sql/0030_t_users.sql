@@ -10,11 +10,12 @@ CREATE TABLE IF NOT EXISTS users(
 	recover_valid_until timestamptz
 );
 
-
 DO $$
 DECLARE
 	_has_executed BOOLEAN;
+	_table_exists BOOLEAN;
 	_flag TEXT := 'create_table_users';
+	_table_name TEXT := 'users';
 BEGIN
 
 	-- get the flag for this file
@@ -22,7 +23,12 @@ BEGIN
 		SELECT 1 FROM code_has_executed WHERE code = _flag
 	) INTO _has_executed;
 
-	if _has_executed is false then
+	-- check if the table exists
+	SELECT EXISTS (
+	   SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = _table_name
+	) INTO _table_exists;
+
+	if _table_exists is true AND _has_executed is false then
 
 		-- the following sql lines will be executed only the first time this file is run
 		PERFORM setval(pg_get_serial_sequence('users', 'id'), 1000);
@@ -33,3 +39,4 @@ BEGIN
 	end if;
 END
 $$
+

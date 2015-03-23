@@ -12,18 +12,23 @@ b) if the id has been given, it will check if there already is a row with that i
 
 CREATE TABLE IF NOT EXISTS  texts( 
 	id SERIAL PRIMARY KEY,
-	tags JSONB,
+	tags JSONB DEFAULT '[]',
 	contents JSONB NOT NULL,
-	contents_desc JSONB,
 	author_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+	description JSONB default '{}',
+	properties JSONB default '{}',
 	active BOOLEAN DEFAULT TRUE,	
 	last_updated timestamptz not null default now()
 );
 
+
+
 DO $$
 DECLARE
 	_has_executed BOOLEAN;
+	_table_exists BOOLEAN;
 	_flag TEXT := 'create_table_texts';
+	_table_name TEXT := 'texts';
 BEGIN
 
 	-- get the flag for this file
@@ -31,7 +36,12 @@ BEGIN
 		SELECT 1 FROM code_has_executed WHERE code = _flag
 	) INTO _has_executed;
 
-	if _has_executed is false then
+	-- check if the table exists
+	SELECT EXISTS (
+	   SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = _table_name
+	) INTO _table_exists;
+
+	if _table_exists is true AND _has_executed is false then
 
 		-- the following sql lines will be executed only the first time this file is run
 		PERFORM setval(pg_get_serial_sequence('texts', 'id'), 1000);

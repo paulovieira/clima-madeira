@@ -181,7 +181,7 @@ exports.register = function(server, options, next) {
         method: 'GET',
         path: internals.resourcePath,
         handler: function (request, reply) {
-            utils.logHandlerInfo("/api" + internals.resourcePath, request);
+            console.log(utils.logHandlerInfo(request));
 debugger;
 
         	var textsC = new TextsC();
@@ -225,7 +225,7 @@ debugger;
         method: 'GET',
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
-            utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
+            console.log(utils.logHandlerInfo(request));
 debugger;
 
 
@@ -279,7 +279,7 @@ debugger;
         method: 'POST',
         path: internals.resourcePath,
         handler: function (request, reply) {
-            utils.logHandlerInfo("/api" + internals.resourcePath, request);
+            console.log(utils.logHandlerInfo(request));
 debugger;
 
 
@@ -351,7 +351,7 @@ debugger;
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
 
-            utils.logHandlerInfo("/api" + internals.resourcePath, request);
+            console.log(utils.logHandlerInfo(request));
 debugger;
 
             // if the "contents" html has images, they are encoded in base64; this method

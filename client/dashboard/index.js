@@ -434,18 +434,32 @@ var MainLayout = Mn.LayoutView.extend({
 		});
 
 		var fulfilled = _.bind(
-				function(){ 
+				function(values){
+					//debugger;
+					var mapCategories = textsC.filter(function(model){
+						if(_.contains(model.get("tags"), "map_category")){
+							return true;
+						}
+						return false;
+					});
+
+					filesC.each(function(model){
+						model.set("mapCategories", new Backbone.Collection(mapCategories).toJSON());
+					});
+
 					this.mainRightRegion.show(mapsListNewTableCV);
 				}, 
 			this);
 
-		Q(filesC.fetch()).done(
-			fulfilled, 
-			function(err){
-				alert("ERROR: could not retrieve data from the server.")
-				throw err;
-			}
-		);
+		Q.all([filesC.fetch(), textsC.fetch()])
+			.then(fulfilled)
+			.done(undefined, 
+				function(err){
+					alert("ERROR: could not retrieve data from the server.")
+					throw err;
+				}
+			);
+
 	},
 });
 

@@ -4,10 +4,14 @@ CREATE TABLE IF NOT EXISTS config(
 	config_data JSONB NOT NULL
 );
 
+
+
 DO $$
 DECLARE
 	_has_executed BOOLEAN;
+	_table_exists BOOLEAN;
 	_flag TEXT := 'create_table_config';
+	_table_name TEXT := 'config';
 BEGIN
 
 	-- get the flag for this file
@@ -15,9 +19,15 @@ BEGIN
 		SELECT 1 FROM code_has_executed WHERE code = _flag
 	) INTO _has_executed;
 
-	if _has_executed is false then
+	-- check if the table exists
+	SELECT EXISTS (
+	   SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = _table_name
+	) INTO _table_exists;
+
+	if _table_exists is true AND _has_executed is false then
 
 		-- the following sql lines will be executed only the first time this file is run
+		PERFORM setval(pg_get_serial_sequence('config', 'id'), 1000);
 		PERFORM audit.audit_table('config');
 
 		-- add the flag to the table

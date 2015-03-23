@@ -51,20 +51,17 @@ var promise = baseC1.execute({
                 }
             });
 
-            changeCase(textsArray, "underscored");
+            changeCase(textsArray, "underscored", 2);
             var promise2 = baseC2.execute({
                 query: {
                     command: "select * from texts_create($1);",
                     arguments: JSON.stringify(textsArray)
-                },
-                changeCase: false
+                }
             });
 
             return promise2;
         },
         function(err) {
-            console.log(err);
-
             throw err;
         }
     )
@@ -75,7 +72,6 @@ var promise = baseC1.execute({
             return resp;
         },
         function(err) {
-            console.log(err);
             throw err;
         }
     )

@@ -154,7 +154,30 @@ var output = "";
 try {
 output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Create new map from file ";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
-output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-category-name\">Category</label>\n            <input type=\"text\" id=\"js-category-name\" class=\"form-control\" xname=\"name\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-name\">Filename</label>\n            <input type=\"text\" id=\"js-edit-name\" class=\"form-control\" name=\"name\" value=\"";
+output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-code\">Code</label>\n            <input type=\"text\" id=\"js-code\" class=\"form-control\" name=\"js-code\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-title-pt\">Title (português)</label>\n            <input type=\"text\" id=\"js-title-pt\" class=\"form-control\" name=\"js-title-pt\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-title-en\">Title (english)</label>\n            <input type=\"text\" id=\"js-title-en\" class=\"form-control\" name=\"js-title-en\" >\n        </div>\n\n\n        <div class=\"form-group\">\n            <label for=\"js-category-name\">Category</label>\n            <select name=\"xyz\" class=\"form-control\">\n\n            ";
+frame = frame.push();
+var t_3 = runtime.contextOrFrameLookup(context, frame, "mapCategories");
+if(t_3) {var t_2 = t_3.length;
+for(var t_1=0; t_1 < t_3.length; t_1++) {
+var t_4 = t_3[t_1];
+frame.set("category", t_4);
+frame.set("loop.index", t_1 + 1);
+frame.set("loop.index0", t_1);
+frame.set("loop.revindex", t_2 - t_1);
+frame.set("loop.revindex0", t_2 - t_1 - 1);
+frame.set("loop.first", t_1 === 0);
+frame.set("loop.last", t_1 === t_2 - 1);
+frame.set("loop.length", t_2);
+output += "\n                <option value=";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += ">";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_4),"contents", env.autoesc)),"pt", env.autoesc), env.autoesc);
+output += "</option>\n            ";
+;
+}
+}
+frame = frame.pop();
+output += "\n            \n            </select>\n        </div>\n\n\n<!-- \n-->\n        <div class=\"form-group\">\n            <label for=\"js-edit-name\">Filename</label>\n            <input type=\"text\" id=\"js-edit-name\" class=\"form-control\" name=\"name\" value=\"";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
 output += "\" disabled>\n        </div>\n\n        <div class=\"form-group\">\n            <label>Path</label>\n            <input type=\"text\" class=\"form-control\" value=\"";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "path"), env.autoesc);

@@ -10,6 +10,7 @@ Marionette.Renderer = {
   // template function. Override this method to provide your own
   // custom rendering and template handling for all of Marionette.
   render: function(template, data) {
+    //debugger;
     if (!template) {
       throw new Marionette.Error({
         name: 'TemplateNotFoundError',

@@ -1,4 +1,5 @@
 // the variable populate_* are promises that will be fulfilled after the data has been saved in the db
+require('pretty-error').start();
 var populate_users  = require("./2030-users");
 
 populate_users
@@ -18,7 +19,10 @@ populate_users
 		var populate_texts = require("./2070-files");
 		return populate_texts;
 	})
-	.catch(function(err){
-		console.log(err);
-	});
+    .done(undefined,
+        function(err) {
+            throw err;
+        }
+    );
+
 

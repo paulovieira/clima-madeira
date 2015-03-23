@@ -2,7 +2,7 @@ var Hapi = require('hapi'),
     Nunjucks = require('hapi-nunjucks'),
     _ = require('underscore'),
     moment = require("moment"),
-
+    chalk = require('chalk'),
     config = require("config"),
     utils = require(global.rootPath + "server/common/utils.js");
 
@@ -111,9 +111,9 @@ server.on('request-internal', function (request, event, tags) {
 // 6. Start the server
 server.start(function() {
     console.log("Server started: \n" +
-        "    protocol:".blue + " " + server.info.protocol + "\n" +
-        "    host:".blue + " " + server.info.host + "\n" +
-        "    port:".blue + " " + server.info.port + "\n" +
-        "    uri:".blue + " " + server.info.uri + "\n" +
-        "    address:".blue + " " + server.info.address);
+        chalk.bgBlue("protocol:") + " " + server.info.protocol + "\n" +
+        chalk.bgBlue("host:") + " " + server.info.host + "\n" +
+        chalk.bgBlue("port:") + " " + server.info.port + "\n" +
+        chalk.bgBlue("uri:") + " " + server.info.uri + "\n" +
+        chalk.bgBlue("address:") + " " + server.info.address + "\n");
 });

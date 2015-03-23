@@ -52,20 +52,15 @@ var promise = baseC1.execute({
                 return obj.userId !== undefined;
             });
 
-            changeCase(usersGroupsArray, "underscored");
+            changeCase(usersGroupsArray, "underscored", 2);
             
             var promise2 = baseC2.execute({
                 query: {
                     command: "select * from users_groups_create($1);",
                     arguments: JSON.stringify(usersGroupsArray)
-                },
-                changeCase: false
+                }
             });
             return promise2;
-        },
-        function(err) {
-            console.log(err);
-            throw err;
         }
     )
     .then(
@@ -73,11 +68,8 @@ var promise = baseC1.execute({
             console.log("users_groups table has been populated.");
             console.log(jsonFormat(baseC2.toJSON()));
             return resp;
-        },
-        function(err) {
-            console.log(err);
-            throw err;
-        })
+        }
+    )
     .finally(function() {
         baseC1.disconnect();
         baseC2.disconnect();

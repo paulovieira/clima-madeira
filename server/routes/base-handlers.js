@@ -5,6 +5,7 @@ var UUID = require('node-uuid');
 var Bcrypt = require("bcrypt");
 var Q = require("q");
 var Moment = require("moment");
+var chalk = require("chalk");
 
 var config = require("config");
 var utils = require(global.rootPath + 'server/common/utils');
@@ -16,7 +17,7 @@ var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 var handlers = {
 
     testpre: function(request, reply) {
-        utils.logHandlerInfo("testpre", request);
+        console.log(utils.logHandlerInfo(request));
         debugger;
 
         var users = request.pre.usersC.toJSON();
@@ -27,7 +28,7 @@ var handlers = {
     },
 
     index: function(request, reply) {
-        utils.logHandlerInfo("index", request);
+        console.log(utils.logHandlerInfo(request));
         debugger;
 
         return reply.redirect("/" + config.get("allowedLanguages")[0]);
@@ -36,7 +37,7 @@ var handlers = {
 
     generalPage: function(request, reply) {
 debugger;
-        utils.logHandlerInfo("generalPage", request);
+        console.log(utils.logHandlerInfo(request));
         debugger;
 //console.log("user-agent:", request.plugins.scooter.toJSON());
 //request.log(['databasex', 'read'], "this is the message");
@@ -74,7 +75,7 @@ debugger;
     },
 
     login: function(request, reply) {
-        utils.logHandlerInfo("login", request);
+        console.log(utils.logHandlerInfo(request));
         debugger;
 
         if (request.auth.isAuthenticated) {
@@ -97,7 +98,7 @@ debugger;
 
 
     loginAuthenticate: function(request, reply) {
-        utils.logHandlerInfo("loginAuthenticate", request);
+        console.log(utils.logHandlerInfo(request));
         debugger;
 
         var email = request.payload.username,
@@ -128,9 +129,7 @@ debugger;
             .execute({
                 query: {
                     command: "select * from users_read($1)",
-                    arguments: JSON.stringify([{
-                        email: email
-                    }])
+                    arguments: JSON.stringify([{email: email}])
                 }
             })
             .done(
@@ -149,8 +148,10 @@ debugger;
                     }
 
                     // if we get here, the username and password match
-                    console.log( ("    authentication succeeded for " + usersC.at(0).get("email")).green);
+                    console.log( chalk.bgGreen("    authentication succeeded for " + usersC.at(0).get("email")) );
 debugger;
+                    var usersGroups = usersC.at(0).get("userGroups");
+
                     var credentials = {
                         id:           usersC.at(0).get("id"),
                         firstName:    usersC.at(0).get("firstName"),
@@ -158,11 +159,17 @@ debugger;
                         email:        usersC.at(0).get("email"),
 
                         // will be true if the user belongs to the group "admin"
-                        isAdmin:      !!_.findWhere(usersC.at(0).get("userGroups"), {code: 99}),  
+                        isAdmin:      !! _.findWhere(usersGroups, {code: 99}),  
 
-                        // will be true if the user belongs to the group "can_edit_texts"
-                        canEditTexts: !!_.findWhere(usersC.at(0).get("userGroups"), {code: 98})
+                        // will be true if the user belongs to some group that has the
+                        // canEditTexts permission
+                        canEditTexts: !! _.chain(usersGroups).pluck("permissions").findWhere({canEditTexts: true}).value()
                     };
+
+                    // a user in the admin group can always edit texts
+                    if(credentials.isAdmin){
+                        credentials.canEditTexts = true;
+                    }
 
                     // set the session in the internal cache (Catbox with memory adapter)
                     var uuid = UUID.v4();
@@ -182,7 +189,7 @@ debugger;
                                 sid: uuid
                             });
 
-                            console.log("    session was set in catbox".green);
+                            console.log(chalk.bgGreen("    session was set in catbox with credentials: \n"), credentials);
                             console.log("    will now redirect to /lang/dashboard");
 
                             return reply.redirect("/" + request.params.lang + "/dashboard");
@@ -200,7 +207,7 @@ debugger;
 
     /* will handle these paths: /pt/dashboard, /en/dashboard   */
     dashboard: function(request, reply) {
-        utils.logHandlerInfo("dashboard", request);
+        console.log(utils.logHandlerInfo(request));
 
         debugger;
 
@@ -268,7 +275,7 @@ debugger;
     },
 
     missing: function(request, reply) {
-        utils.logHandlerInfo("missing", request);
+        console.log(utils.logHandlerInfo(request));
         debugger;
 
         var context = {
@@ -282,7 +289,7 @@ debugger;
     },
 
     catchAll: function(request, reply) {
-        utils.logHandlerInfo("catchAll", request);
+        console.log(utils.logHandlerInfo(request));
         debugger;
 
         return reply.redirect("/" + request.params.lang + "/404");
@@ -290,7 +297,7 @@ debugger;
 
 
     logout: function(request, reply) {
-        utils.logHandlerInfo("logout", request);
+        console.log(utils.logHandlerInfo(request));
         debugger;
 
         request.auth.session.clear();

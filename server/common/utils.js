@@ -2,6 +2,7 @@ var _ = require('underscore');
 var Hoek = require('hoek');
 var Path = require('path');
 var fs = require("fs");
+var chalk = require('chalk');
 var cheerio = require('cheerio');
 var ent = require("ent");
 var config = require("config");
@@ -130,10 +131,8 @@ module.exports = {
     },
 
 
-    logHandlerInfo: function(routeName, request) {
-        console.log("handler: ".blue + routeName +
-            "    " + "|".white + "    path: ".blue + request.path +
-            "    " + "|".white + "    method: ".blue + request.method);
+    logHandlerInfo: function(request) {
+        return chalk.bgBlue(request.method.toUpperCase() + " " + request.path);
     },
 
     // require and call the modules where the registration of the plugins happens

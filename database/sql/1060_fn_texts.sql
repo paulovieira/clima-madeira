@@ -23,8 +23,9 @@ RETURNS TABLE(
 	id INT,
 	tags JSONB,
 	contents JSONB,
-	contents_desc JSONB,
 	author_id INT,
+	description JSONB,
+	properties JSONB,
 	active BOOL,	
 	last_updated timestamptz,
 	author_data JSON)
@@ -162,15 +163,17 @@ FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)
 			id,
 			tags, 
 			contents, 
-			contents_desc, 
-			author_id
+			author_id,
+			description, 
+			properties
 			)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('texts', 'id'))),
-			input_row.tags, 
+			COALESCE(input_row.tags, '[]'::jsonb),
 			input_row.contents, 
-			input_row.contents_desc, 
-			input_row.author_id
+			input_row.author_id,
+			COALESCE(input_row.description, '{}'::jsonb),
+			COALESCE(input_row.properties, '{}'::jsonb)
 			)
 		RETURNING 
 			*
@@ -245,8 +248,11 @@ FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)
 	IF input_row.contents IS NOT NULL THEN
 		command = format(command || 'contents = %L, ', input_row.contents);
 	END IF;
-	IF input_row.contents_desc IS NOT NULL THEN
-		command = format(command || 'contents_desc = %L, ', input_row.contents_desc);
+	IF input_row.description IS NOT NULL THEN
+		command = format(command || 'description = %L, ', input_row.description);
+	END IF;
+	IF input_row.properties IS NOT NULL THEN
+		command = format(command || 'properties = %L, ', input_row.properties);
 	END IF;
 	IF input_row.author_id IS NOT NULL THEN
 		command = format(command || 'author_id = %L, ', input_row.author_id);

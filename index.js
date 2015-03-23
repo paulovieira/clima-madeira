@@ -6,7 +6,7 @@ global.rootPath = Path.normalize(__dirname) + "/";
 
 // load general purpose modules
 require('pretty-error').start();
-require('colors');
+
 var chalk = require('chalk');
 require('debug-trace')({
 	always: true,

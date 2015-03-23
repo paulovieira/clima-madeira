@@ -152,7 +152,7 @@ exports.register = function(server, options, next) {
             method: 'GET',
             path: internals.resourcePath,
             handler: function (request, reply) {
-                utils.logHandlerInfo("/api" + internals.resourcePath, request);
+                console.log(utils.logHandlerInfo(request));
 debugger;
 
                 var usersC = new UsersC();
@@ -198,7 +198,7 @@ debugger;
             method: 'GET',
             path: internals.resourcePath + "/{ids}",
             handler: function (request, reply) {
-                utils.logHandlerInfo("/api" + internals.resourcePath + "/{ids}", request);
+                console.log(utils.logHandlerInfo(request));
     debugger;
 
                 var usersC = new UsersC();
@@ -249,7 +249,7 @@ debugger;
             method: 'POST',
             path: internals.resourcePath,
             handler: function (request, reply) {
-                utils.logHandlerInfo("/api" + internals.resourcePath, request);
+                console.log(utils.logHandlerInfo(request));
     debugger;
     // decomment here!
     //             request.auth.credentials = request.auth.credentials || {};
@@ -309,7 +309,7 @@ debugger;
             path: internals.resourcePath + "/{ids}",
             handler: function (request, reply) {
 
-                utils.logHandlerInfo("/api" + internals.resourcePath, request);
+                console.log(utils.logHandlerInfo(request));
     debugger;
 
                 var usersC = new UsersC(request.payload);
@@ -459,7 +459,7 @@ debugger;
         path: internals.resourcePath + "/recover/{email}",
         handler: function(request, reply) {
 
-            utils.logHandlerInfo("/api" + internals.resourcePath + "/recover/{email}", request);
+            console.log(utils.logHandlerInfo(request));
             debugger;
 
             var usersC = request.pre.usersC;
@@ -570,7 +570,7 @@ debugger;
         path: internals.resourcePath + "/recover/{token}",
         handler: function(request, reply) {
 
-            utils.logHandlerInfo("/api" + internals.resourcePath + "/recover/{token}", request);
+            console.log(utils.logHandlerInfo(request));
             debugger;
 
             var usersC = request.pre.usersC;

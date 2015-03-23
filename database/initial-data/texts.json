@@ -1073,6 +1073,32 @@
     },
 
 
+    {
+        "id": 105,
+        "tags": ["map_category"],
+        "contents": {
+            "pt": "Temperaturas",
+            "en": "Temperature"
+        },
+        "author_email": "paulovieira@gmail.com",
+        "properties": {
+            "categoryOrder": 2
+        }
+    },
+
+    {
+        "id": 106,
+        "tags": ["map_category"],
+        "contents": {
+            "pt": "Precipitação",
+            "en": "Rain"
+        },
+        "author_email": "paulovieira@gmail.com",
+        "properties": {
+            "categoryOrder": 1
+        }
+    },
+
     /* texts 500- 1000 are meant to be editable */
     {
         "id": 500,
