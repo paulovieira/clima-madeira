@@ -148,10 +148,11 @@ debugger;
                     }
 
                     // if we get here, the username and password match
-                    console.log( chalk.bgGreen("    authentication succeeded for " + usersC.at(0).get("email")) );
+                    console.log( chalk.bgGreen("    ") + chalk.bgYellow(" authentication succeeded for " + usersC.at(0).get("email") ) + chalk.bgGreen("    "));
 debugger;
                     var usersGroups = usersC.at(0).get("userGroups");
-
+console.log("usersC.at(0)", usersC.at(0).toJSON());
+console.log("usersGroups", usersGroups);
                     var credentials = {
                         id:           usersC.at(0).get("id"),
                         firstName:    usersC.at(0).get("firstName"),
@@ -189,7 +190,8 @@ debugger;
                                 sid: uuid
                             });
 
-                            console.log(chalk.bgGreen("    session was set in catbox with credentials: \n"), credentials);
+                            console.log(chalk.bgGreen("    ") + chalk.bgYellow(" session was set in catbox ") + chalk.bgGreen("    "));
+                            console.log("    credentials:\n", credentials);
                             console.log("    will now redirect to /lang/dashboard");
 
                             return reply.redirect("/" + request.params.lang + "/dashboard");

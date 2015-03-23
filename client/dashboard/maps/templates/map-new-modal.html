@@ -23,8 +23,8 @@
 
 
         <div class="form-group">
-            <label for="js-category-name">Category</label>
-            <select name="xyz" class="form-control">
+            <label for="js-category-id">Category</label>
+            <select name="js-category-id" class="form-control">
 
             {% for category in mapCategories %}
                 <option value={{ category.id }}>{{ category.contents.pt }}</option>

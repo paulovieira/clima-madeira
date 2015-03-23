@@ -39,8 +39,8 @@ module.exports = {
         // documentation: https://github.com/hapijs/joi#validatevalue-schema-options-callback
         joi: {
             abortEarly: false,  // returns all the errors found (does not stop on the first error)
-            allowUnknown: true, // allows object to contain unknown keys (they will be deleted)
-            stripUnknown: true,  // delete unknown keys
+            allowUnknown: true, // allows object to contain unknown keys (they can be deleted or not - see the stripUnknown options)
+            stripUnknown: false,  // delete unknown keys
             convert: true
     /*
 

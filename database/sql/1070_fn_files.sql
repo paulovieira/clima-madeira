@@ -14,7 +14,8 @@ CREATE FUNCTION files_read(options json DEFAULT '[{}]')
 RETURNS TABLE(
 	id INT,
 	name TEXT,
-	path TEXT,
+	logical_path TEXT,
+	physical_path TEXT,	
 	tags JSONB,
 	description JSONB,
 	properties JSONB,
@@ -35,8 +36,13 @@ DECLARE
 	author_email TEXT;
 	tags TEXT;
 	name TEXT;
-	path TEXT;
+	logical_path TEXT;
 BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
 
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
@@ -45,7 +51,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 			f.*, 
 			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data
 		FROM files f 
-		INNER JOIN users u
+		LEFT JOIN users u
 		ON f.owner_id = u.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
@@ -54,7 +60,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	SELECT json_extract_path_text(options_row, 'author_email') INTO author_email;
 	SELECT json_extract_path_text(options_row, 'tags')         INTO tags;
 	SELECT json_extract_path_text(options_row, 'name')         INTO name;
-	SELECT json_extract_path_text(options_row, 'path')         INTO path;
+	SELECT json_extract_path_text(options_row, 'logical_path') INTO logical_path;
 
 	number_conditions := 0;
 
@@ -98,13 +104,13 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	-- criteria: path
-	IF path IS NOT NULL THEN
+	-- criteria: logical_path
+	IF logical_path IS NOT NULL THEN
 		IF number_conditions = 0 THEN  command = command || ' WHERE';
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' f.path = %L', path);
+		command = format(command || ' f.logical_path = %L', logical_path);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -165,6 +171,13 @@ DECLARE
 	new_id INT;
 BEGIN
 
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
+
+
 FOR input_row IN (select * from json_populate_recordset(null::files, input_data)) LOOP
 
 	SELECT input_row.id INTO new_id;
@@ -179,7 +192,8 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 		INSERT INTO files(
 			id,
 			name,
-			path,
+			logical_path,
+			physical_path,
 			tags, 
 			description,
 			properties, 
@@ -188,7 +202,8 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('files', 'id'))),
 			input_row.name, 
-			input_row.path, 
+			input_row.logical_path, 
+			input_row.physical_path, 
 			COALESCE(input_row.tags, '[]'::jsonb),
 			COALESCE(input_row.description, '{}'::jsonb),
 			COALESCE(input_row.properties, '{}'::jsonb),
@@ -225,7 +240,8 @@ select * from files order by id desc
 select * from files_create('[
 {
 	"name": "relatório.pdf",
-	"path": "/upload/paulo",
+	"logical_path": "/upload/paulo",
+	"physical_path": "/data",
 	"tags": ["tag3", "tag4"],
 	"owner_id": 2
 }
@@ -235,7 +251,8 @@ select * from files_create('[
 select * from files_create('[
 {
 	"name": "relatório3.pdf",
-	"path": "/upload/paulo",
+	"logical_path": "/upload/paulo",
+	"physical_path": "/data",
 	"owner_id": 2,
 	"id": 1
 }
@@ -263,6 +280,12 @@ DECLARE
 	command text;
 BEGIN
 
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
+
 FOR input_row IN (select * from json_populate_recordset(null::files, input_data)) LOOP
 
 	-- generate a dynamic command: first the base query
@@ -275,8 +298,11 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 	IF input_row.name IS NOT NULL THEN
 		command = format(command || 'name = %L, ', input_row.name);
 	END IF;
-	IF input_row.path IS NOT NULL THEN
-		command = format(command || 'path = %L, ', input_row.path);
+	IF input_row.logical_path IS NOT NULL THEN
+		command = format(command || 'logical_path = %L, ', input_row.logical_path);
+	END IF;
+	IF input_row.physical_path IS NOT NULL THEN
+		command = format(command || 'physical_path = %L, ', input_row.physical_path);
 	END IF;
 	IF input_row.tags IS NOT NULL THEN
 		command = format(command || 'tags = %L, ', input_row.tags);
@@ -346,6 +372,12 @@ DECLARE
 	-- fields to be used in WHERE clause
 	id_to_delete INT;
 BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 

@@ -1,3 +1,23 @@
+var MapM = Backbone.Model.extend({
+	urlRoot: "/api/maps",
+	defaults: {
+	},
+	initialize: function(){
+	},
+	parse: function(resp){
+		if(_.isArray(resp)){ resp = resp[0]; }
+		//resp.lastUpdated = moment(resp.lastUpdated).format('YYYY-MM-DD HH:mm:ss');
+		return resp;
+	}
+});
+
+var MapsC = Backbone.Collection.extend({
+	model: MapM,
+	url: "/api/maps",
+});
+
+
+
 var MapNewModalIV = ModalIV.extend({
 
 	template: "maps/templates/map-new-modal.html",
@@ -17,9 +37,38 @@ var MapNewModalIV = ModalIV.extend({
 	},
 
 	createMap: function(){
-		debugger;
+
 		var data = Backbone.Syphon.serialize(this);
-		//console.log("map will be craeted")
+
+		var mapM = new MapM({
+			title: {
+				pt: data["js-title-pt"],
+				en: data["js-title-en"],
+			},
+			code: data["js-code"],
+			fileId: this.model.get("id"),  // the model for this view is a fileM
+			categoryId: parseInt(data["js-category-id"], 10)
+		});
+
+		var self = this;
+		Q.delay(150)
+			.then(function(){
+				return mapM.save();  // returns a promise
+			})
+			.then(function(data){
+				alert("O mapa foi criado com sucesso.");
+				//debugger;
+				Dashboard.$modal.modal("hide");
+				self.destroy();
+			})
+			.done(undefined,
+				function(err){
+					alert("ERRO: o mapa não foi criado.");
+					//debugger;
+					throw err;
+				}
+			)
+
 	}
 
 	// updateFile: function(){

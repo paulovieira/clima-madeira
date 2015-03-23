@@ -18,6 +18,7 @@ RETURNS TABLE(
 	description JSONB,
 	properties JSONB,
 	category_id INT,
+	file_id INT,
 	table_name TEXT,
 	owner_id INT,
 	created_at timestamptz,
@@ -35,6 +36,11 @@ DECLARE
 	id INT;
 BEGIN
 
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
@@ -43,7 +49,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data,
 			(select row_to_json(_dummy_) from (select t.*) as _dummy_) as category_data
 		FROM maps m 
-		INNER JOIN users u
+		LEFT JOIN users u
 		ON m.owner_id = u.id
 		INNER JOIN texts t
 		ON m.category_id = t.id';
@@ -110,6 +116,12 @@ DECLARE
 	new_id INT;
 BEGIN
 
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
+
 FOR input_row IN (select * from json_populate_recordset(null::maps, input_data)) LOOP
 
 	SELECT input_row.id INTO new_id;
@@ -127,6 +139,7 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 			title, 
 			description, 
 			properties,
+			file_id,
 			category_id,
 			table_name, 
 			owner_id
@@ -137,6 +150,7 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 			COALESCE(input_row.title, '[]'::jsonb),
 			COALESCE(input_row.description, '{}'::jsonb),
 			COALESCE(input_row.properties, '{}'::jsonb),
+			input_row.file_id,
 			input_row.category_id,
 			input_row.table_name, 
 			input_row.owner_id

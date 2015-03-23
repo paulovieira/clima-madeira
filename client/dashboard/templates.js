@@ -94,7 +94,7 @@ output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id
 output += "\n</td>\n\n<td>\n    ";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "path"), env.autoesc);
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "logicalPath"), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
 output += runtime.suppressValue(env.getFilter("join").call(context, runtime.contextOrFrameLookup(context, frame, "tags"),", "), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
@@ -154,7 +154,7 @@ var output = "";
 try {
 output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Create new map from file ";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
-output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-code\">Code</label>\n            <input type=\"text\" id=\"js-code\" class=\"form-control\" name=\"js-code\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-title-pt\">Title (português)</label>\n            <input type=\"text\" id=\"js-title-pt\" class=\"form-control\" name=\"js-title-pt\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-title-en\">Title (english)</label>\n            <input type=\"text\" id=\"js-title-en\" class=\"form-control\" name=\"js-title-en\" >\n        </div>\n\n\n        <div class=\"form-group\">\n            <label for=\"js-category-name\">Category</label>\n            <select name=\"xyz\" class=\"form-control\">\n\n            ";
+output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-code\">Code</label>\n            <input type=\"text\" id=\"js-code\" class=\"form-control\" name=\"js-code\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-title-pt\">Title (português)</label>\n            <input type=\"text\" id=\"js-title-pt\" class=\"form-control\" name=\"js-title-pt\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-title-en\">Title (english)</label>\n            <input type=\"text\" id=\"js-title-en\" class=\"form-control\" name=\"js-title-en\" >\n        </div>\n\n\n        <div class=\"form-group\">\n            <label for=\"js-category-id\">Category</label>\n            <select name=\"js-category-id\" class=\"form-control\">\n\n            ";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "mapCategories");
 if(t_3) {var t_2 = t_3.length;
@@ -209,7 +209,7 @@ output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id
 output += "\n</td>\n\n<td>\n    ";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "path"), env.autoesc);
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "logicalPath"), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"firstName", env.autoesc), env.autoesc);
 output += " ";

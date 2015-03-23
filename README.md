@@ -1,4 +1,4 @@
-## 0. Install node packages
+s## 0. Install node packages
 
     sudo npm install
 
@@ -41,11 +41,11 @@ Make sure the required global modules are installed (nodemon, forever)
     sudo npm install forever -g
     sudo npm install nodemon -g
 
-Test quickly with nodemon:
+Make a quick test with nodemon:
 
-    nodemon -e html,js index.js
+    nodemon index.js
 
-Run with forever (the app will execute in "deamon mode"):
+Then run the app permanently with forever or PM2 (the app will execute in "deamon mode"):
 
     export NODE_APP_NAME=clima
 

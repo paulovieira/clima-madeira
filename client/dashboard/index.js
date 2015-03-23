@@ -425,8 +425,10 @@ var MainLayout = Mn.LayoutView.extend({
 				var hasMapTag = _.contains(child.get("tags"), "map") || 
 						_.contains(child.get("tags"), "maps") ||
 						_.contains(child.get("tags"), "mapa") ||
-						_.contains(child.get("tags"), "placeholder") ||
-						_.contains(child.get("tags"), "mapas");
+						_.contains(child.get("tags"), "mapas") ||
+						_.contains(child.get("tags"), "shape") ||
+						_.contains(child.get("tags"), "shapes") ||
+						_.contains(child.get("tags"), "placeholder");
 
 				return hasMapTag;
 			}

@@ -1,17 +1,19 @@
+var exec = require("child_process").exec;
 var stream = require('stream');
-var Boom = require('boom');
 var Path = require('path');
+var Boom = require('boom');
 var Joi = require('joi');
 var config = require('config');
 var fs = require('fs');
 var Q = require("q");
+var unzip = require('unzip');
 
 //var ent = require("ent");
 var _ = require('underscore');
 var _s = require('underscore.string');
 var changeCaseKeys = require('change-case-keys');
 
-var FilesC = require("../../server/models/base-model.js").collection;
+var BaseC = require("../../server/models/base-model.js").collection;
 var utils = require('../../server/common/utils.js');
 var transforms = require('../../server/common/transforms.js');
 var pre = require('../../server/common/pre.js');
@@ -21,8 +23,8 @@ var pre = require('../../server/common/pre.js');
 var internals = {};
 /*** RESOURCE CONFIGURATION ***/
 
-internals.resourceName = "files";
-internals.resourcePath = "/files";
+internals.resourceName = "maps";
+internals.resourcePath = "/maps";
 
 
 internals.isDbError = function (err){
@@ -72,15 +74,29 @@ debugger;
 };
 
 
-// NOTE: not used for files
 internals.validatePayloadForCreate = function(value, options, next){
 
     console.log("validatePayloadForCreate");
 
     var schemaCreate = Joi.object().keys({
-        //tags: Joi.string().regex(/^$|^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
-        //newfile: Joi.object().type(stream.Readable).strict()
-        //newfile: Joi.any().strict()
+/*
+        id: Joi.number().integer().min(0),
+
+        //tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
+        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
+
+        contents: Joi.object().keys({
+            pt: Joi.string().required(),
+            en: Joi.string().required()
+        }).required(),
+
+        contentsDesc: Joi.object().keys({
+            pt: Joi.string().required(),
+            en: Joi.string().required()
+        }),
+
+        active: Joi.boolean()
+*/
     });
 
     return internals.validatePayload(value, options, next, schemaCreate);
@@ -92,20 +108,23 @@ internals.validatePayloadForUpdate = function(value, options, next){
     console.log("validatePayloadForUpdate");
 
     var schemaUpdate = Joi.object().keys({
-        id: Joi.number().integer().min(0),
-
-        name: Joi.string().required(),
-
-        logicalPath: Joi.string().required(),
+        id: Joi.number().integer().min(0).required(),
+/*
+        contents: Joi.object().keys({
+            pt: Joi.string().allow("").required(),
+            en: Joi.string().allow("").required()
+        }).required(),
 
         //tags: Joi.array().unique().min(0).includes(Joi.string()),
-        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
+        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
 
-        description: Joi.object().keys({
+        contentsDesc: Joi.object().keys({
             pt: Joi.string().required(),
             en: Joi.string().required()
         }),
 
+        active: Joi.boolean()
+*/
     });
 
     return internals.validatePayload(value, options, next, schemaUpdate);
@@ -113,13 +132,13 @@ internals.validatePayloadForUpdate = function(value, options, next){
 
 
 
-// NOTE: unlike the validations for other endpoints, here we don't convert to array (because that
-// will make things difficult for the creation of the file buffer)
 internals.validatePayload = function(value, options, next, schema){
 debugger;
 
+    if(_.isObject(value) && !_.isArray(value)){  value = [value];  }
 
-    var validation = Joi.validate(value, schema, config.get('hapi.joi'));
+    // validate the elements of the array using the given schema
+    var validation = Joi.validate(value, Joi.array().includes(schema), config.get('hapi.joi'));
 
     if(validation.error){  return next(validation.error); }
 
@@ -129,8 +148,11 @@ debugger;
 
     // finally, if the ids param is defined, make sure that the ids in the param and the ids in the payload are consistent
     if(ids){
-        if(ids[0] !== validation.value.id){
-            return next(Boom.conflict("The ids given in the payload and in the URI must match (including the order)."));
+        for(var i=0, l=validation.value.length; i<l; i++){
+            // ids in the URL param and ids in the payload must be in the same order
+            if(ids[i] !== validation.value[i].id){
+                return next(Boom.conflict("The ids given in the payload and in the URI must match (including the order)."));
+            }
         }
     }
 
@@ -155,20 +177,20 @@ exports.register = function(server, options, next) {
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-        	var filesC = new FilesC();
-        	filesC.execute({
+        	var mapsC = new BaseC();
+        	mapsC.execute({
 				query: {
-                    command: "select * from files_read()"
+                    command: "select * from maps_read()"
 				}
         	})
         	.done(
         		function(){
-                    var resp         = filesC.toJSON();
-                    var transformMap = transforms.maps.files;
-                    var transform    = transforms.transformArray;
+                    var resp         = mapsC.toJSON();
+                    //var transformMap = transforms.maps.files;
+                    //var transform    = transforms.transformArray;
 
-                    return reply(transform(resp, transformMap));
-                    //return reply(resp);
+                    //return reply(transform(resp, transformMap));
+                    return reply(resp);
         		},
                 function(err){
 debugger;
@@ -207,21 +229,22 @@ debugger;
                 queryOptions.push({id: id});
             });
 
-            var filesC = new FilesC();
-            filesC.execute({
+            var mapsC = new BaseC();
+            mapsC.execute({
                 query: {
-                    command: "select * from files_read($1)",
+                    command: "select * from maps_read($1)",
                     arguments: [ JSON.stringify(queryOptions) ]
                 }
             })
             .done(
                 function(){
 debugger;
-                    var resp         = filesC.toJSON();
-                    var transformMap = transforms.maps.files;
-                    var transform    = transforms.transformArray;
+                    var resp         = mapsC.toJSON();
+                    //var transformMap = transforms.maps.files;
+                    //var transform    = transforms.transformArray;
 
-                    return reply(transform(resp, transformMap));
+                    //return reply(transform(resp, transformMap));
+                    return reply(resp);
                 },
                 function(err){
 debugger;
@@ -245,7 +268,7 @@ debugger;
 
         }
     });
-/**/
+
     // CREATE (one or more)
     server.route({
         method: 'POST',
@@ -253,25 +276,123 @@ debugger;
         handler: function (request, reply) {
             console.log(utils.logHandlerInfo(request));
 debugger;
+            request.payload.forEach(function(obj){
+                obj.owner_id = request.auth.credentials.id;
+                obj.table_name = "geo.xyz";
+            });
 
+//console.log("dbData: ", JSON.stringify(changeCaseKeys(request.payload, "underscored")));
+//console.log("dbData: ", JSON.stringify(request.payload));
+
+
+
+            var mapsC = new BaseC();
+            var filesC = new BaseC();
+
+
+            filesC.execute({
+                query: {
+                    command: "select * from files_read($1);",
+                    arguments: [  JSON.stringify({ id: request.payload[0]["file_id"] })  ]
+                }
+            })
+            .then(function(val){
+                var deferred = Q.defer();
+
+                // we are expecting to have 1 model in the collection (and only 1)
+                if(filesC.length !== 1){
+                    throw new Error("The shape file does not exist (check the file_id)");
+                }
+
+                var physicalPath = filesC.at(0).get("physicalPath"),
+                    logicalPath = filesC.at(0).get("logicalPath"),
+                    filename = filesC.at(0).get("name"),
+                    filenameWithoutExt = filename.slice(0, filename.length - 4);
+
+                if(!_s.endsWith(filename, ".zip")){
+                    throw new Error("The file must be a zip.");
+                }
+
+                var zipFullPath = Path.join(global.rootPath, physicalPath, logicalPath, filename);
+                var zipOutputDir = Path.join(global.rootPath, physicalPath, logicalPath, filenameWithoutExt);
+
+// console.log("filenameWithoutExt: ", filenameWithoutExt);
+// console.log("zipFullPath: ", zipFullPath);
+// console.log("zipDirectory: ", zipDirectory);
+
+                fs.mkdirSync(zipOutputDir);
+                
+                fs.createReadStream(zipFullPath)
+                    .pipe(unzip.Extract({ path: zipOutputDir }))
+                .on("close", function(){
+                    deferred.resolve({ success: true })
+                })
+                .on("error", function(err){
+                    deferred.reject(err);
+                });
+
+                return deferred.promise;
+            })
+
+/*
+TODO: execute shp2pgsql -> analyze outpu -> create row in maps table
+
+
+
+            var deferred = Q.defer();
+
+            var filesC = 
+
+            var command
+            exec(command, function(err, stdout, stderr){
+                if(err){
+                    throw err;
+                }
+                //console.log("stdout: \n", stdout);
+                //console.log("stderr: \n", stderr);
+            })
+
+
+            mapsC.execute({
+                query: {
+                    command: "select * from maps_create($1);",
+                    arguments: [JSON.stringify(request.payload)]
+                }
+            })
+*/
+
+            .done(
+                function(resp){
+debugger;
+                    // var transformMap = transforms.maps.text;
+                    // var transform    = transforms.transformArray;
+
+//                    return reply(transform(resp, transformMap));
+                    return reply(resp);
+                },
+                function(err){
+debugger;
+
+                    var boomErr = internals.parseError(err);
+                    return reply(boomErr);
+                }
+            );
+
+/*
 //console.log("request.payload: ", request.payload);
             var filename = request.payload.newfile.hapi.filename;
-
-            // logicalPath and physicalPath are hard-coded for now
             var logicalPath = "/uploads/public/";
-            var physicalPath = "/data" + logicalPath;
-            //var physicalPath = global.rootPath + "/data";
+            var physicalPath = global.rootPath + "data";
 
 
-            var ws = fs.createWriteStream(Path.join(global.rootPath, physicalPath, logicalPath, filename));
+            var ws = fs.createWriteStream(physicalPath + logicalPath + filename);
             request.payload.newfile.pipe(ws);
 
             ws.on("finish", function(){
 
                 var dbData = [{
                     name: filename,
-                    logicalPath: logicalPath,
-                    physicalPath: physicalPath,
+                    path: logicalPath,
                     tags: request.payload.tags,
                     ownerId: request.auth.credentials.id
                 }];
@@ -303,7 +424,7 @@ debugger;
                 return reply(boomErr);
             });
 
-
+*/
         },
         config: {
         	validate: {
@@ -311,25 +432,20 @@ debugger;
                 // but if we do the validation the buffer will somehow be messed up by Joi; so here we don't
                 // do the validation
 
-                //payload: internals.validatePayloadForCreate
+                payload: internals.validatePayloadForCreate
         	},
             auth: config.get('hapi.auth'),
             pre: [
                 pre.abortIfNotAuthenticated,
-                pre.payload.extractTags
+                //pre.payload.extractTags
             ],
 
-            payload: {
-                output: "stream",
-                parse: true,
-                maxBytes: 1048576*3  // 3 megabytes
-            },
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
 			tags: ['api'],
         }
     });
-
+/*
     // UPDATE (one or more)
     server.route({
         method: 'PUT',
@@ -439,7 +555,7 @@ debugger;
 
         }
     });
-
+*/
     // any other request will receive a 405 Error
     server.route({
         method: '*',

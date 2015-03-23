@@ -43,13 +43,13 @@ DECLARE
 BEGIN
 
 -- NOTE: using a CTE is not good for performance;
-
+-- NOTE: we have to make the CASE...END. See the comment in fn_users.sql
 groups_users_cte := '
 	groups_users_cte AS (
 		SELECT
 			g.id as group_id,
 			g.code as group_code,
-			json_agg(u.*) AS group_users
+			(CASE WHEN COUNT(u) = 0 THEN ''[]''::json  ELSE json_agg(u.*) END ) AS group_users
 		FROM groups g
 		LEFT JOIN users_groups ug
 			ON ug.group_code = g.code
@@ -59,6 +59,11 @@ groups_users_cte := '
 	) 
 ';
 
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
 
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
@@ -143,6 +148,13 @@ DECLARE
 	current_row groups%ROWTYPE;
 	new_id INT;
 BEGIN
+
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
 
 FOR input_row IN (select * from json_populate_recordset(null::groups, input_data)) LOOP
 
@@ -230,6 +242,13 @@ DECLARE
 	command text;
 BEGIN
 
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
+
 FOR input_row IN (select * from json_populate_recordset(null::groups, input_data)) LOOP
 
 	-- generate a dynamic command: first the base query
@@ -308,6 +327,13 @@ DECLARE
 	-- fields to be used in WHERE clause
 	id_to_delete INT;
 BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
+
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 

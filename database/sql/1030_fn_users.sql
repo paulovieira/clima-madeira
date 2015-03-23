@@ -66,7 +66,7 @@ users_texts_cte := '
 	users_texts_cte AS (
 		SELECT
 			u.id AS user_id,
-			json_agg(t.*) AS user_texts
+			(CASE WHEN COUNT(t) = 0 THEN ''[]''::json  ELSE json_agg(t.*) END ) AS user_texts
 		FROM users u
 		LEFT JOIN texts t
 			ON t.author_id = u.id
@@ -74,11 +74,16 @@ users_texts_cte := '
 	)
 ';
 
+/*
+NOTE: we have to make the CASE...END instead of simply "json_agg(g.*) AS user_groups" because if there is
+no match in the LEFT JOIN, postgres returns [null] (instead of [])
+*/
+
 users_groups_cte := '
 	users_groups_cte AS (
 		SELECT
 			u.id as user_id,
-			json_agg(g.*) AS user_groups
+			(CASE WHEN COUNT(g) = 0 THEN ''[]''::json  ELSE json_agg(g.*) END ) AS user_groups
 		FROM users u
 		LEFT JOIN users_groups ug
 			ON ug.user_id = u.id
@@ -88,6 +93,11 @@ users_groups_cte := '
 	)
 ';
 
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
@@ -196,6 +206,13 @@ DECLARE
 	new_id INT;
 BEGIN
 
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
+
 FOR input_row IN (select * from json_populate_recordset(null::users, input_data)) LOOP
 
 	SELECT input_row.id INTO new_id;
@@ -294,6 +311,13 @@ DECLARE
 	input_row users%ROWTYPE;
 	command text;
 BEGIN
+
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
 
 FOR input_row IN (select * from json_populate_recordset(null::users, input_data)) LOOP
 
@@ -399,6 +423,12 @@ DECLARE
 	-- fields to be used in WHERE clause
 	id_to_delete INT;
 BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 

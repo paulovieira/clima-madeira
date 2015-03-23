@@ -44,7 +44,7 @@ var transforms = {
 		    // a) properties to be maintained
 		    "id": "id",
 		    "name": "name",
-		    "path": "path",
+		    "logicalPath": "logicalPath",
 		    "tags": "tags",
 		    "description": "description",
 		    "properties":"properties",

@@ -2,7 +2,8 @@
 CREATE TABLE IF NOT EXISTS files( 
 	id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL,
-	path TEXT NOT NULL,
+	logical_path TEXT NOT NULL,
+	physical_path TEXT NOT NULL,
 	tags JSONB  default '[]',
 	description JSONB default '{}',
 	properties JSONB default '{}',	

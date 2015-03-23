@@ -1,14 +1,18 @@
 [
     {
         "id": 1,
-        "name": {
+        "code": "energia-centrais",
+        "title": {
             "pt": "Energia - centrais energéticas",
             "en": "Energy - power plants"
+
         },
-        "category": "energia",
+        "file_id": 1,
+        "category_id": 105,
         "tableName": "geo.temp",
         "owner_id": 1
     }
+
 
 
 

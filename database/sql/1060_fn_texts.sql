@@ -44,6 +44,11 @@ DECLARE
 	tags TEXT;
 BEGIN
 
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
@@ -51,7 +56,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 			t.*, 
 			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as author_data
 		FROM texts t 
-		INNER JOIN users u
+		LEFT JOIN users u
 		ON t.author_id = u.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
@@ -148,6 +153,13 @@ DECLARE
 	new_id INT;
 BEGIN
 
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
+
 FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)) LOOP
 
 	SELECT input_row.id INTO new_id;
@@ -233,6 +245,13 @@ DECLARE
 	command text;
 BEGIN
 
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
+
 FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)) LOOP
 
 	-- generate a dynamic command: first the base query
@@ -317,6 +336,12 @@ DECLARE
 	-- fields to be used in WHERE clause
 	id_to_delete INT;
 BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
