@@ -19,6 +19,10 @@ populate_users
 		var populate_texts = require("./2070-files");
 		return populate_texts;
 	})
+	.then(function(){
+		var populate_maps = require("./2080-maps");
+		return populate_maps;
+	})
     .done(undefined,
         function(err) {
             throw err;

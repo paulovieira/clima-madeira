@@ -289,6 +289,7 @@ debugger;
             var mapsC = new BaseC();
             var filesC = new BaseC();
 
+            var zipOutputDir, shpFile;
 
             filesC.execute({
                 query: {
@@ -314,7 +315,7 @@ debugger;
                 }
 
                 var zipFullPath = Path.join(global.rootPath, physicalPath, logicalPath, filename);
-                var zipOutputDir = Path.join(global.rootPath, physicalPath, logicalPath, filenameWithoutExt);
+                zipOutputDir = Path.join(global.rootPath, physicalPath, logicalPath, filenameWithoutExt);
 
 // console.log("filenameWithoutExt: ", filenameWithoutExt);
 // console.log("zipFullPath: ", zipFullPath);
@@ -328,12 +329,54 @@ debugger;
                     deferred.resolve({ success: true })
                 })
                 .on("error", function(err){
+                    //console.error("zip error!");
                     deferred.reject(err);
                 });
 
                 return deferred.promise;
             })
+            .then(function(){
+                var deferred2 = Q.defer();
 
+                var files = fs.readdirSync(zipOutputDir).filter(function(filename){
+                    return _s.endsWith(filename, ".shp");
+                });
+
+                if(files.length!==1){
+                    throw new Error("the zip must contain one .shp file (and only one)");
+                }
+
+                shpFile = files[0];
+                shpFileWithoutExt = shpFile.slice(0, shpFile.length - 4);
+
+                var tableName = _s.underscored(_s.slugify(shpFileWithoutExt));
+                
+                var command = 'shp2pgsql -D -I -s 4326 ' 
+                            + Path.join(zipOutputDir, shpFile) 
+                            + '  geo.' + tableName
+                            + ' |  psql --dbname=' + config.get("db.postgres.database");
+
+                console.log("command: ", command);
+
+                exec(command, function(err, stdout, stderr){
+                    if(err){
+                        console.log("error in exec: ", err);
+                        throw err;
+                    }
+
+                    console.log("stdout: \n", stdout);
+                    if(_s.include(stdout.toLowerCase(), "create index") && 
+                        _.include(stdout.toLowerCase(), "commit")){
+                        deferred2.resolve({ success: true });
+                    }
+                    else{
+                        deferred2.reject(new Error("shp2pgsql does not seem to have succeeded (please verify)"));
+                    }
+
+                })
+
+                return deferred2.promise;
+            })
 /*
 TODO: execute shp2pgsql -> analyze outpu -> create row in maps table
 
