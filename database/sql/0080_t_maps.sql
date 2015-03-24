@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS maps(
 	code TEXT NOT NULL UNIQUE,
 	title JSONB NOT NULL default '{}',  -- note: is it worth to have a reference to the texts table?
 	description JSONB default '{}',
-	properties JSONB default '{}',	
+	properties JSONB default '{ "order": 1, "timeData": [] }',	
 	category_id INT references texts(id)  on update cascade on delete set null,
 	file_id INT references files(id)  on update cascade on delete set null,
 	table_name TEXT NOT NULL,

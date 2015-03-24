@@ -54,6 +54,30 @@ var transforms = {
 		    "ownerData.id": "ownerData.id",
 		    "ownerData.firstName": "ownerData.firstName",
 		    "ownerData.lastName": "ownerData.lastName",
+		},
+
+		maps: {
+		    // a) properties to be maintained
+		    "id": "id",
+		    "code": "code",
+		    "title": "title",
+		    "description": "description",
+		    "properties":"properties",
+		    "ownerId":"ownerId",
+		    "createdAt": "createdAt",
+
+		    // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)
+		    "ownerData.id": "ownerData.id",
+		    "ownerData.email": "ownerData.email",
+		    "ownerData.firstName": "ownerData.firstName",
+		    "ownerData.lastName": "ownerData.lastName",
+
+		    "categoryData.id": "categoryData.id",
+		    "categoryData.contents": "categoryData.contents",
+		    "categoryData.properties": "categoryData.properties",
+		    "categoryData.active": "categoryData.active",
+
+		    // d) deleted properties: "categoryId", "fileId", "tableName"
 		}
 
 	},

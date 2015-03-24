@@ -300,6 +300,9 @@ var MainLayout = Mn.LayoutView.extend({
 			case "files-new":
 				this.showNewFile();
 				break;
+			case "maps-all":
+				this.showAllMaps();
+				break;
 			case "maps-new":
 				this.showNewMap();
 				break;
@@ -418,31 +421,69 @@ var MainLayout = Mn.LayoutView.extend({
 		this.mainRightRegion.show(fileNewLV); 
 	},
 
+	showAllMaps: function(){
+		var mapsTableCV = new MapsListTableCV({
+			collection: mapsC
+		});
+
+		var fulfilled = _.bind(
+				function(){ 
+
+					var mapCategories = textsC.filter(function(model){
+						return _.contains(model.get("tags"), "map_category");
+					});
+
+					mapsC.each(function(model){
+						model.set("mapCategories", new Backbone.Collection(mapCategories).toJSON());
+					});
+
+					this.mainRightRegion.show(mapsTableCV); 
+				}, 
+			this);
+
+
+		Q.all([mapsC.fetch(), textsC.fetch()])
+			.then(fulfilled)
+			.done(undefined, 
+				function(err){
+					alert("ERROR: could not retrieve data from the server.")
+					throw err;
+				}
+			);
+
+
+		// Q(mapsC.fetch()).done(
+		// 	fulfilled, 
+		// 	function(err){
+		// 		debugger;
+		// 	}
+		// );
+	},
+
 	showNewMap: function(){
 		var mapsListNewTableCV = new MapsListNewTableCV({
 			collection: filesC,
 			filter: function(child, index, collection) {
-				var hasMapTag = _.contains(child.get("tags"), "map") || 
+				return _.contains(child.get("tags"), "map") || 
 						_.contains(child.get("tags"), "maps") ||
 						_.contains(child.get("tags"), "mapa") ||
 						_.contains(child.get("tags"), "mapas") ||
 						_.contains(child.get("tags"), "shape") ||
-						_.contains(child.get("tags"), "shapes") ||
-						_.contains(child.get("tags"), "placeholder");
-
-				return hasMapTag;
+						_.contains(child.get("tags"), "shapes");
 			}
 
 		});
 
 		var fulfilled = _.bind(
-				function(values){
+				function(){
 					//debugger;
 					var mapCategories = textsC.filter(function(model){
-						if(_.contains(model.get("tags"), "map_category")){
-							return true;
-						}
-						return false;
+						// if(_.contains(model.get("tags"), "map_category")){
+						// 	return true;
+						// }
+						// return false;
+
+						return _.contains(model.get("tags"), "map_category");
 					});
 
 					filesC.each(function(model){

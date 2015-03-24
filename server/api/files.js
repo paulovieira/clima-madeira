@@ -260,10 +260,8 @@ debugger;
             // logicalPath and physicalPath are hard-coded for now
             var logicalPath = "/uploads/public/";
             var physicalPath = "/data" + logicalPath;
-            //var physicalPath = global.rootPath + "/data";
 
-
-            var ws = fs.createWriteStream(Path.join(global.rootPath, physicalPath, logicalPath, filename));
+            var ws = fs.createWriteStream(Path.join(global.rootPath, physicalPath, filename));
             request.payload.newfile.pipe(ws);
 
             ws.on("finish", function(){

@@ -186,11 +186,10 @@ debugger;
         	.done(
         		function(){
                     var resp         = mapsC.toJSON();
-                    //var transformMap = transforms.maps.files;
-                    //var transform    = transforms.transformArray;
+                    var transformMap = transforms.maps.maps;
+                    var transform    = transforms.transformArray;
 
-                    //return reply(transform(resp, transformMap));
-                    return reply(resp);
+                    return reply(transform(resp, transformMap));
         		},
                 function(err){
 debugger;
@@ -240,11 +239,10 @@ debugger;
                 function(){
 debugger;
                     var resp         = mapsC.toJSON();
-                    //var transformMap = transforms.maps.files;
-                    //var transform    = transforms.transformArray;
+                    var transformMap = transforms.maps.maps;
+                    var transform    = transforms.transformArray;
 
-                    //return reply(transform(resp, transformMap));
-                    return reply(resp);
+                    return reply(transform(resp, transformMap));
                 },
                 function(err){
 debugger;
@@ -276,27 +274,27 @@ debugger;
         handler: function (request, reply) {
             console.log(utils.logHandlerInfo(request));
 debugger;
-            request.payload.forEach(function(obj){
-                obj.owner_id = request.auth.credentials.id;
-                obj.table_name = "geo.xyz";
-            });
 
 //console.log("dbData: ", JSON.stringify(changeCaseKeys(request.payload, "underscored")));
-//console.log("dbData: ", JSON.stringify(request.payload));
+console.log("request.payload: ", JSON.stringify(request.payload));
 
+            var dbData = request.payload[0];
 
 
             var mapsC = new BaseC();
             var filesC = new BaseC();
 
-            var zipOutputDir, shpFile;
+            var zipOutputDir, shpFile, shpTableName;
 
+            // 1st step: query files table to obtain the filename of the zip directly from the db
             filesC.execute({
                 query: {
                     command: "select * from files_read($1);",
                     arguments: [  JSON.stringify({ id: request.payload[0]["file_id"] })  ]
                 }
             })
+
+            // 2nd step: extract the zip file into a dedicated folder (which must be created)
             .then(function(val){
                 var deferred = Q.defer();
 
@@ -306,7 +304,6 @@ debugger;
                 }
 
                 var physicalPath = filesC.at(0).get("physicalPath"),
-                    logicalPath = filesC.at(0).get("logicalPath"),
                     filename = filesC.at(0).get("name"),
                     filenameWithoutExt = filename.slice(0, filename.length - 4);
 
@@ -314,8 +311,8 @@ debugger;
                     throw new Error("The file must be a zip.");
                 }
 
-                var zipFullPath = Path.join(global.rootPath, physicalPath, logicalPath, filename);
-                zipOutputDir = Path.join(global.rootPath, physicalPath, logicalPath, filenameWithoutExt);
+                var zipFullPath = Path.join(global.rootPath, physicalPath, filename);
+                zipOutputDir = Path.join(global.rootPath, physicalPath, filenameWithoutExt);
 
 // console.log("filenameWithoutExt: ", filenameWithoutExt);
 // console.log("zipFullPath: ", zipFullPath);
@@ -335,8 +332,10 @@ debugger;
 
                 return deferred.promise;
             })
+
+            // 3rd step: execute shp2pgsql; the table name will be based on the name of the zip
             .then(function(){
-                var deferred2 = Q.defer();
+                var deferred = Q.defer();
 
                 var files = fs.readdirSync(zipOutputDir).filter(function(filename){
                     return _s.endsWith(filename, ".shp");
@@ -349,11 +348,15 @@ debugger;
                 shpFile = files[0];
                 shpFileWithoutExt = shpFile.slice(0, shpFile.length - 4);
 
-                var tableName = _s.underscored(_s.slugify(shpFileWithoutExt));
+// TODO: make sure there aren't any tables with this name already
+
+                var dbSchema = "geo";
+                shpTableName = dbSchema + "." + _s.underscored(_s.slugify(shpFileWithoutExt));
                 
+                // the command is:  shp2pgsql -D -I -s 4326 <path-to-shp-file>  <name-of-the-table>   |  psql --dbname=<name-of-the-database>
                 var command = 'shp2pgsql -D -I -s 4326 ' 
-                            + Path.join(zipOutputDir, shpFile) 
-                            + '  geo.' + tableName
+                            + Path.join(zipOutputDir, shpFile) + ' '
+                            + shpTableName
                             + ' |  psql --dbname=' + config.get("db.postgres.database");
 
                 console.log("command: ", command);
@@ -361,57 +364,49 @@ debugger;
                 exec(command, function(err, stdout, stderr){
                     if(err){
                         console.log("error in exec: ", err);
-                        throw err;
+                        deferred.reject(err);
                     }
 
                     console.log("stdout: \n", stdout);
                     if(_s.include(stdout.toLowerCase(), "create index") && 
-                        _.include(stdout.toLowerCase(), "commit")){
-                        deferred2.resolve({ success: true });
+                        _s.include(stdout.toLowerCase(), "commit")){
+                        deferred.resolve({ success: true });
                     }
                     else{
-                        deferred2.reject(new Error("shp2pgsql does not seem to have succeeded (please verify)"));
+                        deferred.reject(new Error("shp2pgsql does not seem to have succeeded (please verify)"));
                     }
 
                 })
 
-                return deferred2.promise;
-            })
-/*
-TODO: execute shp2pgsql -> analyze outpu -> create row in maps table
-
-
-
-            var deferred = Q.defer();
-
-            var filesC = 
-
-            var command
-            exec(command, function(err, stdout, stderr){
-                if(err){
-                    throw err;
-                }
-                //console.log("stdout: \n", stdout);
-                //console.log("stderr: \n", stderr);
+                return deferred.promise;
             })
 
+            // 4rd step: create the row in the maps table
+            .then(function(){
 
-            mapsC.execute({
-                query: {
-                    command: "select * from maps_create($1);",
-                    arguments: [JSON.stringify(request.payload)]
-                }
+                // add the fields that are missing from the payload (server-side information)
+                dbData["table_name"] = shpTableName;
+                dbData["owner_id"]   = request.auth.credentials.id;
+
+                console.log("dbData: ", dbData);
+
+                var promise = mapsC.execute({
+                    query: {
+                        command: "select * from maps_create($1);",
+                        arguments: [JSON.stringify(changeCaseKeys(dbData, "underscored"))]
+                    }
+                });
+
+                return promise;
             })
-*/
-
             .done(
-                function(resp){
+                function(){
 debugger;
-                    // var transformMap = transforms.maps.text;
-                    // var transform    = transforms.transformArray;
+                    var resp         = mapsC.toJSON();
+                    var transformMap = transforms.maps.maps;
+                    var transform    = transforms.transformArray;
 
-//                    return reply(transform(resp, transformMap));
-                    return reply(resp);
+                    return reply(transform(resp, transformMap));
                 },
                 function(err){
 debugger;

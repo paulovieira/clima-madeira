@@ -101,7 +101,7 @@ output += "\n</td>\n\n<td>\n\t";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"firstName", env.autoesc), env.autoesc);
 output += " ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"lastName", env.autoesc), env.autoesc);
-output += "\n</td>\n\n<td>\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
+output += "\n</td>\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -147,6 +147,61 @@ root: root
 };
 })();
 })();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/map-edit-modal.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Edit map #";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-title\">Title (pt)</label>\n            <input type=\"text\" id=\"js-edit-title\" class=\"form-control\" name=\"title\" value=\"";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"pt", env.autoesc), env.autoesc);
+output += "\">\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-title\">Title (en)</label>\n            <input type=\"text\" id=\"js-edit-title\" class=\"form-control\" name=\"title\" value=\"";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"en", env.autoesc), env.autoesc);
+output += "\">\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-code\">Name</label>\n            <input type=\"text\" id=\"js-edit-code\" class=\"form-control\" name=\"code\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "code"), env.autoesc);
+output += "\">\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-category-id\">Category</label>\n            <select name=\"js-edit-category-id\" class=\"form-control\">\n\n            ";
+frame = frame.push();
+var t_3 = runtime.contextOrFrameLookup(context, frame, "mapCategories");
+if(t_3) {var t_2 = t_3.length;
+for(var t_1=0; t_1 < t_3.length; t_1++) {
+var t_4 = t_3[t_1];
+frame.set("obj", t_4);
+frame.set("loop.index", t_1 + 1);
+frame.set("loop.index0", t_1);
+frame.set("loop.revindex", t_2 - t_1);
+frame.set("loop.revindex0", t_2 - t_1 - 1);
+frame.set("loop.first", t_1 === 0);
+frame.set("loop.last", t_1 === t_2 - 1);
+frame.set("loop.length", t_2);
+output += "\n                <option  value=";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += " ";
+output += runtime.suppressValue((runtime.memberLookup((t_4),"id", env.autoesc) == runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "categoryData")),"id", env.autoesc)?"selected":""), env.autoesc);
+output += " >\n                    ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_4),"contents", env.autoesc)),"pt", env.autoesc), env.autoesc);
+output += "\n                </option>\n            ";
+;
+}
+}
+frame = frame.pop();
+output += "\n            \n            </select>\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-order\">Order</label>\n            <input type=\"text\" id=\"js-edit-order\" class=\"form-control\" name=\"order\" value=\"";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "properties")),"order", env.autoesc), env.autoesc);
+output += "\">\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-time-data\">Time data</label>\n            <select name=\"js-edit-time-data\" class=\"form-control\">\n                <option  value=\"no\">No </option>\n                <option  value=\"yes\" ";
+output += runtime.suppressValue((runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "properties")),"timeData", env.autoesc)),"length", env.autoesc) > 0?"selected":""), env.autoesc);
+output += " > Yes </option>\n            </select>\n        </div>\n\n";
+output += "\n    </form>\n\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary js-modal-save\">Gravar</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancelar</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
 (function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/map-new-modal.html"] = (function() {function root(env, context, frame, runtime, cb) {
 var lineno = null;
 var colno = null;
@@ -160,7 +215,7 @@ var t_3 = runtime.contextOrFrameLookup(context, frame, "mapCategories");
 if(t_3) {var t_2 = t_3.length;
 for(var t_1=0; t_1 < t_3.length; t_1++) {
 var t_4 = t_3[t_1];
-frame.set("category", t_4);
+frame.set("obj", t_4);
 frame.set("loop.index", t_1 + 1);
 frame.set("loop.index0", t_1);
 frame.set("loop.revindex", t_2 - t_1);
@@ -170,9 +225,9 @@ frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
 output += "\n                <option value=";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
-output += ">";
+output += ">\n                    ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_4),"contents", env.autoesc)),"pt", env.autoesc), env.autoesc);
-output += "</option>\n            ";
+output += "\n                </option>\n            ";
 ;
 }
 }
@@ -232,6 +287,54 @@ var colno = null;
 var output = "";
 try {
 output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n                <th style=\"width: 5%\">id</th>\n                <th style=\"width: 20%\">Name</th>\n                <th style=\"width: 35%\">Path</th>\n                <th style=\"width: 20%\">Owner</th>\n                <th style=\"width: 20%\"></th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/maps-list-row.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<td>\n\t";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "\n</td>\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "code"), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"pt", env.autoesc), env.autoesc);
+output += " / ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"en", env.autoesc), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "categoryData")),"contents", env.autoesc)),"pt", env.autoesc), env.autoesc);
+output += " / ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "categoryData")),"contents", env.autoesc)),"en", env.autoesc), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "createdAt"), env.autoesc);
+output += "\n</td>\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/maps-list-table.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n                <th style=\"width: 6%\">id</th>\n                <th style=\"width: 14%\">Code</th>\n                <th style=\"width: 25%\">Title</th>\n                <th style=\"width: 25%\">Category</th>\n                <th style=\"width: 15%\">Created at</th>\n                <th style=\"width: 15%\"></th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -465,7 +568,7 @@ output += " ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "authorData")),"lastName", env.autoesc), env.autoesc);
 output += "</td>\n\n<td>";
 output += runtime.suppressValue(env.getFilter("join").call(context, runtime.contextOrFrameLookup(context, frame, "tags"),", "), env.autoesc);
-output += "</td>\n\n<td>\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
+output += "</td>\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -574,7 +677,7 @@ output += "\n</td>\n\n<td>\n\t";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "email"), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "createdAt"), env.autoesc);
-output += "\n</td>\n\n<td>\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
+output += "\n</td>\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
 cb(null, output);
 ;
 } catch (e) {

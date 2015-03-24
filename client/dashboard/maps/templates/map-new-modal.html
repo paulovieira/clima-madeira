@@ -26,8 +26,10 @@
             <label for="js-category-id">Category</label>
             <select name="js-category-id" class="form-control">
 
-            {% for category in mapCategories %}
-                <option value={{ category.id }}>{{ category.contents.pt }}</option>
+            {% for obj in mapCategories %}
+                <option value={{ obj.id }}>
+                    {{ obj.contents.pt }}
+                </option>
             {% endfor %}
             
             </select>

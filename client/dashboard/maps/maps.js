@@ -6,7 +6,7 @@ var MapM = Backbone.Model.extend({
 	},
 	parse: function(resp){
 		if(_.isArray(resp)){ resp = resp[0]; }
-		//resp.lastUpdated = moment(resp.lastUpdated).format('YYYY-MM-DD HH:mm:ss');
+		resp.createdAt = moment(resp.createdAt).format('YYYY-MM-DD HH:mm:ss');
 		return resp;
 	}
 });
@@ -16,6 +16,7 @@ var MapsC = Backbone.Collection.extend({
 	url: "/api/maps",
 });
 
+var mapsC = new MapsC();
 
 
 var MapNewModalIV = ModalIV.extend({
@@ -149,4 +150,80 @@ var MapsListNewTableCV = Mn.CompositeView.extend({
 	childViewContainer: "tbody",
 });
 
+
+
+var MapEditModalIV = ModalIV.extend({
+	template: "maps/templates/map-edit-modal.html",
+
+	events: {
+//		"click @ui.modalSaveBtn": "updateFile"
+	},
+
+	behaviors: {
+		CloseModal: {
+			behaviorClass: window.Behaviors.CloseModal,  // will listen for clicks on @ui.modalCloseBtn
+		},
+	},
+
+	// updateFile: function(){
+	// 	var data = Backbone.Syphon.serialize(this);
+
+	// 	// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
+	// 	// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
+	// 	// after we get a 200 response from the server (meaning the row has actually been updated)
+
+	// 	var self = this;
+	// 	Q.delay(150)
+	// 		.then(function(){
+	// 			return self.model.save(data, {wait: true});  // returns a promise
+	// 		})
+	// 		.then(function(data){
+	// 			Dashboard.$modal.modal("hide");
+	// 			self.destroy();
+	// 		})
+	// 		.done(undefined,
+	// 			function(err){
+	// 				alert("ERROR: data was not updated.");
+	// 				throw err;
+	// 			}
+	// 		)
+
+	// },
+});
+
+
+var MapsListRowLV = Mn.LayoutView.extend({
+
+	template: "maps/templates/maps-list-row.html",
+	tagName: "tr",
+	ui: {
+		"editModalBtn": "button.js-edit",
+		"deleteModalBtn": "button.js-delete"
+	},
+
+	modelEvents: {
+		"change": "render"
+	},
+
+	behaviors: {
+
+		ShowEditModal: {
+			behaviorClass: window.Behaviors.ShowModal,
+			uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
+			viewClass: MapEditModalIV  // and will show this view
+		},
+
+		// ShowDeleteModal: {
+		// 	behaviorClass: window.Behaviors.ShowModal,
+		// 	uiKey: "deleteModalBtn",
+		// 	viewClass: MapDeleteModalIV 
+		// },
+	},
+});
+
+var MapsListTableCV = Mn.CompositeView.extend({
+	template: "maps/templates/maps-list-table.html",
+	childView: MapsListRowLV,
+	childViewContainer: "tbody",
+});
 

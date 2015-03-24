@@ -149,7 +149,7 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 			input_row.code, 
 			COALESCE(input_row.title, '[]'::jsonb),
 			COALESCE(input_row.description, '{}'::jsonb),
-			COALESCE(input_row.properties, '{}'::jsonb),
+			COALESCE(input_row.properties, '{ "order": 1, "timeData": [] }'::jsonb),
 			input_row.file_id,
 			input_row.category_id,
 			input_row.table_name, 

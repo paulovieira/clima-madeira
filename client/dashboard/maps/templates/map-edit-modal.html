@@ -1,0 +1,82 @@
+<div class="modal-header">
+    <h4 class="modal-title">Edit map #{{ id }}</h4>
+</div>
+
+
+<div class="modal-body">
+    <form>
+
+        <div class="form-group">
+            <label for="js-edit-title">Title (pt)</label>
+            <input type="text" id="js-edit-title" class="form-control" name="title" value="{{ title.pt }}">
+        </div>
+
+        <div class="form-group">
+            <label for="js-edit-title">Title (en)</label>
+            <input type="text" id="js-edit-title" class="form-control" name="title" value="{{ title.en }}">
+        </div>
+
+        <div class="form-group">
+            <label for="js-edit-code">Name</label>
+            <input type="text" id="js-edit-code" class="form-control" name="code" value="{{ code }}">
+        </div>
+
+        <div class="form-group">
+            <label for="js-edit-category-id">Category</label>
+            <select name="js-edit-category-id" class="form-control">
+
+            {% for obj in mapCategories %}
+                <option  value={{ obj.id }} {{ "selected" if obj.id == categoryData.id }} >
+                    {{ obj.contents.pt }}
+                </option>
+            {% endfor %}
+            
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="js-edit-order">Order</label>
+            <input type="text" id="js-edit-order" class="form-control" name="order" value="{{ properties.order }}">
+        </div>
+
+        <div class="form-group">
+            <label for="js-edit-time-data">Time data</label>
+            <select name="js-edit-time-data" class="form-control">
+                <option  value="no">No </option>
+                <option  value="yes" {{ "selected" if properties.timeData.length > 0 }} > Yes </option>
+            </select>
+        </div>
+
+{#
+        <div class="form-group">
+            <label>Path</label>
+            <input type="text" class="form-control" value="{{ path }}" disabled>
+        </div>
+        <div class="form-group">
+            <label>id</label>
+            <input type="text" class="form-control" value="{{ id }}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label>Uploaded at</label>
+            <input type="text" class="form-control" value="{{ uploadedAt }}" disabled>
+        </div>
+
+      <div class="form-group">
+            <label>Owner</label>
+            <input type="text" class="form-control" value="{{ ownerData.firstName }} {{ ownerData.lastName }}" disabled>
+        </div>
+#}
+    </form>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary js-modal-save">Gravar</button>
+    <button type="button" class="btn btn-default js-modal-cancel">Cancelar</button>
+
+    <div id="message-status" style="margin-top: 35px;"></div>
+    <div id="" style="margin-top: 10px;">
+        <h5 id="message-links"></h5>
+    </div>
+</div>
