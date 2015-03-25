@@ -46,7 +46,7 @@ output += runtime.suppressValue(env.getFilter("join").call(context, runtime.cont
 output += "\">\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-name\">Name</label>\n            <input type=\"text\" id=\"js-edit-name\" class=\"form-control\" name=\"name\" value=\"";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
 output += "\" disabled>\n        </div>\n\n        <div class=\"form-group\">\n            <label>Path</label>\n            <input type=\"text\" class=\"form-control\" value=\"";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "path"), env.autoesc);
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "logicalPath"), env.autoesc);
 output += "\" disabled>\n        </div>\n        <div class=\"form-group\">\n            <label>id</label>\n            <input type=\"text\" class=\"form-control\" value=\"";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
 output += "\" disabled>\n        </div>\n\n        <div class=\"form-group\">\n            <label>Uploaded at</label>\n            <input type=\"text\" class=\"form-control\" value=\"";

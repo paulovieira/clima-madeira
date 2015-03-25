@@ -1,4 +1,5 @@
 var exec = require("child_process").exec;
+var rimraf = require("rimraf");
 var stream = require('stream');
 var Path = require('path');
 var Boom = require('boom');
@@ -328,27 +329,50 @@ console.log("request.payload: ", JSON.stringify(request.payload));
                 .on("error", function(err){
                     //console.error("zip error!");
                     deferred.reject(err);
+                    return;
                 });
 
                 return deferred.promise;
+            })
+
+            .then(function(){
+
+                // get an array with the names of files in zipOutputDir that have the .shp extension
+                var files = fs.readdirSync(zipOutputDir).filter(function(filename){
+                    return _s.endsWith(filename, ".shp");
+                });
+
+// TODO: test if twith 2 .shp files in the zip; show the correct error message in the client
+                if(files.length!==1){
+                    throw new Error("the zip must contain one .shp file (and only one)");
+                }
+
+                shpFile = files[0];
+                shpFileWithoutExt = (files[0]).slice(0, shpFile.length - 4).toLowerCase();
+
+                // the name of the table will be based on the name of the .shp file;
+                // check how many tables exist that start with that name
+                var queryOpt = {"table_name_like": shpFileWithoutExt };
+                var promise = mapsC.execute({
+                    query: {
+                        command: "select * from maps_read($1);",
+                        arguments: [JSON.stringify(queryOpt)]
+                    }
+                });
+
+                return promise
             })
 
             // 3rd step: execute shp2pgsql; the table name will be based on the name of the zip
             .then(function(){
                 var deferred = Q.defer();
 
-                var files = fs.readdirSync(zipOutputDir).filter(function(filename){
-                    return _s.endsWith(filename, ".shp");
-                });
-
-                if(files.length!==1){
-                    throw new Error("the zip must contain one .shp file (and only one)");
+                var numberOfTables = mapsC.length;
+                if(numberOfTables > 0){
+                    shpFileWithoutExt = shpFileWithoutExt + "-" + (numberOfTables + 1);
                 }
 
-                shpFile = files[0];
-                shpFileWithoutExt = shpFile.slice(0, shpFile.length - 4);
-
-// TODO: make sure there aren't any tables with this name already
+                console.log("mapsC: ", mapsC.toJSON());
 
                 var dbSchema = "geo";
                 shpTableName = dbSchema + "." + _s.underscored(_s.slugify(shpFileWithoutExt));
@@ -365,15 +389,18 @@ console.log("request.payload: ", JSON.stringify(request.payload));
                     if(err){
                         console.log("error in exec: ", err);
                         deferred.reject(err);
+                        return;
                     }
 
                     console.log("stdout: \n", stdout);
                     if(_s.include(stdout.toLowerCase(), "create index") && 
                         _s.include(stdout.toLowerCase(), "commit")){
                         deferred.resolve({ success: true });
+                        return;
                     }
                     else{
                         deferred.reject(new Error("shp2pgsql does not seem to have succeeded (please verify)"));
+                        return;
                     }
 
                 })
@@ -387,6 +414,7 @@ console.log("request.payload: ", JSON.stringify(request.payload));
                 // add the fields that are missing from the payload (server-side information)
                 dbData["table_name"] = shpTableName;
                 dbData["owner_id"]   = request.auth.credentials.id;
+console.log("dbData: ", dbData);
 
                 console.log("dbData: ", dbData);
 
@@ -394,10 +422,26 @@ console.log("request.payload: ", JSON.stringify(request.payload));
                     query: {
                         command: "select * from maps_create($1);",
                         arguments: [JSON.stringify(changeCaseKeys(dbData, "underscored"))]
-                    }
+                    },
+                    reset: true
                 });
 
                 return promise;
+            })
+            .finally(function(){
+                var deferred = Q.defer();
+                console.log("finally!");
+
+                rimraf(zipOutputDir, function(err){
+                    if(err){
+                        deferred.reject(err);
+                        return 
+                    }
+
+                    deferred.resolve();
+                });
+
+                return deferred.promise;
             })
             .done(
                 function(){
@@ -410,59 +454,13 @@ debugger;
                 },
                 function(err){
 debugger;
+// TODO: make sure the table geo.<shpTableName> wasn't created; if so we should delete it
 
                     var boomErr = internals.parseError(err);
                     return reply(boomErr);
                 }
             );
 
-/*
-//console.log("request.payload: ", request.payload);
-            var filename = request.payload.newfile.hapi.filename;
-            var logicalPath = "/uploads/public/";
-            var physicalPath = global.rootPath + "data";
-
-
-            var ws = fs.createWriteStream(physicalPath + logicalPath + filename);
-            request.payload.newfile.pipe(ws);
-
-            ws.on("finish", function(){
-
-                var dbData = [{
-                    name: filename,
-                    path: logicalPath,
-                    tags: request.payload.tags,
-                    ownerId: request.auth.credentials.id
-                }];
-
-                var filesC = new FilesC();
-                filesC.execute({
-                    query: {
-                        command: "select * from files_create($1);",
-                        arguments: [JSON.stringify(changeCaseKeys(dbData, "underscored"))]
-                    }
-                })
-                .done(
-                    function(){
-    debugger;
-                        var resp = filesC.toJSON();
-                        return reply(resp);
-                    },
-                    function(err){
-    debugger;
-                        var boomErr = internals.parseError(err);
-                        return reply(boomErr);
-                    }
-                );
-                
-            });
-
-            ws.on("error", function(err){
-                var boomErr = internals.parseError(err);
-                return reply(boomErr);
-            });
-
-*/
         },
         config: {
         	validate: {

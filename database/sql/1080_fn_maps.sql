@@ -34,6 +34,7 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id INT;
+	table_name_like TEXT;
 BEGIN
 
 -- convert the json argument from object to array of (one) objects
@@ -55,7 +56,8 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ON m.category_id = t.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
-	SELECT json_extract_path_text(options_row, 'id')           INTO id;
+	SELECT json_extract_path_text(options_row, 'id')         INTO id;
+	SELECT json_extract_path_text(options_row, 'table_name_like')  INTO table_name_like;
 
 	number_conditions := 0;
 
@@ -66,6 +68,17 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		END IF;
 
 		command = format(command || ' m.id = %L', id);
+		number_conditions := number_conditions + 1;
+	END IF;
+
+	-- criteria: table_name_like
+	IF table_name_like IS NOT NULL THEN
+		IF number_conditions = 0 THEN  command = command || ' WHERE';  
+		ELSE                           command = command || ' AND';
+		END IF;
+
+		table_name_like := '%' || table_name_like || '%';
+		command = format(command || ' m.table_name LIKE %L', table_name_like);
 		number_conditions := number_conditions + 1;
 	END IF;
 
