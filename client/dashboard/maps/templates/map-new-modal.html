@@ -8,23 +8,23 @@
 
         <div class="form-group">
             <label for="js-code">Code</label>
-            <input type="text" id="js-code" class="form-control" name="js-code" >
+            <input type="text" id="js-code" class="form-control" name="code" >
         </div>
 
         <div class="form-group">
             <label for="js-title-pt">Title (português)</label>
-            <input type="text" id="js-title-pt" class="form-control" name="js-title-pt" >
+            <input type="text" id="js-title-pt" class="form-control" name="title-pt" >
         </div>
 
         <div class="form-group">
             <label for="js-title-en">Title (english)</label>
-            <input type="text" id="js-title-en" class="form-control" name="js-title-en" >
+            <input type="text" id="js-title-en" class="form-control" name="title-en" >
         </div>
 
 
         <div class="form-group">
             <label for="js-category-id">Category</label>
-            <select name="js-category-id" class="form-control">
+            <select name="category-id" class="form-control">
 
             {% for obj in mapCategories %}
                 <option value={{ obj.id }}>

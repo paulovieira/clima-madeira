@@ -6,46 +6,66 @@
 <div class="modal-body">
     <form>
 
-        <div class="form-group">
-            <label for="js-edit-title">Title (pt)</label>
-            <input type="text" id="js-edit-title" class="form-control" name="title" value="{{ title.pt }}">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="js-edit-code">Code</label>
+                    <input type="text" id="js-edit-code" class="form-control" name="code" value="{{ code }}">
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="js-edit-category-id">Category</label>
+                    <select id="js-edit-category-id" name="category-id" class="form-control">
+
+                    {% for obj in mapCategories %}
+                        <option  value={{ obj.id }} {{ "selected" if obj.id == categoryData.id }} >
+                            {{ obj.contents.pt }}
+                        </option>
+                    {% endfor %}
+                    
+                    </select>
+                </div>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="js-edit-title">Title (en)</label>
-            <input type="text" id="js-edit-title" class="form-control" name="title" value="{{ title.en }}">
+            <label for="js-edit-title-pt">Title (pt)</label>
+            <input type="text" id="js-edit-title-pt" class="form-control" name="title-pt" value="{{ title.pt }}">
         </div>
 
         <div class="form-group">
-            <label for="js-edit-code">Name</label>
-            <input type="text" id="js-edit-code" class="form-control" name="code" value="{{ code }}">
+            <label for="js-edit-title-en">Title (en)</label>
+            <input type="text" id="js-edit-title-en" class="form-control" name="title-en" value="{{ title.en }}">
         </div>
 
-        <div class="form-group">
-            <label for="js-edit-category-id">Category</label>
-            <select name="js-edit-category-id" class="form-control">
 
-            {% for obj in mapCategories %}
-                <option  value={{ obj.id }} {{ "selected" if obj.id == categoryData.id }} >
-                    {{ obj.contents.pt }}
-                </option>
-            {% endfor %}
-            
-            </select>
+
+        <div class="row">
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label for="js-edit-order">Order</label>
+                    <input type="text" id="js-edit-order" class="form-control" name="order" value="{{ properties.order }}">
+                </div>
+
+            </div>  
+
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label for="js-edit-time-data">Time data</label>
+                    <select id="js-edit-time-data" name="time-data" class="form-control">
+                        <option  value="no">No </option>
+                        <option  value="yes" {{ "selected" if properties.timeData.length > 0 }} > Yes </option>
+                    </select>
+                </div>
+                
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="js-edit-order">Order</label>
-            <input type="text" id="js-edit-order" class="form-control" name="order" value="{{ properties.order }}">
-        </div>
 
-        <div class="form-group">
-            <label for="js-edit-time-data">Time data</label>
-            <select name="js-edit-time-data" class="form-control">
-                <option  value="no">No </option>
-                <option  value="yes" {{ "selected" if properties.timeData.length > 0 }} > Yes </option>
-            </select>
-        </div>
 
 {#
         <div class="form-group">

@@ -287,6 +287,14 @@ console.log("request.payload: ", JSON.stringify(request.payload));
 
             var zipOutputDir, shpFile, shpTableName;
 
+/*
+IMPROVE
+1) the initial filesC query could be done in a pre method
+2) the name of the database should be based on the map code (use _s in the client)
+3) we should always delete the directory before the unzip (if it doesn't exist, it shouldn't throw an error)
+*/
+
+
             // 1st step: query files table to obtain the filename of the zip directly from the db
             filesC.execute({
                 query: {
@@ -414,7 +422,6 @@ console.log("request.payload: ", JSON.stringify(request.payload));
                 // add the fields that are missing from the payload (server-side information)
                 dbData["table_name"] = shpTableName;
                 dbData["owner_id"]   = request.auth.credentials.id;
-console.log("dbData: ", dbData);
 
                 console.log("dbData: ", dbData);
 
@@ -470,18 +477,19 @@ debugger;
 
                 payload: internals.validatePayloadForCreate
         	},
-            auth: config.get('hapi.auth'),
+
             pre: [
-                pre.abortIfNotAuthenticated,
-                //pre.payload.extractTags
+                pre.abortIfNotAuthenticated
             ],
+
+            auth: config.get('hapi.auth'),
 
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
 			tags: ['api'],
         }
     });
-/*
+
     // UPDATE (one or more)
     server.route({
         method: 'PUT',
@@ -490,28 +498,40 @@ debugger;
 
             console.log(utils.logHandlerInfo(request));
 debugger;
+            
+console.log("dbData: ", request.payload);
 
-            var dbData = [request.payload];
-console.log("dbData: ", dbData);
+            var mapsC = new BaseC();
+            var mapsC2 = new BaseC();
 
-            var filesC = new FilesC();
-        	filesC.execute({
+            // update the row
+        	mapsC.execute({
 				query: {
-				  	command: "select * from files_update($1);",
-                    arguments: [JSON.stringify(changeCaseKeys(dbData, "underscored"))]
-				},
-                reset: true
+				  	command: "select * from maps_update($1);",
+                    arguments: [JSON.stringify(changeCaseKeys(request.payload, "underscored"))]
+				}
         	})
+            // retrieve the updated row using maps_read (so that we have the joined data too)
+            .then(
+                function(updatedRow){
+
+                    var promise = mapsC2.execute({
+                        query: {
+                            command: "select * from maps_read($1);",
+                            arguments: [JSON.stringify({id: updatedRow[0].id})]
+                        }
+                    });
+
+                    return promise;
+                }
+            )
         	.done(
-        		function(){
+        		function(row){
 debugger;
-                    var resp = filesC.toJSON();
+                    var transformMap = transforms.maps.maps;
+                    var transform    = transforms.transformArray;
 
-                    // var transformMap = transforms.maps.files;
-                    // var transform    = transforms.transformArray;
-
-                    // return reply(transform(resp, transformMap));
-                    return reply(resp);
+                    return reply(transform(row, transformMap));
         		},
                 function(err){
 debugger;
@@ -527,21 +547,18 @@ debugger;
 			},
 
             pre: [
-                pre.abortIfNotAuthenticated,
-                pre.payload.extractTags
+                pre.abortIfNotAuthenticated
             ],
 
             auth: config.get('hapi.auth'),
-            
-            payload: {
-                maxBytes: 1048576*3  // 3 megabytes
-            },
+
 			description: 'Put (short description)',
 			notes: 'Put (long description)',
 			tags: ['api'],
         }
     });
 
+/*
     // DELETE (one or more)
     server.route({
         method: 'DELETE',
@@ -612,3 +629,32 @@ exports.register.attributes = {
 
 
 
+
+
+/*
+
+CURL TESTS
+
+curl  -X GET http://127.0.0.1:3000/api/maps
+
+curl  -X GET http://127.0.0.1:3000/api/maps/1
+
+curl  -X GET http://127.0.0.1:3000/api/maps/1,2
+
+
+
+curl -X POST http://127.0.0.1:3000/api/maps  \
+    -H "Content-Type: application/json"  \
+    -d '{ "code": "fwefwefwefweyyxx", "title": { "pt": "uuu", "en": "ttt"}, "file_id": 48, "category_id": 105 }' 
+
+
+
+curl -X PUT http://127.0.0.1:3000/api/maps/1001   \
+    -H "Content-Type: application/json"  \
+    -d '{"id": 1001, "title": { "pt": "yabcx", "en": "zdefy"}}'
+
+
+
+curl-X DELETE http://127.0.0.1:3000/api/maps/1
+
+*/

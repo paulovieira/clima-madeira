@@ -62,8 +62,9 @@ var transforms = {
 		    "code": "code",
 		    "title": "title",
 		    "description": "description",
-		    "properties":"properties",
-		    "ownerId":"ownerId",
+		    "properties": "properties",
+		    "categoryId": "categoryId",
+		    "ownerId": "ownerId",
 		    "createdAt": "createdAt",
 
 		    // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)

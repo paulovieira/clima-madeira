@@ -41,15 +41,21 @@ var MapNewModalIV = ModalIV.extend({
 
 		var data = Backbone.Syphon.serialize(this);
 
-		var mapM = new MapM({
+		var attrs = {
 			title: {
-				pt: data["js-title-pt"],
-				en: data["js-title-en"],
+				pt: data["title-pt"],
+				en: data["title-en"],
 			},
-			code: data["js-code"],
-			fileId: this.model.get("id"),  // the model for this view is a fileM
-			categoryId: parseInt(data["js-category-id"], 10)
-		});
+			code: data["code"],
+			fileId: this.model.get("id"),  // NOTE: the model for this modal view is a fileM (not a mapM)
+			categoryId: parseInt(data["category-id"], 10),
+			properties: {
+				order: 1,
+				timeData: []
+			}
+		};
+
+		var mapM = new MapM(attrs);
 
 		var self = this;
 		Q.delay(150)
@@ -156,7 +162,7 @@ var MapEditModalIV = ModalIV.extend({
 	template: "maps/templates/map-edit-modal.html",
 
 	events: {
-//		"click @ui.modalSaveBtn": "updateFile"
+		"click @ui.modalSaveBtn": "updateMap"
 	},
 
 	behaviors: {
@@ -165,30 +171,41 @@ var MapEditModalIV = ModalIV.extend({
 		},
 	},
 
-	// updateFile: function(){
-	// 	var data = Backbone.Syphon.serialize(this);
+	updateMap: function(){
+		var data = Backbone.Syphon.serialize(this);
 
-	// 	// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
-	// 	// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
-	// 	// after we get a 200 response from the server (meaning the row has actually been updated)
+		var attrs = this.model.toJSON();
 
-	// 	var self = this;
-	// 	Q.delay(150)
-	// 		.then(function(){
-	// 			return self.model.save(data, {wait: true});  // returns a promise
-	// 		})
-	// 		.then(function(data){
-	// 			Dashboard.$modal.modal("hide");
-	// 			self.destroy();
-	// 		})
-	// 		.done(undefined,
-	// 			function(err){
-	// 				alert("ERROR: data was not updated.");
-	// 				throw err;
-	// 			}
-	// 		)
+		attrs.code = data["code"];
+		attrs.title = {
+			pt: data["title-pt"],
+			en: data["title-en"]
+		};
+		attrs.categoryId = data["category-id"];
+		attrs.properties.order = data["order"];
+debugger
 
-	// },
+		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
+		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
+		// after we get a 200 response from the server (meaning the row has actually been updated)
+
+		var self = this;
+		Q.delay(150)
+			.then(function(){
+				return self.model.save(attrs, {wait: true});  // returns a promise
+			})
+			.then(function(data){
+				Dashboard.$modal.modal("hide");
+				self.destroy();
+			})
+			.done(undefined,
+				function(err){
+					alert("ERROR: data was not updated.");
+					throw err;
+				}
+			)
+
+	},
 });
 
 

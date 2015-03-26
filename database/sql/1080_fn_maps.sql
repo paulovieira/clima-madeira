@@ -37,6 +37,29 @@ DECLARE
 	table_name_like TEXT;
 BEGIN
 
+/*
+columns_cte := '
+	columns_cte AS (
+
+SELECT a.attname::text as "column name", a.atttypid::regtype::text as "data type"
+FROM   pg_attribute a
+WHERE  a.attrelid = m.table_name::regclass
+AND    a.attnum > 0
+AND    NOT a.attisdropped
+ORDER  BY a.attnum;
+
+
+		SELECT
+			u.id AS user_id,
+			(CASE WHEN COUNT(t) = 0 THEN ''[]''::json  ELSE json_agg(t.*) END ) AS user_texts
+		FROM users u
+		LEFT JOIN texts t
+			ON t.author_id = u.id
+		GROUP BY u.id
+	)
+';
+*/
+
 -- convert the json argument from object to array of (one) objects
 IF  json_typeof(options) = 'object'::text THEN
 	options = ('[' || options::text ||  ']')::json;
@@ -204,5 +227,91 @@ select * from maps_create('[
 	"table_name": "geo.xyz"
 }
 ]')
+
+*/
+
+
+/*
+
+	3. UPDATE
+
+*/
+
+
+DROP FUNCTION IF EXISTS maps_update(json, json);
+
+CREATE FUNCTION maps_update(input_data json, options json DEFAULT '[{}]')
+RETURNS SETOF maps AS
+$$
+DECLARE
+	updated_row maps%ROWTYPE;
+	input_row maps%ROWTYPE;
+	command text;
+BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(input_data) = 'object'::text THEN
+	input_data = ('[' || input_data::text ||  ']')::json;
+END IF;
+
+
+FOR input_row IN (select * from json_populate_recordset(null::maps, input_data)) LOOP
+
+	-- generate a dynamic command: first the base query
+	command := 'UPDATE maps SET ';
+
+	-- then add (cumulatively) the fields to be updated; those fields must be present in the input_data json;
+	IF input_row.code IS NOT NULL THEN
+		command = format(command || 'code = %L, ', input_row.code);
+	END IF;
+	IF input_row.title IS NOT NULL THEN
+		command = format(command || 'title = %L, ', input_row.title);
+	END IF;
+	IF input_row.description IS NOT NULL THEN
+		command = format(command || 'description = %L, ', input_row.description);
+	END IF;
+	IF input_row.properties IS NOT NULL THEN
+		command = format(command || 'properties = %L, ', input_row.properties);
+	END IF;
+	IF input_row.category_id IS NOT NULL THEN
+		command = format(command || 'category_id = %L, ', input_row.category_id);
+	END IF;
+	IF input_row.file_id IS NOT NULL THEN
+		command = format(command || 'file_id = %L, ', input_row.file_id);
+	END IF;
+	IF input_row.table_name IS NOT NULL THEN
+		command = format(command || 'table_name = %L, ', input_row.table_name);
+	END IF;
+	IF input_row.owner_id IS NOT NULL THEN
+		command = format(command || 'owner_id = %L, ', input_row.owner_id);
+	END IF;
+
+	-- remove the comma and space from the last if
+	command = left(command, -2);
+	command = format(command || ' WHERE id = %L RETURNING *;', input_row.id);
+
+	--RAISE NOTICE 'Dynamic command: %', command;
+
+	EXECUTE 
+		command
+
+	INTO STRICT
+		updated_row;
+
+	RETURN NEXT 
+		updated_row;
+END LOOP;
+
+RETURN;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+/*
+select * from maps order by id desc
+
+select * from maps_update('[{"id": 1, "code": "xyz", "category_id": 106}]');
+select * from maps_update('[{"id": 1, "tags": ["tag7"] }]');
 
 */
