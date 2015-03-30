@@ -333,47 +333,43 @@ var preRequisites = {
 
 
 	payload: {
+		// convert the tags comma-separated string to an array of strings
 		extractTags: {
 			method: function(request, reply){
 				console.log("pre: extractTags");
-
-//console.log("request.payload: ", request.payload);
-
-				// convert the tags string to an array of strings
+				
 				var payloadObj, tagsArray = [];
 
-				if(_.isArray(request.payload) && typeof request.payload[0].tags === "string"){
-					payloadObj = request.payload[0];
-					tags = request.payload[0].tags;
-				}
-				else if(request.payload && typeof request.payload.tags === "string"){
-					payloadObj = request.payload;
-					tags = request.payload.tags;
-				}
-
-				// if the payload has tags, process them
-				if(payloadObj && tags){
-					tagsArray = tags.split(",");
-					for(var i=0, l=tagsArray.length; i<l; i++){
-						tagsArray[i] = _s.trim(tagsArray[i], " ");
+				if(request.payload){
+					if(_.isArray(request.payload)){
+						payloadObj = request.payload[0];
+					}
+					else{
+						payloadObj = request.payload;
 					}
 
-					// if the original tags string is the empty string, we end up with an array with 1 element (the empty string); we want the empty array instead
-					if(tagsArray.length===1 && tagsArray[0]===""){
-						tagsArray = [];
+					if(typeof payloadObj.tags === "string"){
+						tagsArray = payloadObj.tags.split(",");
+						for(var i=0, l=tagsArray.length; i<l; i++){
+
+							// slugify returns a cleaned version of the string:
+							// Replaces whitespaces, accentuated, and special characters with a dash
+							tagsArray[i] = _s.slugify(tagsArray[i]);
+						}
+
+						// if the original tags string is the empty string, we end up with an array with 1 element 
+						// (the empty string); we want the empty array instead
+						if(tagsArray.length===1 && tagsArray[0]===""){
+							tagsArray = [];
+						}
+
+						// update the tags property in request.payload
+						payloadObj.tags = tagsArray;
 					}
-
-					// update the property in request.payload
-					payloadObj.tags = tagsArray;
-
 				}
-				// console.log("after: ", request.payload.tags)
-				// console.log("after: ", payloadObj.tags)
-				// console.log("after: ", tagsArray)
 
 				reply();
 			}
-
 		}
 	},
 

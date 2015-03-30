@@ -37,30 +37,30 @@ internals.decodeHtmlEntities = function(array){
 };
 */
 
-internals.isDbError = function (err){
-    return !!err.sqlState;
-};
+// internals.isDbError = function (err){
+//     return !!err.sqlState;
+// };
 
-internals.parseDbErrMsg = function(msg){
-    // NOTE: msg.split(msg, "\n") isn't working here
-    var arrayMsg = _s.lines(msg);
+// internals.parseDbErrMsg = function(msg){
+//     // NOTE: msg.split(msg, "\n") isn't working here
+//     var arrayMsg = _s.lines(msg);
 
-    arrayMsg = arrayMsg.filter(function(line){
-        return _s.startsWith(line.toLowerCase(), "error:") || _s.startsWith(line.toLowerCase(), "detail:");
-    });
+//     arrayMsg = arrayMsg.filter(function(line){
+//         return _s.startsWith(line.toLowerCase(), "error:") || _s.startsWith(line.toLowerCase(), "detail:");
+//     });
 
-    return arrayMsg.join(". ");
-};
+//     return arrayMsg.join(". ");
+// };
 
-internals.parseError = function(err){
-    if(internals.isDbError(err)){  
-        //var errMsg = internals.parseDbErrMsg(err.message);
-        //var errMsg = internals.parseDbErrMsg(err.message);
-        return Boom.badImplementation(err.message);
-    } 
+// internals.parseError = function(err){
+//     if(internals.isDbError(err)){  
+//         //var errMsg = internals.parseDbErrMsg(err.message);
+//         //var errMsg = internals.parseDbErrMsg(err.message);
+//         return Boom.badImplementation(err.message);
+//     } 
 
-    return Boom.badImplementation(err.message);
-};
+//     return Boom.badImplementation(err.message);
+// };
 
 
 // validate the ids param in the URL
@@ -92,19 +92,18 @@ internals.validatePayloadForCreate = function(value, options, next){
     var schemaCreate = Joi.object().keys({
         id: Joi.number().integer().min(0),
 
-        //tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
         //tags: Joi.string().allow("").regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
         //tags: Joi.alternatives().try(Joi.string().allow("").regex(/^[-\w\s]+(?:,[-\w\s]+)*$/), Joi.string().allow("")),
         tags: Joi.string().allow(""),
 
         contents: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
+            pt: Joi.string().allow(""),
+            en: Joi.string().allow("")
         }).required(),
 
         contentsDesc: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
+            pt: Joi.string().allow(""),
+            en: Joi.string().allow("")
         }),
 
         active: Joi.boolean()
@@ -121,19 +120,19 @@ internals.validatePayloadForUpdate = function(value, options, next){
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0).required(),
 
-        contents: Joi.object().keys({
-            pt: Joi.string().allow("").required(),
-            en: Joi.string().allow("").required()
-        }).required(),
-
         //tags: Joi.array().unique().min(0).includes(Joi.string()),
         //tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
         tags: Joi.string().allow(""),
 
+        contents: Joi.object().keys({
+            pt: Joi.string().allow(""),
+            en: Joi.string().allow("")
+        }).required(),
+
         contentsDesc: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
-        }),
+            pt: Joi.string().allow(""),
+            en: Joi.string().allow("")
+        }).required(),
 
         active: Joi.boolean()
     });
@@ -220,6 +219,7 @@ debugger;
             console.log(utils.logHandlerInfo(request));
 debugger;
             var textsC = request.pre.textsById;
+            
             if(textsC.length===0){
                 return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
             }
@@ -257,45 +257,45 @@ debugger;
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-
-        	var textsC = new TextsC(request.payload);
-
-            textsC.forEach(function(model){
-                model.set("author_id", request.auth.credentials.id);
+            request.payload.forEach(function(obj){
+                obj["author_id"] = request.auth.credentials.id;
             });
 
-            var dbData = JSON.stringify(textsC.toJSON());
-
+            var textsC = new BaseC();
         	textsC.execute({
 				query: {
                     command: "select * from texts_create($1);",
-                    arguments: [dbData]
-                },
-                reset: true
-        	})
-        	.done(
-        		function(){
-debugger;
-                    var resp = textsC.toJSON();
-
-                    // add the author information (directly from the credentials)
-                    utils.extend(resp, {
-                        authorData: {
-                            id:        request.auth.credentials.id,
-                            firstName: request.auth.credentials.firstName,
-                            lastName:  request.auth.credentials.lastName  
-                        }
-                    });
-
-                    var transformMap = transforms.maps.text;
-                    var transform    = transforms.transformArray;
-
-                    return reply(transform(resp, transformMap));
-        		},
-                function(err){
-                    return reply(Boom.badImplementation(err.message));
+                    arguments: [JSON.stringify(request.payload)]
                 }
-        	);
+        	})
+            .then(function(createdData){
+
+                // read the data that was created (to obtain the joined data)
+                return textsC.execute({
+                    query: {
+                        command: "select * from texts_read($1);",
+                        arguments: [JSON.stringify( {id: createdData[0].id} )]
+                    },
+                    reset: true
+                });
+
+            })
+            .then(function(){
+                // we couldn't read - something went wrong
+                if(textsC.length===0){
+                    return reply(Boom.badImplementation());
+                }
+
+                var resp         = textsC.toJSON();
+                var transformMap = transforms.maps.text;
+                var transform    = transforms.transformArray;
+
+                return reply(transform(resp, transformMap));
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
 
         },
         config: {
@@ -308,9 +308,9 @@ debugger;
                 pre.payload.extractTags
             ],
 
-            payload: {
-                maxBytes: 1048576*3  // 3 megabytes
-            },
+            // payload: {
+            //     maxBytes: 1048576*3  // 3 megabytes
+            // },
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
 			tags: ['api'],
@@ -326,47 +326,58 @@ debugger;
             console.log(utils.logHandlerInfo(request));
 debugger;
 
+            var textsC = request.pre.textsById;
+            if(textsC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
+
             // if the "contents" html has images, they are encoded in base64; this method
             // will decoded them (to /data/uploads/public/images) and update the <img> tag accordingly
+            // TODO: at the moment it works only with 1 image
+
             utils.decodeImg(request.payload[0].contents);
 
-            var textsC = new TextsC(request.payload);
-
-            textsC.forEach(function(model){
-                model.set("author_id", request.auth.credentials.id);
+            request.payload.forEach(function(obj){
+                obj["author_id"] = request.auth.credentials.id;
             });
 
-            var dbData = JSON.stringify(textsC.toJSON());
-
+            //var textsC = new BaseC(request.payload);
         	textsC.execute({
 				query: {
 				  	command: "select * from texts_update($1);",
-                    arguments: [dbData]
+                    arguments: [JSON.stringify(request.payload)]
 				},
-                reset: true
+                reset: true 
         	})
-        	.done(
-        		function(){
-                    var resp = textsC.toJSON();
+            .then(function(updatedData){
 
-                    // add the author information (directly from the credentials)
-                    utils.extend(resp, {
-                        authorData: {
-                            id:        request.auth.credentials.id,
-                            firstName: request.auth.credentials.firstName,
-                            lastName:  request.auth.credentials.lastName  
-                        }
-                    });
+                // read the data that was updated (to obtain the joined data)
+                return textsC.execute({
+                    query: {
+                        command: "select * from texts_read($1);",
+                        arguments: [JSON.stringify( {id: updatedData[0].id} )]
+                    },
+                    reset: true
+                });
 
-                    var transformMap = transforms.maps.text;
-                    var transform    = transforms.transformArray;
+            })
+            .then(function(){
+                // we couldn't read - something went wrong
+                if(textsC.length===0){
+                    return reply(Boom.badImplementation());
+                }
 
-                    return reply(transform(resp, transformMap));
-        		},
-                function(err){
-                    return reply(Boom.badImplementation(err.message));
-                }   
-        	);
+                var resp         = textsC.toJSON();
+                var transformMap = transforms.maps.text;
+                var transform    = transforms.transformArray;
+
+                return reply(transform(resp, transformMap));
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+
         },
         config: {
 			validate: {
@@ -377,14 +388,15 @@ debugger;
 
             pre: [
                 pre.abortIfNotAuthenticated,
+                pre.db.getTextsById,
                 pre.payload.extractTags
             ],
 
             auth: config.get('hapi.auth'),
             
-            payload: {
-                maxBytes: 1048576*3  // 3 megabytes
-            },
+            // payload: {
+            //     maxBytes: 1048576*3  // 3 megabytes
+            // },
 			description: 'Put (short description)',
 			notes: 'Put (long description)',
 			tags: ['api'],
@@ -397,27 +409,26 @@ debugger;
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
 debugger;
+            console.log(utils.logHandlerInfo(request));
 
-            var textsC = new BaseC();
+            var textsC = request.pre.textsById;
+            if(textsC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
+
             textsC.execute({
                 query: {
                     command: "select * from texts_delete($1)",
-                    arguments: [JSON.stringify({id: request.params.ids[0]})]
-                    //arguments: [JSON.stringify({id: 5000})]
+                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
                 }
             })
-            .done(
-                function(){
-debugger;
-                    return reply(textsC.toJSON());
-                },
-                function(err){
-                    //return reply(Boom.conflict("xyzz")); // for tes
-tdebugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-            );
+            .then(function(){
+                return reply(textsC.toJSON());
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
         },
 
         config: {

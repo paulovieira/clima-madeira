@@ -17,40 +17,50 @@ var TextEditModalIV = Mn.ItemView.extend({
 	},
 
 	updateResource: function(){
-debugger;
+
 		var data = Backbone.Syphon.serialize(this);
 
 		var attrs = {
 			"contents": {
-				"pt": data["edit-text-pt"],
-				"en": data["edit-text-en"]
+				"pt": $.trim(data["edit-text-pt"]),
+				"en": $.trim(data["edit-text-en"])
 			},
 			"tags": data["edit-text-tags"]
-			//"tags": "yyy"
 		};
+
+		if(attrs.contents.pt + attrs.contents.pt===""){
+			alert("The text fields are empty!");
+			return;
+		}
+
 		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
 		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
 		// after we get a 200 response from the server (meaning the row has actually been updated)
 
 		this.ui.modalSaveBtn.prop("disabled", true);
+
 		var self = this;
 		Q.delay(150)
 			.then(function(){
 				return self.model.save(attrs, {wait: true});  // returns a promise
 			})
-			.then(
-				function(){
-					Dashboard.$modal1.modal("hide");
-					self.destroy();
-				},
-				function(jqXHR){
-					var msg = jqXHR.responseJSON.message;
-					alert("ERROR: " + msg);
-					throw new Error(msg);
+			.catch(function(jqXHR){
+				var msg = jqXHR.responseJSON.message;
+				alert("ERROR: " + msg);
+
+				// if the model has been deleted in the server in the meantime we get a 404; 
+				// the collection in the client is outdated; we call destroy to remove it from 
+				// the collection, but abort the ajax request immediately
+				if(jqXHR.responseJSON.statusCode === 404){
+					self.model.destroy().abort();
 				}
-			)
+				
+				throw new Error(msg);
+			})
 			.finally(function(){
-				self.ui.saveBtn.prop("disabled", false);
+				//self.ui.saveBtn.prop("disabled", false);
+				Dashboard.$modal1.modal("hide");
+				self.destroy();
 			})
 			.done();
 
@@ -134,11 +144,16 @@ var TextNewLV = Mn.LayoutView.extend({
 
 		var attrs = {
 			"contents": {
-				"pt": data["new-text-pt"],
-				"en": data["new-text-en"]
+				"pt": $.trim(data["new-text-pt"]),
+				"en": $.trim(data["new-text-en"])
 			},
 			"tags": data["new-text-tags"]
 		};
+
+		if(attrs.contents.pt + attrs.contents.pt === ""){
+			alert("The text fields are empty!");
+			return;
+		}
 
 		this.ui.saveBtn.prop("disabled", true);
 
@@ -147,16 +162,14 @@ var TextNewLV = Mn.LayoutView.extend({
 			.then(function(){
 				return self.model.save(attrs, {wait: true});  // returns a promise
 			})
-			.then(
-				function(data){
-					alert("O texto foi criado com sucesso.");
-				},
-				function(jqXHR){
-					var msg = jqXHR.responseJSON.message;
-					alert("ERROR: " + msg);
-					throw new Error(msg);
-				}
-			)
+			.then(function(){
+				alert("O texto foi criado com sucesso.");
+			})
+			.catch(function(jqXHR){
+				var msg = jqXHR.responseJSON.message;
+				alert("ERROR: " + msg);
+				throw new Error(msg);
+			})
 			.finally(function(){
 				self.ui.saveBtn.prop("disabled", false);
 			})
@@ -216,16 +229,14 @@ var TextsTabLV = Mn.LayoutView.extend({
 		var self = this;
 
 		Q(textsC.fetch())
-			.then(
-				function(){ 
-					self.tabContentRegion.show(textsTableCV); 
-				}, 
-				function(jqXHR){
-					var msg = jqXHR.responseJSON.message;
-					alert("ERROR: " + msg);
-					throw new Error(msg);
-				}
-			)
+			.then(function(){ 
+				self.tabContentRegion.show(textsTableCV); 
+			})
+			.catch(function(jqXHR){
+				var msg = jqXHR.responseJSON.message;
+				alert("ERROR: " + msg);
+				throw new Error(msg);
+			})
 			.done();
 	},
 

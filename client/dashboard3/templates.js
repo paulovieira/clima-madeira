@@ -158,9 +158,9 @@ try {
 output += "<td>";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
 output += "</td>x\n\n<td>\n    ";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "pt"), env.autoesc);
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "contents")),"pt", env.autoesc), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "en"), env.autoesc);
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "contents")),"en", env.autoesc), env.autoesc);
 output += "\n</td>\n<td>";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "authorData")),"firstName", env.autoesc), env.autoesc);
 output += " ";
