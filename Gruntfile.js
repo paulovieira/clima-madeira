@@ -14,6 +14,13 @@ module.exports = function(grunt) {
                 options: {}
             },
 
+            dashboard3: {
+                baseDir: 'client/dashboard3',
+                src: ['client/dashboard3/**/*.html'],
+                dest: 'client/dashboard3/templates.js',
+                options: {}
+            },
+
             ferramenta: {
                 baseDir: 'client/ferramenta',
                 src: ['client/ferramenta/**/*.html'],
@@ -97,6 +104,10 @@ module.exports = function(grunt) {
             "dashboard templates": {
                 files: 'client/dashboard/**/*.html',
                 tasks: ['nunjucks:dashboard']
+            },
+            "dashboard3 templates": {
+                files: 'client/dashboard3/**/*.html',
+                tasks: ['nunjucks:dashboard3']
             },
             "ferramenta templates": {
                 files: 'client/ferramenta/**/*.html',

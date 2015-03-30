@@ -47,6 +47,17 @@ var routeTable = [
 
     {
         method: 'GET',
+        path: '/dashboard3/{anyPath*}',
+        handler: {
+            directory: { path: './client/dashboard3' }
+        },
+        config: {
+            auth: false,
+        }
+    },
+
+    {
+        method: 'GET',
         path: '/ferramenta/{anyPath*}',
         handler: {
             directory: { path: './client/ferramenta' }

@@ -19,9 +19,10 @@ RETURNS TABLE(
 	properties JSONB,
 	category_id INT,
 	file_id INT,
-	table_name TEXT,
+	schema_name TEXT,
 	owner_id INT,
 	created_at timestamptz,
+	map_shape_info JSON,
 	owner_data JSON,
 	category_data JSON)
 AS
@@ -31,11 +32,31 @@ DECLARE
 	options_row json;
 	command text;
 	number_conditions INT;
+	maps_shape_data_cte TEXT;
 
 	-- fields to be used in WHERE clause
 	id INT;
-	table_name_like TEXT;
+	--table_name_like TEXT;
 BEGIN
+
+maps_shape_data_cte := '
+	maps_shape_data_cte AS (
+		SELECT
+			m.id AS map_id,
+			json_agg(json_build_object(
+				''column_number'', a.attnum, 
+				''column_name'', a.attname,
+				''data_type'', a.atttypid::regtype::text)) as shape_data_info
+			
+		FROM maps m
+		LEFT JOIN pg_attribute a
+			ON a.attrelid = (m.schema_name || ''.'' || m.code)::regclass
+		AND    a.attnum > 0
+		AND    NOT a.attisdropped
+		GROUP BY map_id
+		ORDER  BY m.id
+	)
+';
 
 /*
 columns_cte := '
@@ -68,19 +89,37 @@ END IF;
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
-	command := 'SELECT 
+
+	command := 'WITH '
+		|| maps_shape_data_cte
+		|| 'SELECT 
 			m.*, 
+			msd.shape_data_info,
 			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data,
 			(select row_to_json(_dummy_) from (select t.*) as _dummy_) as category_data
 		FROM maps m 
+		INNER JOIN maps_shape_data_cte msd 
+			ON m.id = msd.map_id
 		LEFT JOIN users u
-		ON m.owner_id = u.id
+			ON m.owner_id = u.id
 		INNER JOIN texts t
-		ON m.category_id = t.id';
+			ON m.category_id = t.id';
+
+
+
+	-- command := 'SELECT 
+	-- 		m.*, 
+	-- 		(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data,
+	-- 		(select row_to_json(_dummy_) from (select t.*) as _dummy_) as category_data
+	-- 	FROM maps m 
+	-- 	LEFT JOIN users u
+	-- 	ON m.owner_id = u.id
+	-- 	INNER JOIN texts t
+	-- 	ON m.category_id = t.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id')         INTO id;
-	SELECT json_extract_path_text(options_row, 'table_name_like')  INTO table_name_like;
+	--SELECT json_extract_path_text(options_row, 'table_name_like')  INTO table_name_like;
 
 	number_conditions := 0;
 
@@ -95,15 +134,15 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	END IF;
 
 	-- criteria: table_name_like
-	IF table_name_like IS NOT NULL THEN
-		IF number_conditions = 0 THEN  command = command || ' WHERE';  
-		ELSE                           command = command || ' AND';
-		END IF;
+	-- IF table_name_like IS NOT NULL THEN
+	-- 	IF number_conditions = 0 THEN  command = command || ' WHERE';  
+	-- 	ELSE                           command = command || ' AND';
+	-- 	END IF;
 
-		table_name_like := '%' || table_name_like || '%';
-		command = format(command || ' m.table_name LIKE %L', table_name_like);
-		number_conditions := number_conditions + 1;
-	END IF;
+	-- 	table_name_like := '%' || table_name_like || '%';
+	-- 	command = format(command || ' m.table_name LIKE %L', table_name_like);
+	-- 	number_conditions := number_conditions + 1;
+	-- END IF;
 
 
 	command := command || ' ORDER BY m.id;';
@@ -177,7 +216,7 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 			properties,
 			file_id,
 			category_id,
-			table_name, 
+			schema_name, 
 			owner_id
 			)
 		VALUES (
@@ -188,7 +227,7 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 			COALESCE(input_row.properties, '{ "order": 1, "timeData": [] }'::jsonb),
 			input_row.file_id,
 			input_row.category_id,
-			input_row.table_name, 
+			input_row.schema_name, 
 			input_row.owner_id
 			)
 		RETURNING 
@@ -224,7 +263,7 @@ select * from maps_create('[
 	"title": {"pt": "fwefwef", "en": "fwefwef fewfw"},
 	"category_id": 105,
 	"owner_id": 2,
-	"table_name": "geo.xyz"
+	"schema_name": "geo"
 }
 ]')
 
@@ -279,8 +318,8 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 	IF input_row.file_id IS NOT NULL THEN
 		command = format(command || 'file_id = %L, ', input_row.file_id);
 	END IF;
-	IF input_row.table_name IS NOT NULL THEN
-		command = format(command || 'table_name = %L, ', input_row.table_name);
+	IF input_row.schema_name IS NOT NULL THEN
+		command = format(command || 'schema_name = %L, ', input_row.schema_name);
 	END IF;
 	IF input_row.owner_id IS NOT NULL THEN
 		command = format(command || 'owner_id = %L, ', input_row.owner_id);

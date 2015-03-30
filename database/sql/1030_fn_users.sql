@@ -60,6 +60,12 @@ DECLARE
 	recover TEXT;
 BEGIN
 
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
+
 -- NOTE: using a CTE is not good for performance;
 
 users_texts_cte := '
@@ -94,10 +100,6 @@ users_groups_cte := '
 ';
 
 
--- convert the json argument from object to array of (one) objects
-IF  json_typeof(options) = 'object'::text THEN
-	options = ('[' || options::text ||  ']')::json;
-END IF;
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 

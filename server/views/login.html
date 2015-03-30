@@ -177,7 +177,7 @@ $("#btn-recover-pw").on("click", function(e){
     	emailAddress = $("#email").val().trim();
 
     if(emailAddress === ""){
-        alert({{ ctx.texts[91][lang] }});
+        alert("{{ ctx.texts[91][lang] }}");
         return;
     }
 
@@ -220,13 +220,13 @@ $("#btn-recover-pw").on("click", function(e){
         	debugger;
         	if(err.status === 400){
         		$("#message-status").addClass("text-left").html("O endereço de email não está no formato correcto. Tente novamente.");
-        		$this.removeClass("disabled").html({{ ctx.texts[88][lang] }});
+        		$this.removeClass("disabled").html("{{ ctx.texts[88][lang] }}");
         		return;
         	}
 
         	if(err.status === 404){
         		$("#message-status").addClass("text-left").html("Este endereço de email não está registado na plataforma. Tente novamente.");
-        		$this.removeClass("disabled").html({{ ctx.texts[88][lang] }});
+        		$this.removeClass("disabled").html("{{ ctx.texts[88][lang] }}");
         		return;
         	}
 
@@ -237,13 +237,13 @@ $("#btn-recover-pw").on("click", function(e){
     );
 
     // immediately after the button has been clicked, disable the button
-    $this.addClass("disabled").html({{ ctx.texts[90][lang] }});
+    $this.addClass("disabled").html("{{ ctx.texts[90][lang] }}");
 });
 
 
 $("#modal-recover-pw").on("show.bs.modal", function resetModal(e){
 	// reset the state of the input and button in the modal (it might have been changed if the user opened the modal before)
-	$("#btn-recover-pw").removeClass("btn-danger disabled").addClass("btn-primary").html({{ ctx.texts[88][lang] }});
+	$("#btn-recover-pw").removeClass("btn-danger disabled").addClass("btn-primary").html("{{ ctx.texts[88][lang] }}");
 	$("#email").val("");
 	$("#message-status").html("");
 	$("#message-links").html("");

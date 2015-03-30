@@ -9,6 +9,7 @@ var Bcrypt = require("bcrypt");
 var config = require('config');
 
 var UsersC = require(global.rootPath + "server/models/base-model.js").collection;
+var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
 var utils = require(global.rootPath + 'server/common/utils.js');
 var transforms = require(global.rootPath + 'server/common/transforms.js');
 var pre = require(global.rootPath + 'server/common/pre.js');
@@ -154,8 +155,11 @@ exports.register = function(server, options, next) {
             handler: function (request, reply) {
                 console.log(utils.logHandlerInfo(request));
 debugger;
+                // if(!request.auth.credentials.isAdmin){
+                //     return reply(Boom.forbidden("To access this resource you must be admin."));
+                // }
 
-                var usersC = new UsersC();
+                var usersC = new BaseC();
 
                 usersC.execute({
                     query: {
@@ -201,17 +205,17 @@ debugger;
                 console.log(utils.logHandlerInfo(request));
     debugger;
 
-                var usersC = new UsersC();
-                request.params.ids.forEach(function(id){
-                    usersC.add({id: id});
-                });
+                var usersC = new BaseC(),
+                    userId = request.params.ids[0]; 
 
-                var queryOptions = JSON.stringify(usersC.toJSON());
+                if(request.auth.credentials.id !== userId){
+                    return reply(Boom.forbidden("You cannot request the personal data of other users."));
+                }
 
                 usersC.execute({
                     query: {
                         command: "select * from users_read($1)",
-                        arguments: [queryOptions]
+                        arguments: [JSON.stringify({id: userId})]
                     }
                 })
                 .done(
@@ -309,63 +313,57 @@ debugger;
             path: internals.resourcePath + "/{ids}",
             handler: function (request, reply) {
 
+                // this resource might be called from 2 places: a) the update profile menu,
+                // or b) from the users menu; if it is called from a), we must make sure
+                // the id given in the param is equal to the id in the credentials;
+                // if it is from b), we must make sure it is an admin
+
                 console.log(utils.logHandlerInfo(request));
     debugger;
 
-                var usersC = new UsersC(request.payload);
-                var dbUsersC = request.pre.usersC;
+                var usersC = new BaseC(),
+                    userId = request.params.ids[0],
+                    updateProfile = request.payload[0]["update_profile"],
+                    dbUsersC = request.pre.usersC,
+                    usersGroupsC = request.pre.usersGroupsC;
 
-                var usersGroupsC = request.pre.usersGroupsC;
-
-                if(usersC.length!==1){
-                    return reply(Boom.conflict("The collection should have only 1 model."));
-                }
-
-                var model = usersC.at(0);
-
-
-                // this endpoint might be called from 2 places: a) the update profile menu,
-                // or b) from the users menu; 
-
-                // if it is from the update profile, then we force the id value to be the one in the credentials object
-                if(model.get("update_profile") === true || model.get("id") === request.auth.credentials.id){
-                    model.set("id", request.auth.credentials.id);
-
-                    var userM = dbUsersC.findWhere({ id: request.auth.credentials.id});
-
-                    if(model.get("current_pw")){
-                        // 1. verify that the current password match with the one
-                        // in the database
-                        var res = Bcrypt.compareSync(model.get("current_pw"), userM.get("pwHash"));
-
-                        // 2. if so set the new password in the correct key
-                        if(res){
-                            model.set("pw_hash", Bcrypt.hashSync(model.get("new_pw"), 10))
-                        }
-                        else{
-                            return reply(Boom.conflict("The current password does not match."))   
-                        }
-
+                if(updateProfile === true){
+                    if(request.auth.credentials.id !== userId){
+                        return reply(Boom.forbidden("You cannot update the personal data of other users."));
                     }
                 }
-                // if it called from the users menu, then we verify if the user is admin
                 else{
-                    var adminGroupCode = 99;
-                    var isAdmin = usersGroupsC.findWhere({userId: request.auth.credentials.id, groupCode: adminGroupCode });
-                    if(!isAdmin){
-                        return reply(Boom.conflict("To edit the details of other users you must be in the admin group"));    
+                    if(request.auth.credentials.isAdmin !== true){
+                        return reply(Boom.forbidden("To edit the personal data of other users you must belong to the admin group"));    
                     }
                 }
 
-                usersC.reset([model]);
-                var dbData = JSON.stringify(usersC.toJSON());
+                var updatedData = request.payload[0],
+                    currentData = dbUsersC.findWhere({ id: userId});
 
+                // if we are updating the password, first verify if the submitted current pw matches 
+                // with the one in the database
+                if(updatedData["current_pw"]){
+
+                    var match = Bcrypt.compareSync(updatedData["current_pw"], currentData.get("pwHash"));
+
+                    if(!match){
+                        return reply(Boom.forbidden("The current password does not match."))   
+                    }
+
+                    // TODO: in the server we should also be checking that the new pw
+                    // matches in the 2 fields
+
+                    // if the pw matches, hash the new password
+                    updatedData["pw_hash"] = Bcrypt.hashSync(updatedData["new_pw"], 10);
+                }
+
+               
                 usersC.execute({
                     query: {
                         command: "select * from users_update($1);",
-                        arguments: [dbData]
-                    },
-                    reset: true
+                        arguments: [JSON.stringify(updatedData)]
+                    }
                 })
                 .done(
                     function(){
@@ -387,7 +385,6 @@ debugger;
             config: {
                 validate: {
                     params: internals.validateIds,
-                    //payload: internals.validatePayload
                     payload: internals.validatePayloadForUpdate
 
                 },
@@ -395,7 +392,7 @@ debugger;
 
                 pre: [
                     pre.abortIfNotAuthenticated,
-                    [pre.db.read_users, pre.db.read_users_groups]
+                    [pre.db.readAllUsers, pre.db.readAllUsersGroups]
                 ],
 
                 description: 'Put (short description)',
@@ -553,7 +550,7 @@ debugger;
                 }
             },
             pre: [
-                pre.db.read_user_by_email
+                pre.db.readUserByEmail
             ],
             auth: false,
 
@@ -627,7 +624,7 @@ debugger;
                 }
             },
             pre: [
-                pre.db.read_user_by_token
+                pre.db.readUserByToken
             ],
             auth: false,
 

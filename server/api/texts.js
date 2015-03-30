@@ -9,6 +9,7 @@ var _s = require('underscore.string');
 var changeCaseKeys = require('change-case-keys');
 
 var TextsC = require("../../server/models/base-model.js").collection;
+var BaseC = require("../../server/models/base-model.js").collection;
 var utils = require('../../server/common/utils.js');
 var transforms = require('../../server/common/transforms.js');
 var pre = require('../../server/common/pre.js');
@@ -430,19 +431,13 @@ debugger;
         handler: function (request, reply) {
 debugger;
 
-            var textsC = new TextsC();
-            request.params.ids.forEach(function(id){
-                textsC.add({id: id});
-            })
-
-            var dbData = JSON.stringify(textsC.toJSON());
-
+            var textsC = new BaseC();
             textsC.execute({
                 query: {
                     command: "select * from texts_delete($1)",
-                    arguments: [dbData]
-                },
-                reset: true
+                    arguments: [JSON.stringify({id: request.params.ids[0]})]
+                    //arguments: [JSON.stringify({id: 5000})]
+                }
             })
             .done(
                 function(){
@@ -450,7 +445,8 @@ debugger;
                     return reply(textsC.toJSON());
                 },
                 function(err){
-debugger;
+                    //return reply(Boom.conflict("xyzz")); // for tes
+tdebugger;
                     var boomErr = internals.parseError(err);
                     return reply(boomErr);
                 }

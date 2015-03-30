@@ -11,9 +11,9 @@ var transforms = require(global.rootPath +  "server/common/transforms.js");
 var preRequisites = {
 
 	db: {
-		read_users: {
+		readAllUsers: {
 			method: function(request, reply){
-				console.log("pre: db.read_users");
+				console.log("pre: db.readAllUsers");
 		        var usersC = new BaseC();
 
 		        usersC
@@ -22,22 +22,18 @@ var preRequisites = {
 		                    command: "select * from users_read()",
 		                },
 		            })
-		            .done(
-		                function() {
-		                	return reply(usersC);
-		                },
-		                function(err) {
-		                	console.log(err);
-		                    return reply(Boom.badImplementation());
-		                }
-			        );
+		            .then(function() {
+	                	return reply(usersC);
+	                })
+		            .done();
+
 			},
 			assign: "usersC"
 		},
 
-		read_users_groups: {
+		readAllUsersGroups: {
 			method: function(request, reply){
-				console.log("pre: db.read_users_groups");
+				console.log("pre: db.readAllUsersGroups");
 		        var usersGroupsC = new BaseC();
 
 		        usersGroupsC
@@ -46,24 +42,19 @@ var preRequisites = {
 		                    command: "select * from users_groups_read()",
 		                },
 		            })
-		            .done(
-		                function() {
-		                	return reply(usersGroupsC);
-		                },
-		                function(err) {
-		                	console.log(err);
-		                    return reply(Boom.badImplementation());
-		                }
-			        );
+		            .then(function() {
+	                	return reply(usersGroupsC);
+	                })
+		            .done();
 			},
 			assign: "usersGroupsC"
 		},
 
 		// returns a collection of users with 1 element; first checks if there is a param "email" and uses it;
 		// if not, checks in request.auth.credential.email
-		read_user_by_email: {
+		readUserByEmail: {
 			method: function(request, reply){
-				console.log("pre: db.read_user_by_email");
+				console.log("pre: db.readUserByEmail");
 
 				var email = request.params.email || request.auth.credentials.email || "";
 				console.log("		w: ", request.auth.credentials);
@@ -76,22 +67,17 @@ var preRequisites = {
 		                    arguments: JSON.stringify([{email: email}])
 		                },
 		            })
-		            .done(
-		                function() {
-		                	return reply(usersC);
-		                },
-		                function(err) {
-		                	console.log(err);
-		                    return reply(Boom.badImplementation());
-		                }
-			        );
+		            .then(function() {
+	                	return reply(usersC);
+	                })
+		            .done();
 			},
 			assign: "usersC"
 		},
 
-		read_user_by_token: {
+		readUserByToken: {
 			method: function(request, reply){
-				console.log("pre: db.read_user_by_token");
+				console.log("pre: db.readUserByToken");
 
 				var recoverToken = request.query.token || request.params.token || "";
 		        var usersC = new BaseC();
@@ -103,22 +89,17 @@ var preRequisites = {
 		                    arguments: JSON.stringify([{recover: recoverToken}])
 		                },
 		            })
-		            .done(
-		                function() {
-		                	return reply(usersC);
-		                },
-		                function(err) {
-		                	console.log(err);
-		                    return reply(Boom.badImplementation());
-		                }
-			        );
+		            .then(function() {
+	                	return reply(usersC);
+	                })
+		            .done();
 			},
 			assign: "usersC"
 		},
 
-		read_texts: {
+		readAllTexts: {
 			method: function(request, reply){
-				console.log("pre: db.read_texts");
+				console.log("pre: db.readAllTexts");
 		        var textsC = new BaseC();
 
 		        textsC
@@ -127,42 +108,76 @@ var preRequisites = {
 		                    command: "select * from texts_read()"
 		                },
 		            })
-		            .done(
-		                function() {
-		                	return reply(textsC);
-		                },
-		                function(err) {
-		                	console.log(err);
-		                    return reply(err);
-		                }
-			        );
+		            .then(function() {
+	                	return reply(textsC);
+	                })
+		            .done();
 			},
 			assign: "textsC",
 		},
 
-		read_files: {
+		readAllFiles: {
 			method: function(request, reply){
-				console.log("pre: db.read_files");
+				console.log("pre: db.readAllFiles");
 		        var filesC = new BaseC();
 
 		        filesC
 		            .execute({
 		                query: {
 		                    command: "select * from files_read()"
-		                },
-		            })
-		            .done(
-		                function() {
-		                	return reply(filesC);
-		                },
-		                function(err) {
-		                	console.log(err);
-		                    return reply(err);
 		                }
-			        );
+		            })
+		            .then(function() {
+	             	   	return reply(filesC);
+	                })
+	                .done();
 			},
-			assign: "filesC",
+			assign: "filesC"
 		},
+
+		readAllMaps: {
+			method: function(request, reply){
+				console.log("pre: db.readAllMaps");
+		        var mapsC = new BaseC();
+
+		        mapsC
+		            .execute({
+		                query: {
+		                    command: "select * from maps_read()"
+		                }
+		            })
+		            .then(function() {
+	                	return reply(mapsC);
+	                })
+		            .done();
+			},
+			assign: "mapsC"
+		},
+
+
+		// read_files: {
+		// 	method: function(request, reply){
+		// 		console.log("pre: db.read_files");
+		//         var filesC = new BaseC();
+
+		//         filesC
+		//             .execute({
+		//                 query: {
+		//                     command: "select * from files_read()"
+		//                 },
+		//             })
+		//             .done(
+		//                 function() {
+		//                 	return reply(filesC);
+		//                 },
+		//                 function(err) {
+		//                 	console.log(err);
+		//                     return reply(err);
+		//                 }
+		// 	        );
+		// 	},
+		// 	assign: "filesC",
+		// },
 
 		// to delete
 		saveUserAgent: {

@@ -34,7 +34,7 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts, pre.db.read_files],
+                [pre.db.readAllTexts, pre.db.readAllFiles],
                 [pre.transform.texts, pre.transform.textsArray, pre.transform.files],
                 [pre.filterImages]
             ]
@@ -58,7 +58,7 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts, pre.db.read_files],
+                [pre.db.readAllTexts, pre.db.readAllFiles],
                 [pre.transform.texts, pre.transform.textsArray, pre.transform.files],
                 [pre.filterImages]
             ]
@@ -81,7 +81,7 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts, pre.db.read_files],
+                [pre.db.readAllTexts, pre.db.readAllFiles],
                 [pre.transform.texts, pre.transform.textsArray, pre.transform.files],
                 [pre.filterImages]
             ]
@@ -104,7 +104,7 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts, pre.db.read_files],
+                [pre.db.readAllTexts, pre.db.readAllFiles],
                 [pre.transform.texts, pre.transform.textsArray, pre.transform.files],
                 [pre.filterImages]
             ]
@@ -126,7 +126,7 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts, pre.db.read_user_by_token],
+                [pre.db.readAllTexts, pre.db.readUserByToken],
                 pre.transform.texts
             ]
         }
@@ -147,7 +147,7 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts],
+                [pre.db.readAllTexts],
                 pre.transform.texts
             ]
         }
@@ -169,7 +169,7 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts],
+                [pre.db.readAllTexts],
                 pre.transform.texts
             ]
         }
@@ -218,7 +218,7 @@ var routes = [
             },
 
             pre: [
-                [pre.db.read_texts, pre.db.read_files],
+                [pre.db.readAllTexts, pre.db.readAllFiles],
                 [pre.transform.texts, pre.transform.textsArray, pre.transform.files, pre.transform.filesArray]
             ]
         },
@@ -243,31 +243,31 @@ var routes = [
     },
 
 
-    {
-        method: "GET",
-        path: "/{lang}/testpre",
-        handler: baseHandlers.testpre,
+    // {
+    //     method: "GET",
+    //     path: "/{lang}/testpre",
+    //     handler: baseHandlers.testpre,
 
-        config: {
-            auth: {
-                mode: "try"
-            },
+    //     config: {
+    //         auth: {
+    //             mode: "try"
+    //         },
 
-            validate: {
-                params: validate.params.lang
-            },
+    //         validate: {
+    //             params: validate.params.lang
+    //         },
 
-            pre: [
-                // running the pre method in parallel is equivalent to using only 1 pre method
-                // taking care of several promises and using Q.all([promise1, promise2]);
-                // the route handler will only execute when ALL the pre-handlers have called reply()
-                //[pre.db.read_texts, pre.db.read_users],  
-                [pre.db.read_users],
-                //                utils.pre.db.read_texts,
-                //              utils.pre.db.read_users
-            ]
-        }
-    },
+    //         pre: [
+    //             // running the pre method in parallel is equivalent to using only 1 pre method
+    //             // taking care of several promises and using Q.all([promise1, promise2]);
+    //             // the route handler will only execute when ALL the pre-handlers have called reply()
+    //             //[pre.db.readAllTexts, pre.db.read_users],  
+    //             [pre.db.readAllUsers],
+    //             //                utils.pre.db.readAllTexts,
+    //             //              utils.pre.db.read_users
+    //         ]
+    //     }
+    // },
 
 
     {

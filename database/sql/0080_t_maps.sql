@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS maps(
 	properties JSONB default '{ "order": 1, "timeData": [] }',	
 	category_id INT references texts(id)  on update cascade on delete set null,
 	file_id INT references files(id)  on update cascade on delete set null,
-	table_name TEXT NOT NULL,
+	schema_name TEXT NOT NULL,
 	owner_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
 	created_at timestamptz not null default now()
 );

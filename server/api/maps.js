@@ -279,149 +279,148 @@ debugger;
 //console.log("dbData: ", JSON.stringify(changeCaseKeys(request.payload, "underscored")));
 console.log("request.payload: ", JSON.stringify(request.payload));
 
-            var dbData = request.payload[0];
+            var dbData = request.payload[0]
+                filesC = request.pre.filesC,
+                mapsC  = request.pre.mapsC,
+                shpSchema = "geo",
+                shpTable  = _s.underscored(_s.slugify(dbData["code"])),
+                shpFile = "";
+
+            if(mapsC.findWhere({code: shpTable})){
+                return reply(Boom.conflict("The map code must be unique."));
+            }
+
+            // make sure the zip file really exists in the server
+            var fileM = filesC.findWhere({id: request.payload[0]["file_id"]});
+            if(!fileM){
+                return reply(Boom.conflict("The shape file does not exist in the server"));
+            }
+
+            var physicalPath = fileM.get("physicalPath"),
+                zipFile = fileM.get("name"),
+                zipFullPath = Path.join(global.rootPath, physicalPath, zipFile),
+                zipFileWithoutExt = zipFile.slice(0, zipFile.length - 4),
+                zipOutputDir = Path.join(global.rootPath, physicalPath, zipFileWithoutExt);
+                
+
+            console.log("global.rootPath: ", global.rootPath)
+            console.log("physicalPath: ", physicalPath)
+            console.log("zipFile: ", zipFile)
+            console.log("zipFileWithoutExt: ", zipFileWithoutExt)
+
+// TODO: find a more robust way to verify that the file is indeed a zip file
+            if(!_s.endsWith(zipFile, ".zip")){
+                return reply(Boom.conflict("The file must be in zip format."));
+            }
 
 
-            var mapsC = new BaseC();
-            var filesC = new BaseC();
-
-            var zipOutputDir, shpFile, shpTableName;
 
 /*
 IMPROVE
-1) the initial filesC query could be done in a pre method
 2) the name of the database should be based on the map code (use _s in the client)
-3) we should always delete the directory before the unzip (if it doesn't exist, it shouldn't throw an error)
 */
 
+/***
+POSSIBLE ERRORS:
 
-            // 1st step: query files table to obtain the filename of the zip directly from the db
-            filesC.execute({
-                query: {
-                    command: "select * from files_read($1);",
-                    arguments: [  JSON.stringify({ id: request.payload[0]["file_id"] })  ]
+step 1
+- at the beggining we try to delete the folder; this might fail for some reason (for instance, if the folder belongs to the root)
+
+step 2
+- after the zip is extracted, we search for a file with .shp extension; if it doesn't exist (or if there 2 or more), an error is thrown
+- the zip extraction might fail (corrupted zip)
+
+step 3 
+- the shp2pgsql fails if there are any table with the given name (which is the same as the map code)
+
+step 5
+- delete the folder - similar to the possible error in step 1 (but it's unlikely, because if we arrived at this point, the folder was created by us, so we can delete it)
+***/
+
+            var deferred = Q.defer(),
+                promise = deferred.promise;
+
+            // step 1: delete the directory where the unzip will be outputed (if it doesn't
+            // exists, don't throw an error)
+            rimraf(zipOutputDir, function(err){
+                if(err){
+                    return deferred.reject(err);
                 }
-            })
 
-            // 2nd step: extract the zip file into a dedicated folder (which must be created)
+                return deferred.resolve();
+            });
+
+            // step 2: extract the zip file; a dedicated (temporary) folder will be created
+            promise
             .then(function(val){
-                var deferred = Q.defer();
-
-                // we are expecting to have 1 model in the collection (and only 1)
-                if(filesC.length !== 1){
-                    throw new Error("The shape file does not exist (check the file_id)");
-                }
-
-                var physicalPath = filesC.at(0).get("physicalPath"),
-                    filename = filesC.at(0).get("name"),
-                    filenameWithoutExt = filename.slice(0, filename.length - 4);
-
-                if(!_s.endsWith(filename, ".zip")){
-                    throw new Error("The file must be a zip.");
-                }
-
-                var zipFullPath = Path.join(global.rootPath, physicalPath, filename);
-                zipOutputDir = Path.join(global.rootPath, physicalPath, filenameWithoutExt);
-
-// console.log("filenameWithoutExt: ", filenameWithoutExt);
-// console.log("zipFullPath: ", zipFullPath);
-// console.log("zipDirectory: ", zipDirectory);
+                var deferred2 = Q.defer();
 
                 fs.mkdirSync(zipOutputDir);
-                
+               
                 fs.createReadStream(zipFullPath)
                     .pipe(unzip.Extract({ path: zipOutputDir }))
-                .on("close", function(){
-                    deferred.resolve({ success: true })
-                })
-                .on("error", function(err){
-                    //console.error("zip error!");
-                    deferred.reject(err);
-                    return;
-                });
+                    .on("close", function(){
+                        // the zip has been successfully extracted; now get an array 
+                        // with the names of files in zipOutputDir that have the .shp extension
+                        var files = fs.readdirSync(zipOutputDir).filter(function(filename){
+                            return _s.endsWith(filename, ".shp");
+                        });
 
-                return deferred.promise;
+                        if(files.length!==1){
+                            var err = new Error("the zip must contain one .shp file (and only one)");
+                            return deferred2.reject(err);
+                        }
+
+                        shpFile = files[0];
+                        return deferred2.resolve()
+                    })
+                    .on("error", function(err){
+                        return deferred2.reject(err);
+                    });
+
+                return deferred2.promise;
             })
 
+            // step 3: execute shp2pgsql; the table name will be the map code (which has the unique constraint)
             .then(function(){
-
-                // get an array with the names of files in zipOutputDir that have the .shp extension
-                var files = fs.readdirSync(zipOutputDir).filter(function(filename){
-                    return _s.endsWith(filename, ".shp");
-                });
-
-// TODO: test if twith 2 .shp files in the zip; show the correct error message in the client
-                if(files.length!==1){
-                    throw new Error("the zip must contain one .shp file (and only one)");
-                }
-
-                shpFile = files[0];
-                shpFileWithoutExt = (files[0]).slice(0, shpFile.length - 4).toLowerCase();
-
-                // the name of the table will be based on the name of the .shp file;
-                // check how many tables exist that start with that name
-                var queryOpt = {"table_name_like": shpFileWithoutExt };
-                var promise = mapsC.execute({
-                    query: {
-                        command: "select * from maps_read($1);",
-                        arguments: [JSON.stringify(queryOpt)]
-                    }
-                });
-
-                return promise
-            })
-
-            // 3rd step: execute shp2pgsql; the table name will be based on the name of the zip
-            .then(function(){
-                var deferred = Q.defer();
-
-                var numberOfTables = mapsC.length;
-                if(numberOfTables > 0){
-                    shpFileWithoutExt = shpFileWithoutExt + "-" + (numberOfTables + 1);
-                }
-
-                console.log("mapsC: ", mapsC.toJSON());
-
-                var dbSchema = "geo";
-                shpTableName = dbSchema + "." + _s.underscored(_s.slugify(shpFileWithoutExt));
-                
+                var deferred3 = Q.defer();
+               
                 // the command is:  shp2pgsql -D -I -s 4326 <path-to-shp-file>  <name-of-the-table>   |  psql --dbname=<name-of-the-database>
-                var command = 'shp2pgsql -D -I -s 4326 ' 
-                            + Path.join(zipOutputDir, shpFile) + ' '
-                            + shpTableName
-                            + ' |  psql --dbname=' + config.get("db.postgres.database");
+                var command1 = "shp2pgsql -D -I -s 4326 "
+                            + Path.join(zipOutputDir, shpFile) + " " + shpSchema + "." + shpTable,
+
+                    command2 = "psql --dbname=" + config.get("db.postgres.database"),
+
+                    command = command1 + " | " + command2;
 
                 console.log("command: ", command);
 
                 exec(command, function(err, stdout, stderr){
                     if(err){
                         console.log("error in exec: ", err);
-                        deferred.reject(err);
-                        return;
+                        return deferred3.reject(err);
                     }
 
                     console.log("stdout: \n", stdout);
                     if(_s.include(stdout.toLowerCase(), "create index") && 
                         _s.include(stdout.toLowerCase(), "commit")){
-                        deferred.resolve({ success: true });
-                        return;
+                        return deferred3.resolve();
                     }
                     else{
-                        deferred.reject(new Error("shp2pgsql does not seem to have succeeded (please verify)"));
-                        return;
+                        return deferred3.reject(new Error("shp2pgsql did not commit"));
                     }
 
                 })
 
-                return deferred.promise;
+                return deferred3.promise;
             })
 
-            // 4rd step: create the row in the maps table
+            // step 4: create the row in the maps table
             .then(function(){
 
                 // add the fields that are missing from the payload (server-side information)
-                dbData["table_name"] = shpTableName;
-                dbData["owner_id"]   = request.auth.credentials.id;
+                dbData["schema_name"] = shpSchema;
+                dbData["owner_id"]    = request.auth.credentials.id;
 
                 console.log("dbData: ", dbData);
 
@@ -435,17 +434,18 @@ IMPROVE
 
                 return promise;
             })
+
+            // step 5: delete the zip output directory
             .finally(function(){
                 var deferred = Q.defer();
                 console.log("finally!");
 
                 rimraf(zipOutputDir, function(err){
                     if(err){
-                        deferred.reject(err);
-                        return 
+                        return deferred.reject(err);
                     }
 
-                    deferred.resolve();
+                    return deferred.resolve();
                 });
 
                 return deferred.promise;
@@ -461,7 +461,8 @@ debugger;
                 },
                 function(err){
 debugger;
-// TODO: make sure the table geo.<shpTableName> wasn't created; if so we should delete it
+// TODO: make sure the table geo.<shpTable> wasn't created; if it was , we should delete it
+
 
                     var boomErr = internals.parseError(err);
                     return reply(boomErr);
@@ -479,7 +480,8 @@ debugger;
         	},
 
             pre: [
-                pre.abortIfNotAuthenticated
+                [pre.abortIfNotAuthenticated],
+                [pre.db.readAllFiles, pre.db.readAllMaps]
             ],
 
             auth: config.get('hapi.auth'),

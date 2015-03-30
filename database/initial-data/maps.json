@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "code": "energia-centrais",
+        "code": "energia_centrais",
         "title": {
             "pt": "Energia - centrais energéticas",
             "en": "Energy - power plants"
@@ -9,7 +9,7 @@
         },
         "file_id": 1,
         "category_id": 105,
-        "tableName": "geo.temp",
+        "schema_name": "geo",
         "owner_id": 1
     }
 

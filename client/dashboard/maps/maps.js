@@ -41,6 +41,14 @@ var MapNewModalIV = ModalIV.extend({
 
 		var data = Backbone.Syphon.serialize(this);
 
+		// make sure there aren't any existing maps with the given code
+		// NOTE: we have called mapsC.fetch() just before showing the composite view with the
+		// list of shape files
+		if(mapsC.findWhere({code: data["code"]})){
+			alert("The given map code is being used in some other map. Please choosen another code.");
+			return;
+		}
+
 		var attrs = {
 			title: {
 				pt: data["title-pt"],
@@ -109,19 +117,6 @@ Cocktail.mixin(MapNewModalIV.prototype, ModalMixins);
 
 
 var MapsListNewRowLV = Mn.LayoutView.extend({
-
-	// initialize: function(){
-	// 	console.log("initialize")
-	// 	var self = this;
-
-	// 	setInterval(function(){
-	// 		if(self.model.get("id")===2){
-	// 			console.log("will render @ " + Date.now())
-	// 			self.render();
-	// 		}
-	// 	}, 2000);
-		
-	// },
 
 	template: "maps/templates/maps-list-new-row.html",
 	tagName: "tr",
