@@ -15,14 +15,16 @@ var transforms = {
 		    "lastUpdated": "lastUpdated",
 
 		    // b) new properties (move properties from the nested object to the top object)
-		    "pt": "contents.pt",
-		    "en": "contents.en",
+		    //"pt": "contents.pt",
+		    //"en": "contents.en",
 
 		    // c) changed properties (some fields from authorData, such as pwHash, will be deleted)
+
+			// the changeCaseKeys is only changinf the 1st level keys
 		    "authorData.id": "authorData.id",
-		    "authorData.firstName": "authorData.firstName",
-		    "authorData.lastName": "authorData.lastName",
-		    //"authorData.email": "authorData.email",
+		    "authorData.firstName": "authorData.first_name",
+		    "authorData.lastName": "authorData.last_name",
+		    "authorData.email": "authorData.email",
 
 		    // d) deleted properties: "contentsDesc", "authorId", "active"
 		},

@@ -17,7 +17,7 @@ var TextEditModalIV = Mn.ItemView.extend({
 	},
 
 	updateResource: function(){
-
+debugger;
 		var data = Backbone.Syphon.serialize(this);
 
 		var attrs = {
@@ -26,6 +26,7 @@ var TextEditModalIV = Mn.ItemView.extend({
 				"en": data["edit-text-en"]
 			},
 			"tags": data["edit-text-tags"]
+			//"tags": "yyy"
 		};
 		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
 		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 

@@ -156,7 +156,7 @@ module.exports = {
             }
 
             var lang = langKeys[i];
-
+//console.log("       contents[lang]: ", contents[lang]);
             var $ = cheerio.load(contents[lang], {
                 normalizeWhitespace: true,
                 decodeEntities: true

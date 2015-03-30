@@ -54,11 +54,12 @@ internals.parseDbErrMsg = function(msg){
 
 internals.parseError = function(err){
     if(internals.isDbError(err)){  
-        var errMsg = internals.parseDbErrMsg(err.message);
-        return Boom.badImplementation(errMsg);
+        //var errMsg = internals.parseDbErrMsg(err.message);
+        //var errMsg = internals.parseDbErrMsg(err.message);
+        return Boom.badImplementation(err.message);
     } 
 
-    return Boom.badImplementation(err.message);  
+    return Boom.badImplementation(err.message);
 };
 
 
@@ -92,7 +93,9 @@ internals.validatePayloadForCreate = function(value, options, next){
         id: Joi.number().integer().min(0),
 
         //tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
-        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
+        //tags: Joi.string().allow("").regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
+        //tags: Joi.alternatives().try(Joi.string().allow("").regex(/^[-\w\s]+(?:,[-\w\s]+)*$/), Joi.string().allow("")),
+        tags: Joi.string().allow(""),
 
         contents: Joi.object().keys({
             pt: Joi.string().required(),
@@ -124,7 +127,8 @@ internals.validatePayloadForUpdate = function(value, options, next){
         }).required(),
 
         //tags: Joi.array().unique().min(0).includes(Joi.string()),
-        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
+        //tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
+        tags: Joi.string().allow(""),
 
         contentsDesc: Joi.object().keys({
             pt: Joi.string().required(),
@@ -185,35 +189,22 @@ exports.register = function(server, options, next) {
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-        	var textsC = new TextsC();
+            var textsC = request.pre.allTexts;
 
-        	textsC.execute({
-				query: {
-                    command: "select * from texts_read()"
-				}
-        	})
-        	.done(
-        		function(){
-                    var resp         = textsC.toJSON();
-                    var transformMap = transforms.maps.text;
-                    var transform    = transforms.transformArray;
+            var resp         = textsC.toJSON();
+            var transformMap = transforms.maps.text;
+            var transform    = transforms.transformArray;
 
-                    return reply(transform(resp, transformMap));
-        		},
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-        	);
-
-
+            return reply(transform(resp, transformMap));
         },
 
         config: {
 
             auth: config.get('hapi.auth'),
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getAllTexts
+            ],
 
 			description: 'Get all the resources',
 			notes: 'Returns all the resources (full collection)',
@@ -228,36 +219,16 @@ debugger;
         handler: function (request, reply) {
             console.log(utils.logHandlerInfo(request));
 debugger;
+            var textsC = request.pre.textsById;
+            if(textsC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
 
+            var resp         = textsC.toJSON();
+            var transformMap = transforms.maps.text;
+            var transform    = transforms.transformArray;
 
-            var textsC = new TextsC();
-            request.params.ids.forEach(function(id){
-                textsC.add({id: id});
-            });
-
-            var queryOptions = JSON.stringify(textsC.toJSON());
-
-            textsC.execute({
-                query: {
-                    command: "select * from texts_read($1)",
-                    arguments: [queryOptions]
-                }
-            })
-            .done(
-                function(){
-debugger;
-                    var resp         = textsC.toJSON();
-                    var transformMap = transforms.maps.text;
-                    var transform    = transforms.transformArray;
-
-                    return reply(transform(resp, transformMap));
-                },
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-            );
+            return reply(transform(resp, transformMap));
 
         },
         config: {
@@ -266,7 +237,10 @@ debugger;
 			},
 
             auth: config.get('hapi.auth'),
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getTextsById
+            ],
 
 			description: 'Get 2 (short description)',
 			notes: 'Get 2 (long description)',
@@ -319,10 +293,7 @@ debugger;
                     return reply(transform(resp, transformMap));
         		},
                 function(err){
-debugger;
-
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
+                    return reply(Boom.badImplementation(err.message));
                 }
         	);
 
@@ -376,7 +347,6 @@ debugger;
         	})
         	.done(
         		function(){
-debugger;
                     var resp = textsC.toJSON();
 
                     // add the author information (directly from the credentials)
@@ -394,10 +364,7 @@ debugger;
                     return reply(transform(resp, transformMap));
         		},
                 function(err){
-debugger;
-
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
+                    return reply(Boom.badImplementation(err.message));
                 }   
         	);
         },
@@ -457,7 +424,10 @@ tdebugger;
 			validate: {
 	            params: internals.validateIds,
 			},
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getTextsById
+            ],
             auth: config.get('hapi.auth'),
 
 			description: 'Delete (short description)',

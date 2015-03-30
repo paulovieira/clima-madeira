@@ -97,6 +97,7 @@ var preRequisites = {
 			assign: "usersC"
 		},
 
+		// old method - to be deleted
 		readAllTexts: {
 			method: function(request, reply){
 				console.log("pre: db.readAllTexts");
@@ -114,6 +115,45 @@ var preRequisites = {
 		            .done();
 			},
 			assign: "textsC",
+		},
+
+		getAllTexts: {
+			method: function(request, reply){
+				console.log("pre: db.getAllTexts");
+		        var textsC = new BaseC();
+
+		        textsC
+		            .execute({
+		                query: {
+		                    command: "select * from texts_read()"
+		                },
+		            })
+		            .then(function() {
+	                	return reply(textsC);
+	                })
+		            .done();
+			},
+			assign: "allTexts"
+		},
+
+		getTextsById: {
+			method: function(request, reply){
+				console.log("pre: db.getTextById");
+		        var textsC = new BaseC();
+
+		        textsC
+		            .execute({
+		                query: {
+		                    command: "select * from texts_read($1)",
+		                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
+		                },
+		            })
+		            .then(function() {
+	                	return reply(textsC);
+	                })
+		            .done();
+			},
+			assign: "textsById",
 		},
 
 		readAllFiles: {
@@ -297,7 +337,7 @@ var preRequisites = {
 			method: function(request, reply){
 				console.log("pre: extractTags");
 
-console.log("request.payload: ", request.payload);
+//console.log("request.payload: ", request.payload);
 
 				// convert the tags string to an array of strings
 				var payloadObj, tagsArray = [];
@@ -306,14 +346,14 @@ console.log("request.payload: ", request.payload);
 					payloadObj = request.payload[0];
 					tags = request.payload[0].tags;
 				}
-				else if(typeof request.payload.tags === "string"){
+				else if(request.payload && typeof request.payload.tags === "string"){
 					payloadObj = request.payload;
 					tags = request.payload.tags;
 				}
 
 				// if the payload has tags, process them
-				if(payloadObj){
-					tagsArray = payloadObj.tags.split(",");
+				if(payloadObj && tags){
+					tagsArray = tags.split(",");
 					for(var i=0, l=tagsArray.length; i<l; i++){
 						tagsArray[i] = _s.trim(tagsArray[i], " ");
 					}

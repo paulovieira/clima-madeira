@@ -18,7 +18,12 @@ CREATE TABLE IF NOT EXISTS  texts(
 	description JSONB default '{}',
 	properties JSONB default '{}',
 	active BOOLEAN DEFAULT TRUE,	
-	last_updated timestamptz not null default now()
+	last_updated timestamptz not null default now(),
+
+	CONSTRAINT tags_must_be_array         CHECK (jsonb_typeof(tags) = 'array'),
+	CONSTRAINT contents_must_be_object    CHECK (jsonb_typeof(contents) = 'object'),
+	CONSTRAINT description_must_be_object CHECK (jsonb_typeof(description) = 'object'),
+	CONSTRAINT properties_must_be_object  CHECK (jsonb_typeof(properties) = 'object')
 );
 
 

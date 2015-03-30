@@ -8,7 +8,11 @@ CREATE TABLE IF NOT EXISTS files(
 	description JSONB default '{}',
 	properties JSONB default '{}',	
 	owner_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
-	uploaded_at timestamptz not null default now()
+	uploaded_at timestamptz not null default now(),
+
+	CONSTRAINT tags_must_be_array         CHECK (jsonb_typeof(tags) = 'array'),
+	CONSTRAINT description_must_be_object CHECK (jsonb_typeof(description) = 'object'),
+	CONSTRAINT properties_must_be_object  CHECK (jsonb_typeof(properties) = 'object')
 );
 
 

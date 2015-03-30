@@ -79,25 +79,22 @@ var UserM = Backbone.Model.extend({
 var TextM = Backbone.Model.extend({
 	urlRoot: "/api/texts",
 	defaults: {
-		"tags": undefined,
+		"tags": [],
 		"contents": {pt: "", en: ""},
-		"pt": "",
-		"en": "",
-		"author": ""
 	},
 	initialize: function(){
 
-		this.on("change:pt", function(model, newValue){
-			var contents = this.get("contents");
-			contents.pt = newValue;
-			this.set("contents", contents);
-		});
+		// this.on("change:pt", function(model, newValue){
+		// 	var contents = this.get("contents");
+		// 	contents.pt = newValue;
+		// 	this.set("contents", contents);
+		// });
 
-		this.on("change:en", function(model, newValue){
-			var contents = this.get("contents");
-			contents.en = newValue;
-			this.set("contents", contents);
-		});
+		// this.on("change:en", function(model, newValue){
+		// 	var contents = this.get("contents");
+		// 	contents.en = newValue;
+		// 	this.set("contents", contents);
+		// });
 
 	},
 	parse: function(resp){

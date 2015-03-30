@@ -8,7 +8,10 @@ CREATE TABLE IF NOT EXISTS groups(
 	code int not null unique,
 	name text not null unique,
 	description JSONB default '{}',
-	permissions JSONB default '{}'
+	permissions JSONB default '{}',
+
+	CONSTRAINT description_must_be_object CHECK (jsonb_typeof(description) = 'object'),
+	CONSTRAINT permissions_must_be_object CHECK (jsonb_typeof(permissions) = 'object')
 );
 
 

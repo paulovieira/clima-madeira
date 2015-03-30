@@ -9,7 +9,11 @@ CREATE TABLE IF NOT EXISTS maps(
 	file_id INT references files(id)  on update cascade on delete set null,
 	schema_name TEXT NOT NULL,
 	owner_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
-	created_at timestamptz not null default now()
+	created_at timestamptz not null default now(),
+
+	CONSTRAINT title_must_be_object       CHECK (jsonb_typeof(title) = 'object'),
+	CONSTRAINT description_must_be_object CHECK (jsonb_typeof(description) = 'object'),
+	CONSTRAINT properties_must_be_object  CHECK (jsonb_typeof(properties) = 'object')
 );
 
 
