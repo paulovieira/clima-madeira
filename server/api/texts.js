@@ -2,13 +2,10 @@
 var Boom = require('boom');
 var Joi = require('joi');
 var config = require('config');
-
-//var ent = require("ent");
 var _ = require('underscore');
 var _s = require('underscore.string');
 var changeCaseKeys = require('change-case-keys');
 
-var TextsC = require("../../server/models/base-model.js").collection;
 var BaseC = require("../../server/models/base-model.js").collection;
 var utils = require('../../server/common/utils.js');
 var transforms = require('../../server/common/transforms.js');
@@ -22,49 +19,10 @@ var internals = {};
 internals.resourceName = "texts";
 internals.resourcePath = "/texts";
 
-// decode and trim white spaces
-/*
-internals.decodeHtmlEntities = function(array){
-    var i,l;
-    for(i=0, l=array.length; i<l; i++){
-        if(array[i].contents){
-            array[i].contents["pt"] = _s.trim( ent.decode(array[i].contents["pt"]) );
-            array[i].contents["en"] = _s.trim( ent.decode(array[i].contents["en"]) );
-        }
-    }
-
-    return array;
-};
-*/
-
-// internals.isDbError = function (err){
-//     return !!err.sqlState;
-// };
-
-// internals.parseDbErrMsg = function(msg){
-//     // NOTE: msg.split(msg, "\n") isn't working here
-//     var arrayMsg = _s.lines(msg);
-
-//     arrayMsg = arrayMsg.filter(function(line){
-//         return _s.startsWith(line.toLowerCase(), "error:") || _s.startsWith(line.toLowerCase(), "detail:");
-//     });
-
-//     return arrayMsg.join(". ");
-// };
-
-// internals.parseError = function(err){
-//     if(internals.isDbError(err)){  
-//         //var errMsg = internals.parseDbErrMsg(err.message);
-//         //var errMsg = internals.parseDbErrMsg(err.message);
-//         return Boom.badImplementation(err.message);
-//     } 
-
-//     return Boom.badImplementation(err.message);
-// };
-
 
 // validate the ids param in the URL
 internals.validateIds = function(value, options, next){
+    console.log("validateIds");
 debugger;
 
     value.ids = _s.trim(value.ids, ",").split(",");
@@ -101,10 +59,12 @@ internals.validatePayloadForCreate = function(value, options, next){
             en: Joi.string().allow("")
         }).required(),
 
-        contentsDesc: Joi.object().keys({
+        description: Joi.object().keys({
             pt: Joi.string().allow(""),
             en: Joi.string().allow("")
         }),
+
+        properties: Joi.object(),
 
         active: Joi.boolean()
     });
@@ -129,10 +89,12 @@ internals.validatePayloadForUpdate = function(value, options, next){
             en: Joi.string().allow("")
         }).required(),
 
-        contentsDesc: Joi.object().keys({
+        description: Joi.object().keys({
             pt: Joi.string().allow(""),
             en: Joi.string().allow("")
-        }).required(),
+        }),
+
+        properties: Joi.object(),
 
         active: Joi.boolean()
     });
@@ -199,12 +161,12 @@ debugger;
 
         config: {
 
-            auth: config.get('hapi.auth'),
             pre: [
                 pre.abortIfNotAuthenticated,
                 pre.db.getAllTexts
             ],
 
+            auth: config.get('hapi.auth'),
 			description: 'Get all the resources',
 			notes: 'Returns all the resources (full collection)',
 			tags: ['api'],
@@ -232,16 +194,17 @@ debugger;
 
         },
         config: {
+
 			validate: {
 	            params: internals.validateIds,
 			},
 
-            auth: config.get('hapi.auth'),
             pre: [
                 pre.abortIfNotAuthenticated,
                 pre.db.getTextsById
             ],
 
+            auth: config.get('hapi.auth'),
 			description: 'Get 2 (short description)',
 			notes: 'Get 2 (long description)',
 			tags: ['api'],
@@ -299,18 +262,17 @@ debugger;
 
         },
         config: {
+
         	validate: {
                 payload: internals.validatePayloadForCreate
         	},
-            auth: config.get('hapi.auth'),
+
             pre: [
                 pre.abortIfNotAuthenticated,
                 pre.payload.extractTags
             ],
 
-            // payload: {
-            //     maxBytes: 1048576*3  // 3 megabytes
-            // },
+            auth: config.get('hapi.auth'),
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
 			tags: ['api'],
@@ -380,10 +342,10 @@ debugger;
 
         },
         config: {
+
 			validate: {
 	            params: internals.validateIds,
                 payload: internals.validatePayloadForUpdate
-
 			},
 
             pre: [
@@ -393,10 +355,6 @@ debugger;
             ],
 
             auth: config.get('hapi.auth'),
-            
-            // payload: {
-            //     maxBytes: 1048576*3  // 3 megabytes
-            // },
 			description: 'Put (short description)',
 			notes: 'Put (long description)',
 			tags: ['api'],
@@ -432,15 +390,17 @@ debugger;
         },
 
         config: {
+
 			validate: {
 	            params: internals.validateIds,
 			},
+
             pre: [
                 pre.abortIfNotAuthenticated,
                 pre.db.getTextsById
             ],
-            auth: config.get('hapi.auth'),
 
+            auth: config.get('hapi.auth'),
 			description: 'Delete (short description)',
 			notes: 'Delete (long description)',
 			tags: ['api'],
@@ -468,3 +428,32 @@ exports.register.attributes = {
 
 
 
+/*
+
+CURL TESTS
+==============
+
+
+curl  -X GET http://127.0.0.1:3000/api/texts
+
+curl  -X GET http://127.0.0.1:3000/api/texts/1
+
+curl  -X GET http://127.0.0.1:3000/api/texts/1,2
+
+
+
+curl -X POST http://127.0.0.1:3000/api/texts  \
+    -H "Content-Type: application/json"  \
+    -d '{ "tags": "aaa,ccc ggg", "contents": { "pt": "abc-pt", "en": "abc-en"} }' 
+
+
+
+curl -X PUT http://127.0.0.1:3000/api/texts/1001   \
+    -H "Content-Type: application/json"  \
+    -d '{"id": 1001, "tags": "aaa,ccc xxx", "contents": { "pt": "xyz-pt", "en": "xyz-en"}, "description": { "pt": "desc-pt", "en": "desc-en"} }' 
+
+
+
+curl -X DELETE http://127.0.0.1:3000/api/texts/1002
+
+*/
