@@ -63,7 +63,7 @@ var UserM = Backbone.Model.extend({
 
 		resp.createdAt = moment(resp.createdAt).format('YYYY-MM-DD HH:mm:ss');
 
-		// for this view we don't need these properties
+		// for this view we won't need these properties
 		delete resp.userGroups;
 		delete resp.userTexts;
 
@@ -72,7 +72,12 @@ var UserM = Backbone.Model.extend({
 
 });
 
+var UsersC = Backbone.Collection.extend({
+	model: UserM,
+	url: "/api/users"
+});
 
+var usersC = new UsersC();
 
 
 
@@ -84,6 +89,13 @@ var TextM = Backbone.Model.extend({
 	},
 	initialize: function(){
 
+		this.on("change", function(a,b,c){
+			if(this.get("id")===1){
+				var x = this.toJSON();
+				debugger;				
+			}
+
+		});
 		// this.on("change:pt", function(model, newValue){
 		// 	var contents = this.get("contents");
 		// 	contents.pt = newValue;
@@ -102,6 +114,7 @@ var TextM = Backbone.Model.extend({
 //debugger;
 
 		resp.lastUpdated = moment(resp.lastUpdated).format('YYYY-MM-DD HH:mm:ss');
+
 		return resp;
 	}
 });

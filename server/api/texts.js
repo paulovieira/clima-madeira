@@ -1,4 +1,3 @@
-
 var Boom = require('boom');
 var Joi = require('joi');
 var config = require('config');
@@ -153,7 +152,7 @@ debugger;
             var textsC = request.pre.allTexts;
 
             var resp         = textsC.toJSON();
-            var transformMap = transforms.maps.text;
+            var transformMap = transforms.maps.texts;
             var transform    = transforms.transformArray;
 
             return reply(transform(resp, transformMap));
@@ -187,7 +186,7 @@ debugger;
             }
 
             var resp         = textsC.toJSON();
-            var transformMap = transforms.maps.text;
+            var transformMap = transforms.maps.texts;
             var transform    = transforms.transformArray;
 
             return reply(transform(resp, transformMap));
@@ -250,7 +249,7 @@ debugger;
                 }
 
                 var resp         = textsC.toJSON();
-                var transformMap = transforms.maps.text;
+                var transformMap = transforms.maps.texts;
                 var transform    = transforms.transformArray;
 
                 return reply(transform(resp, transformMap));
@@ -299,11 +298,10 @@ debugger;
 
             utils.decodeImg(request.payload[0].contents);
 
-            request.payload.forEach(function(obj){
-                obj["author_id"] = request.auth.credentials.id;
-            });
+            // request.payload.forEach(function(obj){
+            //     obj["author_id"] = request.auth.credentials.id;
+            // });
 
-            //var textsC = new BaseC(request.payload);
         	textsC.execute({
 				query: {
 				  	command: "select * from texts_update($1);",
@@ -330,7 +328,7 @@ debugger;
                 }
 
                 var resp         = textsC.toJSON();
-                var transformMap = transforms.maps.text;
+                var transformMap = transforms.maps.texts;
                 var transform    = transforms.transformArray;
 
                 return reply(transform(resp, transformMap));

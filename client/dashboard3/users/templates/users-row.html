@@ -1,16 +1,20 @@
 <td>{{ id }}</td>x
 
 <td>
-    {{ contents.pt }}
+    {{ firstName }}
 </td>
 
 <td>
-	{{ contents.en }}
+	{{ lastName }}
 </td>
-<td>{{ authorData.firstName }} {{ authorData.lastName }}</td>
 
-<td>{{ tags | join(', ') }}</td>
+<td>
+	{{ email }}
+</td>
 
+<td>
+	{{ createdAt }}
+</td>
 
 <td class="text-right">
     <button class="btn btn-primary btn-xs js-edit"><span class="glyphicon glyphicon-pencil"></span>

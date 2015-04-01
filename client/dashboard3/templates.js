@@ -167,7 +167,7 @@ output += " ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "authorData")),"lastName", env.autoesc), env.autoesc);
 output += "</td>\n\n<td>";
 output += runtime.suppressValue(env.getFilter("join").call(context, runtime.contextOrFrameLookup(context, frame, "tags"),", "), env.autoesc);
-output += "</td>\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
+output += "</td>\n\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -202,6 +202,115 @@ var colno = null;
 var output = "";
 try {
 output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n                <th style=\"width: 4%\">id</th>\n                <th style=\"width: 30%\">pt</th>\n                <th style=\"width: 30%\">en</th>\n                <th style=\"width: 16%\">Author</th>\n                <th style=\"width: 10%\">Tags</th>\n                <th style=\"width: 10%\"></th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["users/templates/users-delete-modal.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Delete confirmation</h4>\n</div>\n\n\n<div class=\"modal-body\">\nAre you sure you want to delete user # ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "?\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-danger js-modal-delete\">Yes</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancel</button>\n\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["users/templates/users-edit-modal.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Edit user #";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-user-first-name\">First Name</label>\n            <input type=\"text\" id=\"js-edit-user-first-name\" class=\"form-control\" name=\"edit-user-first-name\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "firstName"), env.autoesc);
+output += "\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-user-last-name\">Last Name</label>\n            <input type=\"text\" id=\"js-user-last-name\" class=\"form-control\" name=\"edit-user-last-name\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "lastName"), env.autoesc);
+output += "\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-user-email\">Email</label>\n            <input type=\"text\" id=\"js-edit-user-email\" class=\"form-control\" name=\"edit-user-email\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "email"), env.autoesc);
+output += "\" >\n        </div>\n\n        <div class=\"form-group\">\n            <label>id</label>\n            <input type=\"text\" class=\"form-control\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "\" disabled>\n        </div>\n        <div class=\"form-group\">\n            <label>Created At</label>\n            <input type=\"text\" class=\"form-control\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "createdAt"), env.autoesc);
+output += "\" disabled>\n        </div>\n        \n    </form>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary js-modal-save\">Gravar</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancelar</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["users/templates/users-row.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<td>";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "</td>x\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "firstName"), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "lastName"), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "email"), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "createdAt"), env.autoesc);
+output += "\n</td>\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["users/templates/users-tab.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<ul class=\"nav nav-tabs\">\n    <li role=\"presentation\" class=\"active\">\n        <a href=\"#\" data-tab-separator=\"users-all\">Todos os utilizadores</a>\n    </li>\n    <li role=\"presentation\">\n        <a href=\"#\" data-tab-separator=\"users-new\">Novo utilizador</a>\n    </li>\n</ul>\n\n<div id=\"users-region\"></div>";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["users/templates/users-table.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n            \n                <th style=\"width: 5%\">id</th>\n                <th style=\"width: 20%\">First Name</th>\n                <th style=\"width: 20%\">Last Name</th>\n                <th style=\"width: 25%\">email</th>\n                <th style=\"width: 20%\">Created At</th>\n\n                <th style=\"width: 10%\"></th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
 cb(null, output);
 ;
 } catch (e) {

@@ -7,7 +7,7 @@ var transforms = {
 
 	//  transform maps to be used in Hoek.transform
 	maps: {
-		text: {
+		texts: {
 		    // a) properties to be maintained
 		    "id": "id",
 		    "tags": "tags",
@@ -15,8 +15,9 @@ var transforms = {
 		    "lastUpdated": "lastUpdated",
 
 		    // b) new properties (move properties from the nested object to the top object)
-		    //"pt": "contents.pt",
-		    //"en": "contents.en",
+			// NOTE: this is used to make the server-side templates lighter
+//		    "pt": "contents.pt",
+//		    "en": "contents.en",
 
 		    // c) changed properties (some fields from authorData, such as pwHash, will be deleted)
 
@@ -29,7 +30,7 @@ var transforms = {
 		    // d) deleted properties: "contentsDesc", "authorId", "active"
 		},
 
-		user: {
+		users: {
 		    // a) properties to be maintained
 		    "id": "id",
 		    "email": "email",

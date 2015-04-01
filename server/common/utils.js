@@ -60,14 +60,14 @@ module.exports = {
     },
 
     // call Hoek.transform in all objects of an array (of objects)
-    transform: function(array, transform, options) {
+    transform: function(array, transformMap, options) {
         if (!_.isArray(array)) {
             array = [array];
         }
 
         var i, li;
         for (i = 0, li = array.length; i < li; i++) {
-            array[i] = Hoek.transform(array[i], transform, options);
+            array[i] = Hoek.transform(array[i], transformMap, options);
         }
 
         return array;

@@ -1,5 +1,6 @@
-var TextEditModalIV = Mn.ItemView.extend({
-	template: "texts/templates/texts-edit-modal.html",
+
+var UserEditModalIV = Mn.ItemView.extend({
+	template: "users/templates/users-edit-modal.html",
 
 	ui: {
 		"modalCloseBtn":  "button.js-modal-cancel",
@@ -17,25 +18,20 @@ var TextEditModalIV = Mn.ItemView.extend({
 	},
 
 	updateResource: function(){
-debugger;
+
 		var data = Backbone.Syphon.serialize(this);
 
 		var attrs = {
-			"contents": {
-				"pt": $.trim(data["edit-text-pt"]),
-				"en": $.trim(data["edit-text-en"])
-			},
-			"tags": data["edit-text-tags"]
+			"firstName": $.trim(data["edit-user-first-name"]),
+			"lastName":  $.trim(data["edit-user-last-name"]),
+			"email":     $.trim(data["edit-user-email"])
 		};
 
-		if(attrs.contents.pt + attrs.contents.pt===""){
+		// all the fields must be filled (otherwise the validation in the server will reject)
+		if(attrs.firstName==="" || attrs.lastName==="" || attrs.email===""){
 			alert("Please fill the missing fields");
 			return;
 		}
-
-		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
-		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
-		// after we get a 200 response from the server (meaning the row has actually been updated)
 
 		this.ui.modalSaveBtn.prop("disabled", true);
 
@@ -70,8 +66,8 @@ debugger;
 });
 
 
-var TextDeleteModalIV = Mn.ItemView.extend({
-	template: "texts/templates/texts-delete-modal.html",
+var UserDeleteModalIV = Mn.ItemView.extend({
+	template: "users/templates/users-delete-modal.html",
 
 	ui: {
 		"modalCloseBtn":  "button.js-modal-cancel",
@@ -93,8 +89,9 @@ var TextDeleteModalIV = Mn.ItemView.extend({
 });
 
 
-var TextRowLV = Mn.LayoutView.extend({
-	template: "texts/templates/texts-row.html",
+
+var UserRowLV = Mn.LayoutView.extend({
+	template: "users/templates/users-row.html",
 	tagName: "tr",
 	ui: {
 		"editModalBtn": "button.js-edit",
@@ -109,91 +106,37 @@ var TextRowLV = Mn.LayoutView.extend({
 		ShowEditModal: {
 			behaviorClass: window.Behaviors.ShowModal,
 			uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
-			viewClass: TextEditModalIV  // and will show this view
+			viewClass: UserEditModalIV  // and will show this view
 		},
 
 		ShowDeleteModal: {
 			behaviorClass: window.Behaviors.ShowModal,
 			uiKey: "deleteModalBtn",
-			viewClass: TextDeleteModalIV 
+			viewClass: UserDeleteModalIV 
 		},
 	},
 
 });
 
-var TextsTableCV = Mn.CompositeView.extend({
-	template: "texts/templates/texts-table.html",
-	childView: TextRowLV,
+var UsersTableCV = Mn.CompositeView.extend({
+	template: "users/templates/users-table.html",
+	childView: UserRowLV,
 	childViewContainer: "tbody",
 });
 
 
-var TextNewLV = Mn.LayoutView.extend({
-	template: "texts/templates/texts-new.html",
-
-	ui: {
-		saveBtn: "button.js-save"
-	},
-
-	events: {
-		"click @ui.saveBtn": "createResource"
-	},
-
-	createResource: function(){
-
-		var data = Backbone.Syphon.serialize(this);
-
-		var attrs = {
-			"contents": {
-				"pt": $.trim(data["new-text-pt"]),
-				"en": $.trim(data["new-text-en"])
-			},
-			"tags": data["new-text-tags"]
-		};
-
-		if(attrs.contents.pt + attrs.contents.pt === ""){
-			alert("Please fill the missing fields");
-			return;
-		}
-
-		this.ui.saveBtn.prop("disabled", true);
-
-		var self = this;
-		Q.delay(150)
-			.then(function(){
-				return self.model.save(attrs, {wait: true});  // returns a promise
-			})
-			.then(function(){
-				alert("O texto foi criado com sucesso.");
-			})
-			.catch(function(err){
-				var msg = err.responseJSON ? err.responseJSON.message : 
-											( err.message ? err.message : "unknown error" );
-				
-				alert("ERROR: " + msg);
-				throw new Error(msg);
-			})
-			.finally(function(){
-				self.ui.saveBtn.prop("disabled", false);
-			})
-			.done();
-
-	}
-});
-
-
-var TextsTabLV = Mn.LayoutView.extend({
-	template: "texts/templates/texts-tab.html",
+var UsersTabLV = Mn.LayoutView.extend({
+	template: "users/templates/users-tab.html",
 
 	regions: {
-		tabContentRegion: "#texts-region"
+		tabContentRegion: "#users-region"
 	},
 
 	events: {
 		"click a": "updateView"
 	},
 
-	// the initial view will be the list of all texts
+	// the initial view will be the list of all users
 	onBeforeShow: function(){
 		this.showAll();
 	},
@@ -206,10 +149,10 @@ var TextsTabLV = Mn.LayoutView.extend({
 		$target.parent().addClass("active");
 
 		switch($target.data("tab-separator")){
-			case "texts-all":
+			case "users-all":
 				this.showAll();
 				break;
-			case "texts-new":
+			case "users-new":
 				this.showNew();
 				break;
 			default:
@@ -218,27 +161,28 @@ var TextsTabLV = Mn.LayoutView.extend({
 	},
 
 	showNew: function(){
-		var textNewLV = new TextNewLV({
-			model: new TextM()
-		});
-		this.tabContentRegion.show(textNewLV); 
+		alert("To be done");
+		// var userNewLV = new UserNewLV({
+		// 	model: new UserM()
+		// });
+		// this.tabContentRegion.show(userNewLV); 
 	},
 
 	showAll: function(){
-		var textsTableCV = new TextsTableCV({
-			collection: textsC
+		var usersTableCV = new UsersTableCV({
+			collection: usersC
 		});
 
 		var self = this;
 
-		Q(textsC.fetch())
+		Q(usersC.fetch())
 			.then(function(){ 
-				self.tabContentRegion.show(textsTableCV); 
+				self.tabContentRegion.show(usersTableCV); 
 			})
 			.catch(function(err){
 				var msg = err.responseJSON ? err.responseJSON.message : 
 											( err.message ? err.message : "unknown error" );
-				
+
 				alert("ERROR: " + msg);
 				throw new Error(msg);
 			})
@@ -247,5 +191,3 @@ var TextsTabLV = Mn.LayoutView.extend({
 
 
 });
-
-

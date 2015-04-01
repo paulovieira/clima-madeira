@@ -1,26 +1,21 @@
 var MainLayout = Mn.LayoutView.extend({
+
 	template: "main-layout/templates/main-layout.html",
+
 	initialize: function(){
 		leftMenuChannel.on("show:main:right", this.showViewRight, this);
 	},
+
 	regions: {
 		mainLeftRegion: "#main-left-region",
 		mainRightRegion: "#main-right-region"
 	},
+
 	onBeforeShow: function(view, region){
-//debugger;
-
-
 		var menuLeftIV = new MenuLeftIV({
 			collection: menuLeftC
 		});
 		this.mainLeftRegion.show(menuLeftIV);
-/*
-		this.showViewRight("profile");
-		setTimeout(function(){
-			$(".panel-body").first().find(".arrow-container").addClass("glyphicon glyphicon-chevron-right");
-		}, 5);
-*/
 	},
 
 	showViewRight: function(code){
@@ -31,6 +26,9 @@ var MainLayout = Mn.LayoutView.extend({
 				break;
 			case "#texts":
 				this.showTexts();
+				break;
+			case "#users":
+				this.showUsers();
 				break;
 			default:
 				throw new Error("showViewRight: unknown code");
@@ -101,26 +99,13 @@ var MainLayout = Mn.LayoutView.extend({
 	},
 
 	showTexts: function(){
+		var textsTabLV = new TextsTabLV();
+		this.mainRightRegion.show(textsTabLV);
+	},
 
-		var textsTab = new TextsTabLV();
-		this.mainRightRegion.show(textsTab);
-
-		// var textsTableCV = new TextsTableCV({
-		// 	collection: textsC
-		// });
-
-		// var fulfilled = _.bind(
-		// 	function(){ 
-		// 		this.mainRightRegion.show(textsTableCV); 
-		// 	}, 
-		// 	this);
-
-		// Q(textsC.fetch()).then(
-		// 	fulfilled, 
-		// 	function(err){
-		// 		debugger;
-		// 	}
-		// );
+	showUsers: function(){
+		var usersTabLV = new UsersTabLV();
+		this.mainRightRegion.show(usersTabLV);
 	},
 
 /*

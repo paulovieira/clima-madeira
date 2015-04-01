@@ -117,6 +117,45 @@ var preRequisites = {
 			assign: "textsC",
 		},
 
+		getAllUsers: {
+			method: function(request, reply){
+				console.log("pre: db.getAllUsers");
+		        var usersC = new BaseC();
+
+		        usersC
+		            .execute({
+		                query: {
+		                    command: "select * from users_read()"
+		                },
+		            })
+		            .then(function() {
+	                	return reply(usersC);
+	                })
+		            .done();
+			},
+			assign: "allUsers"
+		},
+
+		getUsersById: {
+			method: function(request, reply){
+				console.log("pre: db.getUsersById");
+		        var usersC = new BaseC();
+
+		        usersC
+		            .execute({
+		                query: {
+		                    command: "select * from users_read($1)",
+		                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
+		                },
+		            })
+		            .then(function() {
+	                	return reply(usersC);
+	                })
+		            .done();
+			},
+			assign: "usersById",
+		},
+
 		getAllTexts: {
 			method: function(request, reply){
 				console.log("pre: db.getAllTexts");
@@ -259,10 +298,16 @@ var preRequisites = {
 			method: function(request, reply){
 				console.log("pre: transform.texts");
 
-	            var transformMap = transforms.maps.text;
+	            var transformMap = transforms.maps.texts
 	            var transform    = transforms.transformArray;
 
 				var textsArray = transform(request.pre.textsC.toJSON(), transformMap);
+
+				// manually copy the properties in the contents to the top level (to make the nunjucks templates easier)
+				for(var i=0, l=textsArray.length;  i<l;  i++){
+					(textsArray[i]).pt = (textsArray[i]).contents.pt;
+					(textsArray[i]).en = (textsArray[i]).contents.en;
+				}
 
 				// transform the array into an object, indexed by the id; this will make it easy to access an arbitrary text,
 				// and will avoid using sparse arrays
@@ -278,10 +323,16 @@ var preRequisites = {
 			method: function(request, reply){
 				console.log("pre: transform.textsArray");
 
-	            var transformMap = transforms.maps.text;
+	            var transformMap = transforms.maps.texts;
 	            var transform    = transforms.transformArray;
 
 				var textsArray = transform(request.pre.textsC.toJSON(), transformMap);
+
+				// manually copy the properties in the contents to the top level (to make the nunjucks templates easier)
+				for(var i=0, l=textsArray.length;  i<l;  i++){
+					(textsArray[i]).pt = (textsArray[i]).contents.pt;
+					(textsArray[i]).en = (textsArray[i]).contents.en;
+				}
 
 				return reply(textsArray);
 			},
@@ -423,10 +474,11 @@ var preRequisites = {
 		        }
 		    }
 		    else{
-		    	// use the default user
+		    	// simulate the login using the first user
 		        request.auth.credentials.id = 1;
 		        request.auth.credentials.firstName = "paulo";
 		        request.auth.credentials.lastName = "vieira";
+		        request.auth.credentials.isAdmin = true;
 		    }
 
 		    return reply();

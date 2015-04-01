@@ -110,14 +110,6 @@ server.on('request-internal', function (request, event, tags) {
 
 
 
-//
-
-server.connections[0].table().forEach(function(obj){
-    //console.log(Object.keys(obj))
-    console.log(obj.settings)
-})
-
-
 // 6. Start the server
 server.start(function() {
     console.log("Server started: \n" +

@@ -1,12 +1,12 @@
 var Boom = require('boom');
 var Joi = require('joi');
+var config = require('config');
 var _ = require('underscore');
 var _s = require('underscore.string');
 var changeCaseKeys = require('change-case-keys');
 var UUID = require('node-uuid');
 var Q = require('q');
 var Bcrypt = require("bcrypt");
-var config = require('config');
 
 var UsersC = require(global.rootPath + "server/models/base-model.js").collection;
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
@@ -148,107 +148,84 @@ internals.validatePayload = function(value, options, next, schema) {
 exports.register = function(server, options, next) {
 
 
-        // READ (all)
-        server.route({
-            method: 'GET',
-            path: internals.resourcePath,
-            handler: function (request, reply) {
-                console.log(utils.logHandlerInfo(request));
+    // READ (all)
+    server.route({
+        method: 'GET',
+        path: internals.resourcePath,
+        handler: function (request, reply) {
+            console.log(utils.logHandlerInfo(request));
 debugger;
-                // if(!request.auth.credentials.isAdmin){
-                //     return reply(Boom.forbidden("To access this resource you must be admin."));
-                // }
-
-                var usersC = new BaseC();
-
-                usersC.execute({
-                    query: {
-                        command: "select * from users_read()"
-                    }
-                })
-                .done(
-                    function(){
-
-                        var resp         = usersC.toJSON();
-                        var transformMap = transforms.maps.user;
-                        var transform    = transforms.transformArray;
-
-                        return reply(transform(resp, transformMap));
-                    },
-                    function(err){
-    debugger;
-                        var boomErr = internals.parseError(err);
-                        return reply(boomErr);
-                    }
-                );
-
-
-            },
-
-            config: {
-
-                auth: config.get('hapi.auth'),
-                pre: [pre.abortIfNotAuthenticated],
-
-                description: 'Get all the resources',
-                notes: 'Returns all the resources (full collection)',
-                tags: ['api'],
+            // if the user is not admin, he/she can't read data about other users
+            if(!request.auth.credentials.isAdmin){
+                return reply(Boom.forbidden("You cannot request the personal data of other users."));
             }
-        });
 
+            var usersC = request.pre.allUsers;
+
+            var resp         = usersC.toJSON();
+            var transformMap = transforms.maps.users;
+            var transform    = transforms.transformArray;
+
+            return reply(transform(resp, transformMap));
+        },
+
+        config: {
+
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getAllUsers
+            ],
+
+            auth: config.get('hapi.auth'),
+            description: 'Get all the resources',
+            notes: 'Returns all the resources (full collection)',
+            tags: ['api'],
+        }
+    });
     
-        // READ (one or more, but not all)
-        server.route({
-            method: 'GET',
-            path: internals.resourcePath + "/{ids}",
-            handler: function (request, reply) {
-                console.log(utils.logHandlerInfo(request));
-    debugger;
-
-                var usersC = new BaseC(),
-                    userId = request.params.ids[0]; 
-
-                if(request.auth.credentials.id !== userId){
-                    return reply(Boom.forbidden("You cannot request the personal data of other users."));
-                }
-
-                usersC.execute({
-                    query: {
-                        command: "select * from users_read($1)",
-                        arguments: [JSON.stringify({id: userId})]
-                    }
-                })
-                .done(
-                    function(){
-    debugger;
-                        var resp         = usersC.toJSON();
-                        var transformMap = transforms.maps.user;
-                        var transform    = transforms.transformArray;
-
-                        return reply(transform(resp, transformMap));
-                    },
-                    function(err){
-    debugger;
-                        var boomErr = internals.parseError(err);
-                        return reply(boomErr);
-                    }
-                );
-
-            },
-            config: {
-                validate: {
-                    params: internals.validateIds,
-                },
-                auth: config.get('hapi.auth'),
-                pre: [pre.abortIfNotAuthenticated],
-
-                description: 'Get 2 (short description)',
-                notes: 'Get 2 (long description)',
-                tags: ['api'],
+    // READ (one or more, but not all)
+    server.route({
+        method: 'GET',
+        path: internals.resourcePath + "/{ids}",
+        handler: function (request, reply) {
+            console.log(utils.logHandlerInfo(request));
+debugger;
+            // if the user is not admin, he/she can only read his own data
+            if(!request.auth.credentials.isAdmin && request.auth.credentials.id !== request.params.ids[0]){
+                return reply(Boom.forbidden("You cannot request the personal data of other users."));
             }
-        });
+
+            var usersC = request.pre.usersById;
+            
+            if(usersC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
+
+            var resp         = usersC.toJSON();
+            var transformMap = transforms.maps.users;
+            var transform    = transforms.transformArray;
+
+            return reply(transform(resp, transformMap));
+        },
+        config: {
+
+            validate: {
+                params: internals.validateIds,
+            },
+
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getUsersById
+            ],
+
+            auth: config.get('hapi.auth'),
+            description: 'Get 2 (short description)',
+            notes: 'Get 2 (long description)',
+            tags: ['api'],
+        }
+    });
 /*
-        // CREATE (one or more)
+        // CREATE (one or more) - to be done!
         server.route({
             method: 'POST',
             path: internals.resourcePath,
@@ -307,149 +284,156 @@ debugger;
             }
         });
 */
-        // UPDATE (one or more)
-        server.route({
-            method: 'PUT',
-            path: internals.resourcePath + "/{ids}",
-            handler: function (request, reply) {
+    // UPDATE (one or more)
+    server.route({
+        method: 'PUT',
+        path: internals.resourcePath + "/{ids}",
+        handler: function (request, reply) {
 
-                // this resource might be called from 2 places: a) the update profile menu,
-                // or b) from the users menu; if it is called from a), we must make sure
-                // the id given in the param is equal to the id in the credentials;
-                // if it is from b), we must make sure it is an admin
+            // this resource might be called from 2 places: a) the update profile menu,
+            // or b) from the users menu; if it is called from a), we must make sure
+            // the id given in the param is equal to the id in the credentials;
+            // if it is from b), we must make sure it is an admin
 
-                console.log(utils.logHandlerInfo(request));
-    debugger;
+            console.log(utils.logHandlerInfo(request));
+debugger;
 
-                var usersC = new BaseC(),
-                    userId = request.params.ids[0],
-                    updateProfile = request.payload[0]["update_profile"],
-                    dbUsersC = request.pre.usersC,
-                    usersGroupsC = request.pre.usersGroupsC;
-
-                if(updateProfile === true){
-                    if(request.auth.credentials.id !== userId){
-                        return reply(Boom.forbidden("You cannot update the personal data of other users."));
-                    }
-                }
-                else{
-                    if(request.auth.credentials.isAdmin !== true){
-                        return reply(Boom.forbidden("To edit the personal data of other users you must belong to the admin group"));    
-                    }
-                }
-
-                var updatedData = request.payload[0],
-                    currentData = dbUsersC.findWhere({ id: userId});
-
-                // if we are updating the password, first verify if the submitted current pw matches 
-                // with the one in the database
-                if(updatedData["current_pw"]){
-
-                    var match = Bcrypt.compareSync(updatedData["current_pw"], currentData.get("pwHash"));
-
-                    if(!match){
-                        return reply(Boom.forbidden("The current password does not match."))   
-                    }
-
-                    // TODO: in the server we should also be checking that the new pw
-                    // matches in the 2 fields
-
-                    // if the pw matches, hash the new password
-                    updatedData["pw_hash"] = Bcrypt.hashSync(updatedData["new_pw"], 10);
-                }
-
-               
-                usersC.execute({
-                    query: {
-                        command: "select * from users_update($1);",
-                        arguments: [JSON.stringify(updatedData)]
-                    }
-                })
-                .done(
-                    function(){
-    debugger;
-                        var resp      = usersC.toJSON();
-                        var transformMap = transforms.maps.user;
-                        var transform    = transforms.transformArray;
-
-                        return reply(transform(resp, transformMap));
-                    },
-                    function(err){
-    debugger;
-
-                        var boomErr = internals.parseError(err);
-                        return reply(boomErr);
-                    }   
-                );
-            },
-            config: {
-                validate: {
-                    params: internals.validateIds,
-                    payload: internals.validatePayloadForUpdate
-
-                },
-                auth: config.get('hapi.auth'),
-
-                pre: [
-                    pre.abortIfNotAuthenticated,
-                    [pre.db.readAllUsers, pre.db.readAllUsersGroups]
-                ],
-
-                description: 'Put (short description)',
-                notes: 'Put (long description)',
-                tags: ['api'],
+            // if the user is not admin, he/she can only update his own data
+            if(!request.auth.credentials.isAdmin && request.auth.credentials.id !== request.params.ids[0]){
+                return reply(Boom.forbidden("You cannot update the personal data of other users."));
             }
-        });
 
-        // DELETE (one or more)
-        server.route({
-            method: 'DELETE',
-            path: internals.resourcePath + "/{ids}",
-            handler: function (request, reply) {
-    debugger;
-                var usersC = new UsersC();
-                request.params.ids.forEach(function(id){
-                    usersC.add({id: id});
-                })
+            var usersC = request.pre.usersById;
+            if(usersC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
 
-                var dbData = JSON.stringify(usersC.toJSON());
 
-                usersC.execute({
+            // if we are updating the password, first verify if the submitted current pw matches 
+            // with the one in the database (which has been hashed)
+            var currentPwHash      = usersC.at(0).get("pwHash"),   // the pw hash in the database
+                submittedCurrentPw = (request.payload[0])["current_pw"] || "",
+                newPw              = (request.payload[0])["new_pw"];
+            
+            if(newPw){
+                var match = Bcrypt.compareSync(submittedCurrentPw, currentPwHash);
+                if(!match){
+                    return reply(Boom.forbidden("The current password does not match."))   
+                }
+
+                // if the pw matches, hash the new password (blowfish) to be stored in the db
+                (request.payload[0])["pw_hash"] = Bcrypt.hashSync(newPw, 10);
+            }
+
+
+            usersC.execute({
+                query: {
+                    command: "select * from users_update($1);",
+                    arguments: [JSON.stringify(request.payload)]
+                },
+                reset: true 
+            })
+            .then(function(updatedData){
+
+                // read the data that was updated (to obtain the joined data)
+                return usersC.execute({
                     query: {
-                        command: "select * from users_delete($1)",
-                        arguments: [dbData]
+                        command: "select * from users_read($1);",
+                        arguments: [JSON.stringify( {id: updatedData[0].id} )]
                     },
                     reset: true
-                })
-                .done(
-                    function(){
-    debugger;
-                        return reply(usersC.toJSON());
-                    },
-                    function(err){
-    debugger;
-                        var boomErr = internals.parseError(err);
-                        return reply(boomErr);
-                    }
-                );
+                });
+
+            })
+            .then(function(){
+                // we couldn't read - something went wrong
+                if(usersC.length===0){
+                    return reply(Boom.badImplementation());
+                }
+
+                var resp         = usersC.toJSON();
+                var transformMap = transforms.maps.users;
+                var transform    = transforms.transformArray;
+
+                return reply(transform(resp, transformMap));
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+
+        },
+        config: {
+            validate: {
+                params: internals.validateIds,
+                payload: internals.validatePayloadForUpdate
+
             },
 
-            config: {
-                validate: {
-                    params: internals.validateIds,
-                },
-                pre: [pre.abortIfNotAuthenticated],
-                auth: config.get('hapi.auth'),
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getUsersById
+            ],
 
-                description: 'Delete (short description)',
-                notes: 'Delete (long description)',
-                tags: ['api'],
+            auth: config.get('hapi.auth'),
+            description: 'Put (short description)',
+            notes: 'Put (long description)',
+            tags: ['api'],
+        }
+    });
+
+    // DELETE (one or more)
+    server.route({
+        method: 'DELETE',
+        path: internals.resourcePath + "/{ids}",
+        handler: function (request, reply) {
+debugger;
+            console.log(utils.logHandlerInfo(request));
+
+            // if the user is not admin, he/she can only update his own data
+            if(!request.auth.credentials.isAdmin){
+                return reply(Boom.forbidden("Only users in the admin group can delete users."));
             }
-        });
-/*    */
+
+            var usersC = request.pre.usersById;
+            if(usersC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
+
+            usersC.execute({
+                query: {
+                    command: "select * from users_delete($1)",
+                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
+                }
+            })
+            .then(function(){
+                return reply(usersC.toJSON());
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+        },
+
+        config: {
+            validate: {
+                params: internals.validateIds,
+            },
+
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getUsersById
+            ],
+
+            auth: config.get('hapi.auth'),
+            description: 'Delete (short description)',
+            notes: 'Delete (long description)',
+            tags: ['api'],
+        }
+    });
 
 
-    // CREATE A PASSWORD TOKEN
+    // CREATE A PASSWORD TOKEN - to be updated!
 
     server.route({
         method: 'GET',
@@ -652,3 +636,42 @@ exports.register.attributes = {
     name: internals.resourceName,
     version: '1.0.0'
 };
+
+
+/***
+
+
+
+CURL TESTS
+==============
+
+
+curl  -X GET http://127.0.0.1:3000/api/users
+
+curl  -X GET http://127.0.0.1:3000/api/users/1
+
+curl  -X GET http://127.0.0.1:3000/api/users/1,2
+
+
+
+curl -X POST http://127.0.0.1:3000/api/users  \
+    -H "Content-Type: application/json"  \
+    -d '{ "first_name": "paulo" }' 
+
+
+
+curl -X PUT http://127.0.0.1:3000/api/users/1   \
+    -H "Content-Type: application/json"  \
+    -d '{"id": 1, "firstName": "paulox", "lastName": "yvieira", "email": "paulovieira@gmail.com" }' 
+
+
+curl -X PUT http://127.0.0.1:3000/api/users/3   \
+    -H "Content-Type: application/json"  \
+    -d '{"id": 3, "firstName": "userx", "lastName": "yenergia", "email": "user_energia@gmail.com", "currentPw": "abc", "newPw": "xyz" }' 
+
+
+
+curl -X DELETE http://127.0.0.1:3000/api/users/4
+
+
+***/

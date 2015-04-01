@@ -62,23 +62,26 @@ window.Behaviors.DeleteResourceAndCloseModal = Marionette.Behavior.extend({
 			.then(function(){
 				return self.view.model.destroy({ wait: true });  // returns a promise
 			})
-			.catch(function(jqXHR){
+			.catch(function(err){
 debugger;
-				var msg = jqXHR.responseJSON.message;
-				alert("ERROR: " + msg);
+				var msg = err.responseJSON ? err.responseJSON.message : 
+											( err.message ? err.message : "unknown error" );
 
 				// if the model has been deleted in the server in the meantime we get a 404; 
-				// the destroy() method in the above handler will not be called (because of the
-				// wait:true option), so the collection in the client will be outdated; we call destroy 
-				// again to remove it from the collection, but abort the ajax request immediately
-				if(jqXHR.responseJSON.statusCode === 404){
+				// the destroy() method in the above handler will not delete the model from the 
+				// collection (because of the wait:true option);
+				// the collection in the client will then be outdated so we call destroy again to remove 
+				// the deleted model from the collection; we also abort the ajax request immediately 
+				// because we are not interested in the response
+
+				if(err.responseJSON && err.responseJSON.statusCode === 404){
 					self.view.model.destroy().abort();
 				}
 
+				alert("ERROR: " + msg);
 				throw new Error(msg);
 			})
 			.finally(function(){
-				//self.ui.modalDeleteBtn.prop("disabled", false);
 				Dashboard.$modal1.modal("hide");
 				self.view.destroy();
 			})
