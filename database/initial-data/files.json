@@ -57,7 +57,7 @@
         "id": 7,
         "name": "logo-drota_70px.jpg",
         "logicalPath": "/uploads/public/images/logos",
-        "physicalPath": "/data/uploads/public/logos",
+        "physicalPath": "/data/uploads/public/images/logos",
         "tags": ["image", "logo"],
         "owner_id": 1
     }, 
@@ -66,7 +66,7 @@
         "id": 8,
         "name": "logo-cciam_70px.jpg",
         "logicalPath": "/uploads/public/images/logos",
-        "physicalPath": "/data/uploads/public/logos",
+        "physicalPath": "/data/uploads/public/images/logos",
         "tags": ["image", "logo"],
         "owner_id": 1
     }, 
@@ -75,7 +75,7 @@
         "id": 9,
         "name": "logo-fcul_70px.png",
         "logicalPath": "/uploads/public/images/logos",
-        "physicalPath": "/data/uploads/public/logos",
+        "physicalPath": "/data/uploads/public/images/logos",
         "tags": ["image", "logo"],
         "owner_id": 1
     }, 
@@ -84,7 +84,7 @@
         "id": 10,
         "name": "logo-ffcul_70px.jpg",
         "logicalPath": "/uploads/public/images/logos",
-        "physicalPath": "/data/uploads/public/logos",
+        "physicalPath": "/data/uploads/public/images/logos",
         "tags": ["image", "logo"],
         "owner_id": 1
     }, 

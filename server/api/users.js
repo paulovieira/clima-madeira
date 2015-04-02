@@ -16,39 +16,12 @@ var pre = require(global.rootPath + 'server/common/pre.js');
 
 var mandrill = require("node-mandrill")(config.get('email.mandrill.apiKey'));
 
-console.log("mandrill: ", config.get('email.mandrill'));
-
-
 var internals = {};
-/*** RESOURCE CONFIGURATION ***/
+
+
 
 internals.resourceName = "users";
 internals.resourcePath = "/users";
-
-
-internals.isDbError = function(err) {
-    return !!err.sqlState;
-};
-
-internals.parseDbErrMsg = function(msg) {
-    // NOTE: msg.split(msg, "\n") isn't working here
-    var arrayMsg = _s.lines(msg);
-
-    arrayMsg = arrayMsg.filter(function(line) {
-        return _s.startsWith(line.toLowerCase(), "error:") || _s.startsWith(line.toLowerCase(), "detail:");
-    });
-
-    return arrayMsg.join(". ");
-};
-
-internals.parseError = function(err) {
-    if (internals.isDbError(err)) {
-        var errMsg = internals.parseDbErrMsg(err.message);
-        return Boom.badImplementation(errMsg);
-    }
-
-    return Boom.badImplementation(err.message);
-};
 
 
 // validate the ids param in the URL
@@ -140,8 +113,6 @@ internals.validatePayload = function(value, options, next, schema) {
     return next(undefined, changeCaseKeys(validation.value, "underscored"));
 };
 
-/*** END OF RESOURCE CONFIGURATION ***/
-
 
 
 // plugin defintion function
@@ -207,6 +178,7 @@ debugger;
 
             return reply(transform(resp, transformMap));
         },
+
         config: {
 
             validate: {
@@ -363,11 +335,11 @@ debugger;
             .done();
 
         },
+
         config: {
             validate: {
                 params: internals.validateIds,
                 payload: internals.validatePayloadForUpdate
-
             },
 
             pre: [
@@ -404,7 +376,8 @@ debugger;
                 query: {
                     command: "select * from users_delete($1)",
                     arguments: [JSON.stringify( {id: request.params.ids[0]} )]
-                }
+                },
+                reset: true
             })
             .then(function(){
                 return reply(usersC.toJSON());
@@ -527,6 +500,7 @@ debugger;
                     }
                 );
         },
+
         config: {
             validate: {
                 params: {
@@ -601,6 +575,7 @@ debugger;
                     }
                 );
         },
+
         config: {
             validate: {
                 payload: {

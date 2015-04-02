@@ -1,5 +1,6 @@
-var TextEditModalIV = Mn.ItemView.extend({
-	template: "texts/templates/texts-edit-modal.html",
+
+var FileEditModalIV = Mn.ItemView.extend({
+	template: "files/templates/files-edit-modal.html",
 
 	ui: {
 		"modalCloseBtn":  "button.js-modal-cancel",
@@ -17,25 +18,18 @@ var TextEditModalIV = Mn.ItemView.extend({
 	},
 
 	updateResource: function(){
-debugger;
+
 		var data = Backbone.Syphon.serialize(this);
 
 		var attrs = {
-			"contents": {
-				"pt": $.trim(data["edit-text-pt"]),
-				"en": $.trim(data["edit-text-en"])
-			},
-			"tags": data["edit-text-tags"]
+			"tags":  $.trim(data["edit-files-tags"])
 		};
 
-		if(attrs.contents.pt + attrs.contents.pt===""){
-			alert("Please fill the missing fields");
-			return;
-		}
-
-		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
-		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
-		// after we get a 200 response from the server (meaning the row has actually been updated)
+		// all the fields must be filled (otherwise the validation in the server will reject)
+		// if(attrs.name===""){
+		// 	alert("Please fill the name field");
+		// 	return;
+		// }
 
 		this.ui.modalSaveBtn.prop("disabled", true);
 
@@ -70,8 +64,8 @@ debugger;
 });
 
 
-var TextDeleteModalIV = Mn.ItemView.extend({
-	template: "texts/templates/texts-delete-modal.html",
+var FileDeleteModalIV = Mn.ItemView.extend({
+	template: "files/templates/files-delete-modal.html",
 
 	ui: {
 		"modalCloseBtn":  "button.js-modal-cancel",
@@ -92,9 +86,8 @@ var TextDeleteModalIV = Mn.ItemView.extend({
 
 });
 
-
-var TextRowLV = Mn.LayoutView.extend({
-	template: "texts/templates/texts-row.html",
+var FileRowLV = Mn.LayoutView.extend({
+	template: "files/templates/files-row.html",
 	tagName: "tr",
 	ui: {
 		"editModalBtn": "button.js-edit",
@@ -109,96 +102,100 @@ var TextRowLV = Mn.LayoutView.extend({
 		ShowEditModal: {
 			behaviorClass: window.Behaviors.ShowModal,
 			uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
-			viewClass: TextEditModalIV  // and will show this view
+			viewClass: FileEditModalIV  // and will show this view
 		},
 
 		ShowDeleteModal: {
 			behaviorClass: window.Behaviors.ShowModal,
 			uiKey: "deleteModalBtn",
-			viewClass: TextDeleteModalIV 
+			viewClass: FileDeleteModalIV 
 		},
 	},
 
 });
 
-var TextsTableCV = Mn.CompositeView.extend({
-	template: "texts/templates/texts-table.html",
-	childView: TextRowLV,
+var FilesTableCV = Mn.CompositeView.extend({
+	template: "files/templates/files-table.html",
+	childView: FileRowLV,
 	childViewContainer: "tbody",
 });
 
 
-var TextNewLV = Mn.LayoutView.extend({
-	template: "texts/templates/texts-new.html",
 
-	ui: {
-		saveBtn: "button.js-save"
+var FileNewLV = Mn.LayoutView.extend({
+	template: "files/templates/files-new.html",
+
+	onAttach: function(){
+
+		$("#new_file").fileinput({
+		    uploadUrl: '/api/files',
+		    maxFileSize: 50000,  // in Kb
+		    showUpload: true,
+		    initialCaption: "Click the browse button on the right to choose a file",
+		    showRemove: false,
+		    //overwriteInitial: false,
+		    //showCaption: false
+		    // ajaxSettings: {
+		    // 	success: function(data, status, jqxhr){
+		    // 		debugger;
+		    // 	},
+		    // 	error: function(jqxhr, status, err){
+		    // 		debugger;
+		    // 	}
+		    // },
+		    uploadExtraData: function(){
+				return { 
+					tags: $("#new_file_tags").val()
+				}
+		    }
+
+		});
+
+		// $('#js-newfile').on('fileuploaded', function(event, data, previewId, index) {
+		// 	debugger;
+		// });
+
+
+		// $('#js-newfile').on('fileuploaderror', function(event, data, previewId, index) {
+		// debugger;
+		// });
+
+		// // $('#js-newfile').on('filebatchuploadcomplete', function(event, files, extra) {
+		// //     debugger;
+		// // });
+
+		// $('#js-newfile').on('filelock', function(event, filestack, extraData) {
+		// 	debugger;
+		// });
+
+		// $('#js-newfile').on('fileunlock', function(event, filestack, extraData) {
+		// 	debugger;
+		// });
+
+
+
 	},
 
-	events: {
-		"click @ui.saveBtn": "createResource"
-	},
-
-	createResource: function(){
-
-		var data = Backbone.Syphon.serialize(this);
-
-		var attrs = {
-			"contents": {
-				"pt": $.trim(data["new-text-pt"]),
-				"en": $.trim(data["new-text-en"])
-			},
-			"tags": data["new-text-tags"]
-		};
-
-		if(attrs.contents.pt + attrs.contents.pt === ""){
-			alert("Please fill the missing fields");
-			return;
-		}
-
-		this.ui.saveBtn.prop("disabled", true);
-
-		var self = this;
-		Q.delay(150)
-			.then(function(){
-				return self.model.save(attrs, {wait: true});  // returns a promise
-			})
-			.then(function(){
-				alert("O texto foi criado com sucesso.");
-			})
-			.catch(function(err){
-				var msg = err.responseJSON ? err.responseJSON.message : 
-											( err.message ? err.message : "unknown error" );
-				
-				alert("ERROR: " + msg);
-				throw new Error(msg);
-			})
-			.finally(function(){
-				self.ui.saveBtn.prop("disabled", false);
-			})
-			.done();
-
-	}
 });
 
-
-var TextsTabLV = Mn.LayoutView.extend({
-	template: "texts/templates/texts-tab.html",
+var FilesTabLV = Mn.LayoutView.extend({
+	template: "files/templates/files-tab.html",
 
 	regions: {
-		tabContentRegion: "#texts-region"
+		tabContentRegion: "#files-region"
 	},
 
 	events: {
 		"click a.js-dashboard-sep": "updateView"
 	},
 
-	// the initial view will be the list of all texts
+	// the initial view will be the list of all files
 	onBeforeShow: function(){
 		this.showAll();
 	},
 
 	updateView: function(e){
+
 		e.preventDefault();
 
 		var $target = $(e.target);
@@ -206,10 +203,10 @@ var TextsTabLV = Mn.LayoutView.extend({
 		$target.parent().addClass("active");
 
 		switch($target.data("tab-separator")){
-			case "texts-all":
+			case "files-all":
 				this.showAll();
 				break;
-			case "texts-new":
+			case "files-new":
 				this.showNew();
 				break;
 			default:
@@ -218,27 +215,29 @@ var TextsTabLV = Mn.LayoutView.extend({
 	},
 
 	showNew: function(){
-		var textNewLV = new TextNewLV({
-			model: new TextM()
+		//var fileM = new FileM();
+		var fileNewLV = new FileNewLV({
+		//	model: fileM
 		});
-		this.tabContentRegion.show(textNewLV); 
+		this.tabContentRegion.show(fileNewLV); 
 	},
 
 	showAll: function(){
-		var textsTableCV = new TextsTableCV({
-			collection: textsC
+
+		var filesTableCV = new FilesTableCV({
+			collection: filesC
 		});
 
 		var self = this;
 
-		Q(textsC.fetch())
+		Q(filesC.fetch())
 			.then(function(){ 
-				self.tabContentRegion.show(textsTableCV); 
+				self.tabContentRegion.show(filesTableCV); 
 			})
 			.catch(function(err){
 				var msg = err.responseJSON ? err.responseJSON.message : 
 											( err.message ? err.message : "unknown error" );
-				
+
 				alert("ERROR: " + msg);
 				throw new Error(msg);
 			})
@@ -247,5 +246,3 @@ var TextsTabLV = Mn.LayoutView.extend({
 
 
 });
-
-

@@ -5,13 +5,14 @@ var Joi = require('joi');
 var config = require('config');
 var fs = require('fs');
 var Q = require("q");
+var rimraf = require("rimraf");
 
 //var ent = require("ent");
 var _ = require('underscore');
 var _s = require('underscore.string');
 var changeCaseKeys = require('change-case-keys');
 
-var FilesC = require("../../server/models/base-model.js").collection;
+var BaseC = require("../../server/models/base-model.js").collection;
 var utils = require('../../server/common/utils.js');
 var transforms = require('../../server/common/transforms.js');
 var pre = require('../../server/common/pre.js');
@@ -24,30 +25,6 @@ var internals = {};
 internals.resourceName = "files";
 internals.resourcePath = "/files";
 
-
-internals.isDbError = function (err){
-    return !!err.sqlState;
-};
-
-internals.parseDbErrMsg = function(msg){
-    // NOTE: msg.split(msg, "\n") isn't working here
-    var arrayMsg = _s.lines(msg);
-
-    arrayMsg = arrayMsg.filter(function(line){
-        return _s.startsWith(line.toLowerCase(), "error:") || _s.startsWith(line.toLowerCase(), "detail:");
-    });
-
-    return arrayMsg.join(". ");
-};
-
-internals.parseError = function(err){
-    if(internals.isDbError(err)){  
-        var errMsg = internals.parseDbErrMsg(err.message);
-        return Boom.badImplementation(errMsg);
-    } 
-
-    return Boom.badImplementation(err.message);  
-};
 
 
 // validate the ids param in the URL
@@ -81,6 +58,8 @@ internals.validatePayloadForCreate = function(value, options, next){
         //tags: Joi.string().regex(/^$|^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
         //newfile: Joi.object().type(stream.Readable).strict()
         //newfile: Joi.any().strict()
+
+        tags: Joi.string().allow(""),
     });
 
     return internals.validatePayload(value, options, next, schemaCreate);
@@ -94,17 +73,22 @@ internals.validatePayloadForUpdate = function(value, options, next){
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0),
 
-        name: Joi.string().required(),
+        name: Joi.string(),
 
-        logicalPath: Joi.string().required(),
+        logicalPath: Joi.string(),
+
+        // physicalPath: Joi.string(),
 
         //tags: Joi.array().unique().min(0).includes(Joi.string()),
-        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
+        //tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
+        tags: Joi.string().allow(""),
 
         description: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
+            pt: Joi.string(),
+            en: Joi.string()
         }),
+
+        properties: Joi.object()
 
     });
 
@@ -113,11 +97,13 @@ internals.validatePayloadForUpdate = function(value, options, next){
 
 
 
-// NOTE: unlike the validations for other endpoints, here we don't convert to array (because that
-// will make things difficult for the creation of the file buffer)
+
 internals.validatePayload = function(value, options, next, schema){
 debugger;
 
+// NOTE: unlike the validations for other endpoints, here we don't convert to array (because that
+// will make things difficult for the creation of the file buffer)
+//    if(_.isObject(value) && !_.isArray(value)){  value = [value];  }
 
     var validation = Joi.validate(value, schema, config.get('hapi.joi'));
 
@@ -155,43 +141,28 @@ exports.register = function(server, options, next) {
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-        	var filesC = new FilesC();
-        	filesC.execute({
-				query: {
-                    command: "select * from files_read()"
-				}
-        	})
-        	.done(
-        		function(){
-                    var resp         = filesC.toJSON();
-                    var transformMap = transforms.maps.files;
-                    var transform    = transforms.transformArray;
+            var filesC = request.pre.allFiles;
 
-                    return reply(transform(resp, transformMap));
-                    //return reply(resp);
-        		},
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-        	);
+            var resp         = filesC.toJSON();
+            var transformMap = transforms.maps.files;
+            var transform    = transforms.transformArray;
 
-
+            return reply(transform(resp, transformMap));
         },
 
         config: {
 
-            auth: config.get('hapi.auth'),
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getAllFiles
+            ],
 
+            auth: config.get('hapi.auth'),
 			description: 'Get all the resources',
 			notes: 'Returns all the resources (full collection)',
 			tags: ['api'],
         }
     });
-
-
 
 
 	// READ (one or more, but not all)
@@ -202,50 +173,37 @@ debugger;
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-            var queryOptions = [];
-            request.params.ids.forEach(function(id){
-                queryOptions.push({id: id});
-            });
+            var filesC = request.pre.filesById;
+            
+            if(filesC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
 
-            var filesC = new FilesC();
-            filesC.execute({
-                query: {
-                    command: "select * from files_read($1)",
-                    arguments: [ JSON.stringify(queryOptions) ]
-                }
-            })
-            .done(
-                function(){
-debugger;
-                    var resp         = filesC.toJSON();
-                    var transformMap = transforms.maps.files;
-                    var transform    = transforms.transformArray;
+            var resp         = filesC.toJSON();
+            var transformMap = transforms.maps.files;
+            var transform    = transforms.transformArray;
 
-                    return reply(transform(resp, transformMap));
-                },
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-            );
-
+            return reply(transform(resp, transformMap));
         },
+
         config: {
 			validate: {
 	            params: internals.validateIds,
 			},
 
-            auth: config.get('hapi.auth'),
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getFilesById
+            ],
 
+            auth: config.get('hapi.auth'),
 			description: 'Get 2 (short description)',
 			notes: 'Get 2 (long description)',
 			tags: ['api'],
 
         }
     });
-/**/
+
     // CREATE (one or more)
     server.route({
         method: 'POST',
@@ -255,50 +213,64 @@ debugger;
 debugger;
 
 //console.log("request.payload: ", request.payload);
-            var filename = request.payload.newfile.hapi.filename;
 
-            // logicalPath and physicalPath are hard-coded for now
-            var logicalPath = "/uploads/public/";
-            var physicalPath = "/data" + logicalPath;
+            var filename     = request.payload.new_file.hapi.filename;
+            var logicalPath  = config.get("uploads.logicalPath");
+            var physicalPath = config.get("uploads.physicalPath");
 
             var ws = fs.createWriteStream(Path.join(global.rootPath, physicalPath, filename));
-            request.payload.newfile.pipe(ws);
+            request.payload.new_file.pipe(ws);
 
             ws.on("finish", function(){
 
-                var dbData = [{
+                var dbData = {
                     name: filename,
                     logicalPath: logicalPath,
                     physicalPath: physicalPath,
                     tags: request.payload.tags,
                     ownerId: request.auth.credentials.id
-                }];
+                };
 
-                var filesC = new FilesC();
+                var filesC = new BaseC();
                 filesC.execute({
                     query: {
                         command: "select * from files_create($1);",
                         arguments: [JSON.stringify(changeCaseKeys(dbData, "underscored"))]
                     }
                 })
-                .done(
-                    function(){
-    debugger;
-                        var resp = filesC.toJSON();
-                        return reply(resp);
-                    },
-                    function(err){
-    debugger;
-                        var boomErr = internals.parseError(err);
-                        return reply(boomErr);
+                .then(function(createdData){
+
+                    // read the data that was created (to obtain the joined data)
+                    return filesC.execute({
+                        query: {
+                            command: "select * from files_read($1);",
+                            arguments: [JSON.stringify( {id: createdData[0].id} )]
+                        },
+                        reset: true
+                    });
+
+                })
+                .then(function(){
+                    // we couldn't read - something went wrong
+                    if(filesC.length===0){
+                        return reply(Boom.badImplementation());
                     }
-                );
+
+                    var resp         = filesC.toJSON();
+                    var transformMap = transforms.maps.files;
+                    var transform    = transforms.transformArray;
+
+                    return reply(transform(resp, transformMap));
+                })
+                .catch(function(err){
+                    return reply(Boom.badImplementation(err.message));
+                })
+                .done();
                 
             });
 
             ws.on("error", function(err){
-                var boomErr = internals.parseError(err);
-                return reply(boomErr);
+                return reply(Boom.badImplementation(err.message));
             });
 
 
@@ -337,35 +309,49 @@ debugger;
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-            var dbData = [request.payload];
-console.log("dbData: ", dbData);
+            var filesC = request.pre.filesById;
+            if(filesC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
 
-            var filesC = new FilesC();
-        	filesC.execute({
-				query: {
-				  	command: "select * from files_update($1);",
-                    arguments: [JSON.stringify(changeCaseKeys(dbData, "underscored"))]
-				},
-                reset: true
-        	})
-        	.done(
-        		function(){
-debugger;
-                    var resp = filesC.toJSON();
+            filesC.execute({
+                query: {
+                    command: "select * from files_update($1);",
+                    arguments: [JSON.stringify(request.payload)]
+                },
+                reset: true 
+            })
+            .then(function(updatedData){
 
-                    // var transformMap = transforms.maps.files;
-                    // var transform    = transforms.transformArray;
+                // read the data that was updated (to obtain the joined data)
+                return filesC.execute({
+                    query: {
+                        command: "select * from files_read($1);",
+                        arguments: [JSON.stringify( {id: updatedData[0].id} )]
+                    },
+                    reset: true
+                });
 
-                    // return reply(transform(resp, transformMap));
-                    return reply(resp);
-        		},
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }   
-        	);
+            })
+            .then(function(){
+                // we couldn't read - something went wrong
+                if(filesC.length===0){
+                    return reply(Boom.badImplementation());
+                }
+
+                var resp         = filesC.toJSON();
+                var transformMap = transforms.maps.files;
+                var transform    = transforms.transformArray;
+
+                return reply(transform(resp, transformMap));
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+
         },
+
         config: {
 			validate: {
 	            params: internals.validateIds,
@@ -374,14 +360,14 @@ debugger;
 
             pre: [
                 pre.abortIfNotAuthenticated,
-                pre.payload.extractTags
+                [pre.db.getFilesById, pre.payload.extractTags]
             ],
 
-            auth: config.get('hapi.auth'),
-            
             payload: {
                 maxBytes: 1048576*3  // 3 megabytes
             },
+
+            auth: config.get('hapi.auth'),
 			description: 'Put (short description)',
 			notes: 'Put (long description)',
 			tags: ['api'],
@@ -394,47 +380,63 @@ debugger;
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
 debugger;
+            console.log(utils.logHandlerInfo(request));
 
-            var queryOptions = [];
-            request.params.ids.forEach(function(id){
-                queryOptions.push({id: id});
-            });
+            var filesC = request.pre.filesById;
+            if(filesC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
 
-                    // var boomErr = internals.parseError(err);
-                    // return reply(boomErr);
+            var fileFullPath = Path.join(global.rootPath, filesC.at(0).get("physicalPath"), filesC.at(0).get("name"));
 
-            var filesC = new FilesC();
-            filesC.execute({
-                query: {
-                    command: "select * from files_delete($1)",
-                    arguments: [ JSON.stringify(queryOptions) ]
-                },
-                reset: true
-            })
-            .done(
-                function(){
-debugger;
-                    return reply(filesC.toJSON());
-                },
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
+            var deferred = Q.defer(),
+                promise = deferred.promise;
+
+            rimraf(fileFullPath, function(err){
+                if(err){
+                    return deferred.reject(err);
                 }
-            );
+
+                return deferred.resolve();
+            })
+
+            promise
+            .then(function(){
+                var promise2 = filesC.execute({
+                    query: {
+                        command: "select * from files_delete($1)",
+                        arguments: [JSON.stringify( {id: request.params.ids[0]} )]
+                    },
+                    reset: true
+                });
+
+                return promise2;
+            })
+            .then(function(){
+                return reply(filesC.toJSON());
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+
         },
 
         config: {
+
 			validate: {
 	            params: internals.validateIds,
 			},
-            pre: [pre.abortIfNotAuthenticated],
-            auth: config.get('hapi.auth'),
 
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getFilesById
+            ],
+
+            auth: config.get('hapi.auth'),
 			description: 'Delete (short description)',
 			notes: 'Delete (long description)',
 			tags: ['api'],
-
         }
     });
 
@@ -458,3 +460,43 @@ exports.register.attributes = {
 
 
 
+
+/***
+
+
+
+CURL TESTS
+==============
+
+
+curl  -X GET http://127.0.0.1:3000/api/files
+
+curl  -X GET http://127.0.0.1:3000/api/files/1
+
+curl  -X GET http://127.0.0.1:3000/api/files/1,2
+
+
+
+curl -X POST http://127.0.0.1:3000/api/files  \
+    -H "Content-Type: application/json"  \
+    -d '{ "first_name": "paulo" }' 
+
+
+
+curl -X PUT http://127.0.0.1:3000/api/files/42   \
+    -H "Content-Type: application/json"  \
+    -d '{"id": 42, "name": "relatório2.pdf", "logicalPath": "/uploads/public", "tags": "tag5, tag6" }' 
+
+
+
+
+curl -X PUT http://127.0.0.1:3000/api/files/3   \
+    -H "Content-Type: application/json"  \
+    -d '{"id": 3, "firstName": "userx", "lastName": "yenergia", "email": "user_energia@gmail.com", "currentPw": "abc", "newPw": "xyz" }' 
+
+
+
+curl -X DELETE http://127.0.0.1:3000/api/files/4
+
+
+***/

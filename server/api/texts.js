@@ -10,10 +10,8 @@ var utils = require('../../server/common/utils.js');
 var transforms = require('../../server/common/transforms.js');
 var pre = require('../../server/common/pre.js');
 
-
-
 var internals = {};
-/*** RESOURCE CONFIGURATION ***/
+
 
 internals.resourceName = "texts";
 internals.resourcePath = "/texts";
@@ -134,8 +132,6 @@ debugger;
     return next(undefined, changeCaseKeys(validation.value, "underscored"));
 };
 
-/*** END OF RESOURCE CONFIGURATION ***/
-
 
 
 // plugin defintion function
@@ -192,6 +188,7 @@ debugger;
             return reply(transform(resp, transformMap));
 
         },
+
         config: {
 
 			validate: {
@@ -260,6 +257,7 @@ debugger;
             .done();
 
         },
+
         config: {
 
         	validate: {
@@ -339,6 +337,7 @@ debugger;
             .done();
 
         },
+
         config: {
 
 			validate: {
@@ -348,8 +347,7 @@ debugger;
 
             pre: [
                 pre.abortIfNotAuthenticated,
-                pre.db.getTextsById,
-                pre.payload.extractTags
+                [pre.db.getTextsById, pre.payload.extractTags],
             ],
 
             auth: config.get('hapi.auth'),
@@ -376,7 +374,8 @@ debugger;
                 query: {
                     command: "select * from texts_delete($1)",
                     arguments: [JSON.stringify( {id: request.params.ids[0]} )]
-                }
+                },
+                reset: true
             })
             .then(function(){
                 return reply(textsC.toJSON());

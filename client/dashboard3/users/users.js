@@ -133,7 +133,7 @@ var UsersTabLV = Mn.LayoutView.extend({
 	},
 
 	events: {
-		"click a": "updateView"
+		"click a.js-dashboard-sep": "updateView"
 	},
 
 	// the initial view will be the list of all users

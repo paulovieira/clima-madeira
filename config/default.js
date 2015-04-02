@@ -92,6 +92,11 @@ module.exports = {
         },
     },
 
+    uploads: {
+        physicalPath: "/data/uploads/public/",
+        logicalPath: "/uploads/public/"
+    },
+
     availableRoutes: [
 
         {

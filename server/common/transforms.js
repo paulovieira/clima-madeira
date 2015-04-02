@@ -55,8 +55,11 @@ var transforms = {
 
 		    // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)
 		    "ownerData.id": "ownerData.id",
-		    "ownerData.firstName": "ownerData.firstName",
-		    "ownerData.lastName": "ownerData.lastName",
+		    "ownerData.email": "ownerData.email",
+		    "ownerData.firstName": "ownerData.first_name",
+		    "ownerData.lastName": "ownerData.last_name",
+
+		    // d) deleted properties: "physicalPath"
 		},
 
 		maps: {

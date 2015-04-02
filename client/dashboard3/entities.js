@@ -87,28 +87,7 @@ var TextM = Backbone.Model.extend({
 		"tags": [],
 		"contents": {pt: "", en: ""},
 	},
-	initialize: function(){
 
-		this.on("change", function(a,b,c){
-			if(this.get("id")===1){
-				var x = this.toJSON();
-				debugger;				
-			}
-
-		});
-		// this.on("change:pt", function(model, newValue){
-		// 	var contents = this.get("contents");
-		// 	contents.pt = newValue;
-		// 	this.set("contents", contents);
-		// });
-
-		// this.on("change:en", function(model, newValue){
-		// 	var contents = this.get("contents");
-		// 	contents.en = newValue;
-		// 	this.set("contents", contents);
-		// });
-
-	},
 	parse: function(resp){
 		if(_.isArray(resp)){ resp = resp[0]; }
 //debugger;
@@ -125,3 +104,31 @@ var TextsC = Backbone.Collection.extend({
 });
 
 var textsC = new TextsC();
+
+
+
+var FileM = Backbone.Model.extend({
+	urlRoot: "/api/files",
+
+	parse: function(resp){
+		if(_.isArray(resp)){ resp = resp[0]; }
+//debugger;
+
+		resp.uploadedAt = moment(resp.uploadedAt).format('YYYY-MM-DD HH:mm:ss');
+
+		// delete the properties that might be null
+		if(resp.description === null){ delete resp.description; }
+		if(resp.properties === null){ delete resp.properties; }
+
+		return resp;
+	}
+});
+
+var FilesC = Backbone.Collection.extend({
+	model: FileM,  
+	url: "/api/files",
+});
+
+var filesC = new FilesC();
+
+

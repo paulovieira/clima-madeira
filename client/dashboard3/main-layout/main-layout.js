@@ -30,6 +30,9 @@ var MainLayout = Mn.LayoutView.extend({
 			case "#users":
 				this.showUsers();
 				break;
+			case "#files":
+				this.showFiles();
+				break;
 			default:
 				throw new Error("showViewRight: unknown code");
 				break;
@@ -107,6 +110,12 @@ var MainLayout = Mn.LayoutView.extend({
 		var usersTabLV = new UsersTabLV();
 		this.mainRightRegion.show(usersTabLV);
 	},
+
+	showFiles: function(){
+		var filesTabLV = new FilesTabLV();
+		this.mainRightRegion.show(filesTabLV);
+	},
+
 
 /*
 	showAllTexts: function(){

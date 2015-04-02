@@ -117,6 +117,45 @@ var preRequisites = {
 			assign: "textsC",
 		},
 
+		getAllFiles: {
+			method: function(request, reply){
+				console.log("pre: db.getAllFiles");
+		        var filesC = new BaseC();
+
+		        filesC
+		            .execute({
+		                query: {
+		                    command: "select * from files_read()"
+		                },
+		            })
+		            .then(function() {
+	                	return reply(filesC);
+	                })
+		            .done();
+			},
+			assign: "allFiles"
+		},
+
+		getFilesById: {
+			method: function(request, reply){
+				console.log("pre: db.getFilesById");
+		        var filesC = new BaseC();
+
+		        filesC
+		            .execute({
+		                query: {
+		                    command: "select * from files_read($1)",
+		                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
+		                },
+		            })
+		            .then(function() {
+	                	return reply(filesC);
+	                })
+		            .done();
+			},
+			assign: "filesById",
+		},
+
 		getAllUsers: {
 			method: function(request, reply){
 				console.log("pre: db.getAllUsers");
