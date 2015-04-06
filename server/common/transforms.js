@@ -62,6 +62,30 @@ var transforms = {
 		    // d) deleted properties: "physicalPath"
 		},
 
+		shapes: {
+		    // a) properties to be maintained
+		    "id": "id",
+		    "code": "code",
+		    "srid": "srid",
+		    "description": "description",
+		    "fileId": "fileId",
+		    "schemaName": "schemaName",
+		    "ownerId": "ownerId",
+		    "createdAt": "createdAt",
+
+		    // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)
+		    "fileData.id": "fileData.id",
+		    "fileData.name": "fileData.name",
+		    "fileData.logical_path": "fileData.logical_path",
+
+		    "ownerData.id": "ownerData.id",
+		    "ownerData.email": "ownerData.email",
+		    "ownerData.first_name": "ownerData.first_name",
+		    "ownerData.last_name": "ownerData.last_name",
+
+		    "shapeColumnsData": "shapeColumnsData"
+		},
+
 		maps: {
 		    // a) properties to be maintained
 		    "id": "id",

@@ -1,19 +1,15 @@
 
-CREATE TABLE IF NOT EXISTS maps( 
+CREATE TABLE IF NOT EXISTS shapes( 
 	id SERIAL PRIMARY KEY,
-	code TEXT NOT NULL UNIQUE,
-	title JSONB NOT NULL default '{}',  -- note: is it worth to have a reference to the texts table?
+	code TEXT NOT NULL UNIQUE,  -- the name of the table will be the code
+	srid INT REFERENCES spatial_ref_sys(srid) default 4326,
 	description JSONB default '{}',
-	properties JSONB default '{ "order": 1, "timeData": [] }',	
-	category_id INT references texts(id)  on update cascade on delete set null,
 	file_id INT references files(id)  on update cascade on delete set null,
-	schema_name TEXT NOT NULL,
+	schema_name TEXT NOT NULL default 'geo',
 	owner_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
 	created_at timestamptz not null default now(),
 
-	CONSTRAINT title_must_be_object       CHECK (jsonb_typeof(title) = 'object'),
-	CONSTRAINT description_must_be_object CHECK (jsonb_typeof(description) = 'object'),
-	CONSTRAINT properties_must_be_object  CHECK (jsonb_typeof(properties) = 'object')
+	CONSTRAINT description_must_be_object CHECK (jsonb_typeof(description) = 'object')
 );
 
 
@@ -22,8 +18,8 @@ DO $$
 DECLARE
 	_has_executed BOOLEAN;
 	_table_exists BOOLEAN;
-	_flag TEXT := 'create_table_maps';
-	_table_name TEXT := 'maps';
+	_flag TEXT := 'create_table_shapes';
+	_table_name TEXT := 'shapes';
 BEGIN
 
 	-- get the flag for this file
@@ -39,8 +35,8 @@ BEGIN
 	if _table_exists is true AND _has_executed is false then
 
 		-- the following sql lines will be executed only the first time this file is run
-		PERFORM setval(pg_get_serial_sequence('maps', 'id'), 1000);
-		PERFORM audit.audit_table('maps');
+		PERFORM setval(pg_get_serial_sequence('shapes', 'id'), 1000);
+		PERFORM audit.audit_table('shapes');
 
 		-- add the flag to the table
 		INSERT INTO code_has_executed(code) VALUES(_flag);

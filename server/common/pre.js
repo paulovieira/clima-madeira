@@ -273,6 +273,45 @@ var preRequisites = {
 		},
 
 
+		getAllShapes: {
+			method: function(request, reply){
+				console.log("pre: db.getAllShapes");
+		        var shapesC = new BaseC();
+
+		        shapesC
+		            .execute({
+		                query: {
+		                    command: "select * from shapes_read()"
+		                },
+		            })
+		            .then(function() {
+	                	return reply(shapesC);
+	                })
+		            .done();
+			},
+			assign: "allShapes"
+		},
+
+		getShapesById: {
+			method: function(request, reply){
+				console.log("pre: db.getShapesById");
+		        var shapesC = new BaseC();
+
+		        shapesC
+		            .execute({
+		                query: {
+		                    command: "select * from shapes_read($1)",
+		                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
+		                },
+		            })
+		            .then(function() {
+	                	return reply(shapesC);
+	                })
+		            .done();
+			},
+			assign: "shapesById",
+		},
+
 		// read_files: {
 		// 	method: function(request, reply){
 		// 		console.log("pre: db.read_files");
@@ -509,7 +548,7 @@ var preRequisites = {
 			// with NODE_ENV=dev-no-auth, all routes have "config: false"
 		    if(config.get('hapi.auth')!==false){
 		        if(!request.auth.credentials.id){
-		            return reply(Boom.unauthorized("To access this resource you must be authenticated.")).takeover();
+		            return reply(Boom.unauthorized("To access this resource you must be authenticated."));
 		        }
 		    }
 		    else{

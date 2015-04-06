@@ -18,13 +18,13 @@ RETURNS TABLE(
 	description JSONB,
 	properties JSONB,
 	category_id INT,
-	file_id INT,
-	schema_name TEXT,
+	controls JSONB,
 	owner_id INT,
 	created_at timestamptz,
-	map_shape_info JSON,
+--	map_shape_info JSON,
 	owner_data JSON,
-	category_data JSON)
+	category_data JSON,
+	shapes_data JSON)
 AS
 $BODY$
 
@@ -32,54 +32,26 @@ DECLARE
 	options_row json;
 	command text;
 	number_conditions INT;
-	maps_shape_data_cte TEXT;
+	shapes_data_cte TEXT;
 
 	-- fields to be used in WHERE clause
 	id INT;
-	--table_name_like TEXT;
 BEGIN
 
-maps_shape_data_cte := '
-	maps_shape_data_cte AS (
+shapes_data_cte := '
+	shapes_data_cte AS (
 		SELECT
-			m.id AS map_id,
-			json_agg(json_build_object(
-				''column_number'', a.attnum, 
-				''column_name'', a.attname,
-				''data_type'', a.atttypid::regtype::text)) as shape_data_info
-			
+			m.id as map_id,
+			(CASE WHEN COUNT(s) = 0 THEN ''[]''::json  ELSE json_agg(s.*) END ) AS shapes_data
 		FROM maps m
-		LEFT JOIN pg_attribute a
-			ON a.attrelid = (m.schema_name || ''.'' || m.code)::regclass
-		AND    a.attnum > 0
-		AND    NOT a.attisdropped
-		GROUP BY map_id
-		ORDER  BY m.id
+		LEFT JOIN shapes_maps sm
+			ON m.id = sm.map_id
+		LEFT JOIN shapes s
+			ON s.id = sm.shape_id
+		GROUP BY m.id
 	)
 ';
 
-/*
-columns_cte := '
-	columns_cte AS (
-
-SELECT a.attname::text as "column name", a.atttypid::regtype::text as "data type"
-FROM   pg_attribute a
-WHERE  a.attrelid = m.table_name::regclass
-AND    a.attnum > 0
-AND    NOT a.attisdropped
-ORDER  BY a.attnum;
-
-
-		SELECT
-			u.id AS user_id,
-			(CASE WHEN COUNT(t) = 0 THEN ''[]''::json  ELSE json_agg(t.*) END ) AS user_texts
-		FROM users u
-		LEFT JOIN texts t
-			ON t.author_id = u.id
-		GROUP BY u.id
-	)
-';
-*/
 
 -- convert the json argument from object to array of (one) objects
 IF  json_typeof(options) = 'object'::text THEN
@@ -91,31 +63,21 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 
 	command := 'WITH '
-		|| maps_shape_data_cte
-		|| 'SELECT 
-			m.*, 
-			msd.shape_data_info,
+		|| shapes_data_cte
+		||	'SELECT 
+			m.*,
 			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data,
-			(select row_to_json(_dummy_) from (select t.*) as _dummy_) as category_data
+			(select row_to_json(_dummy_) from (select t.*) as _dummy_) as category_data,
+			sd.shapes_data
 		FROM maps m 
-		INNER JOIN maps_shape_data_cte msd 
-			ON m.id = msd.map_id
+		INNER JOIN shapes_data_cte sd
+			ON m.id = sd.map_id
 		LEFT JOIN users u
 			ON m.owner_id = u.id
 		INNER JOIN texts t
 			ON m.category_id = t.id';
 
 
-
-	-- command := 'SELECT 
-	-- 		m.*, 
-	-- 		(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data,
-	-- 		(select row_to_json(_dummy_) from (select t.*) as _dummy_) as category_data
-	-- 	FROM maps m 
-	-- 	LEFT JOIN users u
-	-- 	ON m.owner_id = u.id
-	-- 	INNER JOIN texts t
-	-- 	ON m.category_id = t.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id')         INTO id;
@@ -133,18 +95,6 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	-- criteria: table_name_like
-	-- IF table_name_like IS NOT NULL THEN
-	-- 	IF number_conditions = 0 THEN  command = command || ' WHERE';  
-	-- 	ELSE                           command = command || ' AND';
-	-- 	END IF;
-
-	-- 	table_name_like := '%' || table_name_like || '%';
-	-- 	command = format(command || ' m.table_name LIKE %L', table_name_like);
-	-- 	number_conditions := number_conditions + 1;
-	-- END IF;
-
-
 	command := command || ' ORDER BY m.id;';
 
 	RETURN QUERY EXECUTE command;
@@ -161,11 +111,8 @@ LANGUAGE plpgsql;
 /*
 select * from maps
 
-select * from maps_read('[{}]');
-select * from maps_read('[{"tags": "tag1"}]');
-select * from  maps_read('[{"email":"paulovieira@gmail.com"}, {"id":"2"}]');
-select * from  maps_read('[{"id":"1"}]');
-select * from  maps_read('[{"owner_id":"2"}]');
+select * from maps_read('{}');
+
 
 */
 
@@ -214,9 +161,8 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 			title, 
 			description, 
 			properties,
-			file_id,
 			category_id,
-			schema_name, 
+			controls, 
 			owner_id
 			)
 		VALUES (
@@ -224,10 +170,9 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 			input_row.code, 
 			COALESCE(input_row.title, '[]'::jsonb),
 			COALESCE(input_row.description, '{}'::jsonb),
-			COALESCE(input_row.properties, '{ "order": 1, "timeData": [] }'::jsonb),
-			input_row.file_id,
+			COALESCE(input_row.properties, '{}'::jsonb),
 			input_row.category_id,
-			input_row.schema_name, 
+			COALESCE(input_row.controls, '[]'::jsonb), 
 			input_row.owner_id
 			)
 		RETURNING 
@@ -257,15 +202,14 @@ LANGUAGE plpgsql;
 /*
 select * from maps order by id desc
 
-select * from maps_create('[
-{
-	"code": "precepitacao_ref",
+select * from maps_create('{
+	"code": "code a",
 	"title": {"pt": "fwefwef", "en": "fwefwef fewfw"},
+	"description": {"pt": "xxx", "en": "yyy"},
 	"category_id": 105,
-	"owner_id": 2,
-	"schema_name": "geo"
-}
-]')
+	"controls": [{"a": 111}],
+	"owner_id": 2
+}')
 
 */
 
@@ -315,11 +259,8 @@ FOR input_row IN (select * from json_populate_recordset(null::maps, input_data))
 	IF input_row.category_id IS NOT NULL THEN
 		command = format(command || 'category_id = %L, ', input_row.category_id);
 	END IF;
-	IF input_row.file_id IS NOT NULL THEN
-		command = format(command || 'file_id = %L, ', input_row.file_id);
-	END IF;
-	IF input_row.schema_name IS NOT NULL THEN
-		command = format(command || 'schema_name = %L, ', input_row.schema_name);
+	IF input_row.controls IS NOT NULL THEN
+		command = format(command || 'controls = %L, ', input_row.controls);
 	END IF;
 	IF input_row.owner_id IS NOT NULL THEN
 		command = format(command || 'owner_id = %L, ', input_row.owner_id);
@@ -350,7 +291,76 @@ LANGUAGE plpgsql;
 /*
 select * from maps order by id desc
 
-select * from maps_update('[{"id": 1, "code": "xyz", "category_id": 106}]');
-select * from maps_update('[{"id": 1, "tags": ["tag7"] }]');
+select * from maps_update('{
+	"id": 1,
+	"code": "code b",
+	"title": {"pt": "zzzfwefwef", "en": "zzzfwefwef fewfw"},
+	"description": {"pt": "qqqxxx", "en": "wwwyyy"},
+	"controls": [{"b": 2111}],
+	"owner_id": 1
+}');
 
+
+*/
+
+
+
+/*
+
+	4. DELETE
+
+*/
+
+
+DROP FUNCTION IF EXISTS maps_delete(json);
+
+CREATE FUNCTION maps_delete(options json DEFAULT '[{}]')
+RETURNS TABLE(deleted_id int) AS
+$$
+DECLARE
+	deleted_row maps%ROWTYPE;
+	options_row JSON;
+
+	-- fields to be used in WHERE clause
+	id_to_delete INT;
+BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
+
+FOR options_row IN ( select json_array_elements(options) ) LOOP
+
+	-- extract values to be (optionally) used in the WHERE clause
+	SELECT json_extract_path_text(options_row, 'id') INTO id_to_delete;
+	
+	IF id_to_delete IS NOT NULL THEN
+		DELETE FROM maps
+		WHERE id = id_to_delete
+		RETURNING *
+		INTO deleted_row;
+
+		deleted_id   := deleted_row.id;
+
+		IF deleted_id IS NOT NULL THEN
+			RETURN NEXT;
+		END IF;
+	END IF;
+		
+END LOOP;
+
+RETURN;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+
+/*
+
+select * from maps order by id desc;
+
+select * from maps_delete('{"id": 1}');
 */
