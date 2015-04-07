@@ -74,7 +74,7 @@ var output = "";
 try {
 output += "<td>";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
-output += "</td>x\n\n<td>\n    ";
+output += "</td>\n\n<td>\n    ";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
 output += "\n</td>\n\n<td>\n\t";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "logicalPath"), env.autoesc);
@@ -136,6 +136,257 @@ var colno = null;
 var output = "";
 try {
 output += "<div class=\"row\" style=\"padding-top: 20px;\">\n\n    <div class=\"col-sm-3\" id=\"main-left-region\">\n    </div>\n\n    <div class=\"col-sm-9\" id=\"main-right-region\">\n    </div>\n\n</div>\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/maps-new.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/maps-row.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/maps-tab.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<ul class=\"nav nav-tabs\">\n    <li role=\"presentation\" class=\"active\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"shapes-all\">Todos os shapes</a>\n    </li>\n    <li role=\"presentation\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"shapes-new\">Carregar shape</a>\n    </li>\n\n    <li role=\"presentation\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"maps-all\">Todos os mapas</a>\n    </li>\n    <li role=\"presentation\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"maps-new\">Carregar mapa</a>\n    </li>\n</ul>\n\n<div id=\"maps-region\"></div>";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/maps-table.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/shapes-delete-modal.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Delete confirmation</h4>\n</div>\n\n\n<div class=\"modal-body\">\nAre you sure you want to delete shape # ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "?\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-danger js-modal-delete\">Yes</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancel</button>\n\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/shapes-edit-modal.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Edit shape #";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-text-pt\">Description (português)</label>\n            <input id=\"js-edit-desc-pt\" class=\"form-control\" name=\"edit-desc-pt\" value=\"";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "description")),"pt", env.autoesc), env.autoesc);
+output += "\">\n        </div>\n        <div class=\"form-group\">\n            <label for=\"js-edit-text-en\">Description (english)</label>\n            <input id=\"js-edit-desc-en\" class=\"form-control\" name=\"edit-desc-en\" value=\"";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "description")),"en", env.autoesc), env.autoesc);
+output += "\">\n        </div>\n\n        <hr>\n\n        <div class=\"row\">\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <label>Shape code</label>\n                    <input type=\"text\" class=\"form-control\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "code"), env.autoesc);
+output += "\" disabled>\n                </div>\n            </div>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <label>SRID</label>\n                    <input type=\"text\" class=\"form-control\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "srid"), env.autoesc);
+output += "\" disabled>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <label>Original file</label>\n                    <input type=\"text\" class=\"form-control\" value=\"";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "fileData")),"name", env.autoesc), env.autoesc);
+output += "\" disabled>\n                </div>\n            </div>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <label>Created at</label>\n                    <input type=\"text\" class=\"form-control\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "createdAt"), env.autoesc);
+output += "\" disabled>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"form-group\">\n            <label>Owner</label>\n            <input type=\"text\" class=\"form-control\" value=\"";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"first_name", env.autoesc), env.autoesc);
+output += " ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"last_name", env.autoesc), env.autoesc);
+output += "\" disabled>\n        </div>\n\n    </form>\n\n    <hr>\n\n        <div class=\"row\">\n            <div class=\"col-sm-10 col-sm-offset-1\">\n\n                <h4 class=\"text-center\">Column data</h4>\n\n                <table class=\"table table-striped table-condensed table-dashboard\">\n                    <thead>\n                        <tr>\n                            <th style=\"width: 50%\">Column name</th>\n                            <th style=\"width: 50%\">Data type</th>\n                        </tr>\n                    </thead>\n\n                    <tbody>\n                        ";
+frame = frame.push();
+var t_3 = runtime.contextOrFrameLookup(context, frame, "shapeColumnsData");
+if(t_3) {var t_2 = t_3.length;
+for(var t_1=0; t_1 < t_3.length; t_1++) {
+var t_4 = t_3[t_1];
+frame.set("column", t_4);
+frame.set("loop.index", t_1 + 1);
+frame.set("loop.index0", t_1);
+frame.set("loop.revindex", t_2 - t_1);
+frame.set("loop.revindex0", t_2 - t_1 - 1);
+frame.set("loop.first", t_1 === 0);
+frame.set("loop.last", t_1 === t_2 - 1);
+frame.set("loop.length", t_2);
+output += "\n\n                        <tr>\n                            <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"column_name", env.autoesc), env.autoesc);
+output += "</td>\n                            <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"data_type", env.autoesc), env.autoesc);
+output += "</td>\n                        </tr>\n\n                        ";
+;
+}
+}
+frame = frame.pop();
+output += "\n                    </tbody>\n                </table>\n\n            </div>\n        </div>\n\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary js-modal-save\">Gravar</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancelar</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/shapes-new.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 20px;\">\n\n        <h4 class=\"text-center\">Carregar um novo shape para a base de dados</h4>\n        <form style=\"margin-top: 40px;\">\n\n\t\t\t<div class=\"row\">\n\n\t\t\t\t<div class=\"col-sm-6\">\n\t\t            <div class=\"form-group\">\n\t\t                <label for=\"js-new-shape-code\">Shape code</label>\n\t\t                <input type=\"text\" id=\"js-new-shape-code\" class=\"form-control\" name=\"new-shape-code\">\n\t\t            </div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-sm-6\">\n\t\t            <div class=\"form-group\">\n\t\t                <label for=\"js-new-shape-srid\">SRID (projection identifier)</label>\n\t\t                <input type=\"text\" id=\"js-new-shape-srid\" class=\"form-control\" name=\"new-shape-srid\" value=\"4326\">\n\t\t            </div>\n\t\t\t\t</div>\n\n            </div>\n\n            <div class=\"form-group\">\n                <label for=\"js-new-shape-desc-pt\">Description (portuguese)</label>\n                <input type=\"text\" id=\"js-new-shape-desc-pt\" class=\"form-control\" name=\"new-shape-desc-pt\" >\n            </div>\n            <div class=\"form-group\">\n                <label for=\"js-new-shape-desc-en\">Description (english)</label>\n                <input type=\"text\" id=\"js-new-shape-desc-en\" class=\"form-control\" name=\"new-shape-desc-en\" >\n            </div>\n\n        </form>\n\n        <div id=\"zipped-shapes-region\"></div>\n\n        <div class=\"row\" style=\"margin-top: 20px;\">\n        \t<div class=\"col-sm-6 col-sm-offset-3\">\n            \t<button type=\"button\" class=\"btn btn-primary btn-block js-save\">Carregar shape!</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/shapes-row.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<td>";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "</td>\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "code"), env.autoesc);
+output += "\n</td>\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "srid"), env.autoesc);
+output += "\n</td>\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "fileData")),"name", env.autoesc), env.autoesc);
+output += "\n</td>\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"first_name", env.autoesc), env.autoesc);
+output += " ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"last_name", env.autoesc), env.autoesc);
+output += "\n</td>\n\n";
+output += "\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/shapes-table.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n            \n                <th style=\"width: 5%\">id</th>\n                <th style=\"width: 10%\">Code</th>\n                <th style=\"width: 5%\">SRID</th>\n                <th style=\"width: 10%\">File</th>\n                <th style=\"width: 10%\">Owner</th>\n";
+output += "\n                <th style=\"width: 10%\"></th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/zipped-shapes-row.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "\n<td>\n \t<input type=\"radio\" name=\"shapes-radios\">\n</td>\n\n<td class=\"js-file-id\">";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
+output += "</td>\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"firstName", env.autoesc), env.autoesc);
+output += " ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"lastName", env.autoesc), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "uploadedAt"), env.autoesc);
+output += "\n</td>\n\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/zipped-shapes-table.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-condensed table-hover table-dashboard\">\n\n        <thead>\n            <tr>\n                <th style=\"width: 5%\"></th>\n                <th style=\"width: 10%\">File id</th>\n                <th style=\"width: 20%\">Name</th>\n                <th style=\"width: 20%\">Owner</th>\n                <th style=\"width: 20%\">Uploaded at</th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
 cb(null, output);
 ;
 } catch (e) {

@@ -1,21 +1,24 @@
 <td>{{ id }}</td>
 
 <td>
-    {{ name }}
+    {{ code }}
 </td>
 
 <td>
-	{{ logicalPath }}
+    {{ srid }}
 </td>
 
 <td>
-	{{ tags | join(', ') }}
+    {{ fileData.name }}
 </td>
 
 <td>
-	{{ uploadedAt }}
+    {{ ownerData.first_name }} {{ ownerData.last_name }}
 </td>
-{##}
+
+{#
+#}
+
 <td class="text-right">
     <button class="btn btn-primary btn-xs js-edit"><span class="glyphicon glyphicon-pencil"></span>
     </button>

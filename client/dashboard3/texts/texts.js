@@ -17,7 +17,7 @@ var TextEditModalIV = Mn.ItemView.extend({
 	},
 
 	updateResource: function(){
-debugger;
+
 		var data = Backbone.Syphon.serialize(this);
 
 		var attrs = {

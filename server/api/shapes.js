@@ -28,30 +28,6 @@ internals.resourceName = "shapes";
 internals.resourcePath = "/shapes";
 
 
-internals.isDbError = function (err){
-    return !!err.sqlState;
-};
-
-internals.parseDbErrMsg = function(msg){
-    // NOTE: msg.split(msg, "\n") isn't working here
-    var arrayMsg = _s.lines(msg);
-
-    arrayMsg = arrayMsg.filter(function(line){
-        return _s.startsWith(line.toLowerCase(), "error:") || _s.startsWith(line.toLowerCase(), "detail:");
-    });
-
-    return arrayMsg.join(". ");
-};
-
-internals.parseError = function(err){
-    if(internals.isDbError(err)){  
-        var errMsg = internals.parseDbErrMsg(err.message);
-        return Boom.badImplementation(errMsg);
-    } 
-
-    return Boom.badImplementation(err.message);  
-};
-
 
 // validate the ids param in the URL
 internals.validateIds = function(value, options, next){
@@ -80,24 +56,18 @@ internals.validatePayloadForCreate = function(value, options, next){
     console.log("validatePayloadForCreate");
 
     var schemaCreate = Joi.object().keys({
-/*
-        id: Joi.number().integer().min(0),
 
-        //tags: Joi.array().unique().min(0).includes(Joi.string()).required(),
-        tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
+        code: Joi.string().required(),
 
-        contents: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
-        }).required(),
+        srid: Joi.number().integer().required(),
 
-        contentsDesc: Joi.object().keys({
-            pt: Joi.string().required(),
-            en: Joi.string().required()
+        description: Joi.object().keys({
+            pt: Joi.string().allow(""),
+            en: Joi.string().allow("")
         }),
 
-        active: Joi.boolean()
-*/
+        fileId: Joi.number().integer().required(),
+
     });
 
     return internals.validatePayload(value, options, next, schemaCreate);
@@ -110,12 +80,17 @@ internals.validatePayloadForUpdate = function(value, options, next){
 
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0).required(),
-/*
-        contents: Joi.object().keys({
+
+        description: Joi.object().keys({
             pt: Joi.string().allow("").required(),
             en: Joi.string().allow("").required()
-        }).required(),
+        }),
 
+
+        // srid: Joi.any().forbidden(),
+        // code: Joi.any().forbidden()
+
+/*
         //tags: Joi.array().unique().min(0).includes(Joi.string()),
         tags: Joi.string().regex(/^[-\w\s]+(?:,[-\w\s]+)*$/),
 
@@ -260,6 +235,7 @@ console.log("request.payload: ", JSON.stringify(request.payload));
                 filesC = request.pre.allFiles,
                 shapesC  = request.pre.allShapes,
                 shpSchema = "geo",
+                srid  = dbData["srid"],
                 shpTable  = _s.underscored(_s.slugify(dbData["code"])),
                 shpFile = "";
 
@@ -365,7 +341,7 @@ step 5
                 var deferred3 = Q.defer();
                
                 // the command is:  shp2pgsql -D -I -s 4326 <path-to-shp-file>  <name-of-the-table>   |  psql --dbname=<name-of-the-database>
-                var command1 = "shp2pgsql -D -I -s 4326 "
+                var command1 = "shp2pgsql -D -I -s " + srid + " "
                             + Path.join(zipOutputDir, shpFile) + " " + shpSchema + "." + shpTable,
 
                     command2 = "psql --dbname=" + config.get("db.postgres.database"),
@@ -425,9 +401,8 @@ debugger;
                 return reply(transform(resp, transformMap));
             })
 
-            .catch(function(){
-                var boomErr = internals.parseError(err);
-                return reply(boomErr);
+            .catch(function(err){
+                return reply(Boom.badImplementation(err));
             })
 
             // step 5: delete the zip output directory
@@ -471,8 +446,7 @@ debugger;
     });
 
 
-/*
-    // UPDATE (one or more)
+
     server.route({
         method: 'PUT',
         path: internals.resourcePath + "/{ids}",
@@ -480,66 +454,115 @@ debugger;
 
             console.log(utils.logHandlerInfo(request));
 debugger;
-            
-console.log("dbData: ", request.payload);
 
-            var mapsC = new BaseC();
-            var mapsC2 = new BaseC();
 
-            // update the row
-        	mapsC.execute({
-				query: {
-				  	command: "select * from maps_update($1);",
-                    arguments: [JSON.stringify(changeCaseKeys(request.payload, "underscored"))]
-				}
-        	})
-            // retrieve the updated row using maps_read (so that we have the joined data too)
-            .then(
-                function(updatedRow){
+            var shapesC = request.pre.shapesById;
+            if(shapesC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
 
-                    var promise = mapsC2.execute({
-                        query: {
-                            command: "select * from maps_read($1);",
-                            arguments: [JSON.stringify({id: updatedRow[0].id})]
-                        }
-                    });
+            shapesC.execute({
+                query: {
+                    command: "select * from shapes_update($1);",
+                    arguments: [JSON.stringify(request.payload[0])]
+                },
+                reset: true 
+            })
+            .then(function(updatedData){
 
-                    return promise;
+                // read the data that was updated (to obtain the joined data)
+                return shapesC.execute({
+                    query: {
+                        command: "select * from shapes_read($1);",
+                        arguments: [JSON.stringify( {id: updatedData[0].id} )]
+                    },
+                    reset: true
+                });
+
+            })
+            .then(function(){
+                // we couldn't read - something went wrong
+                if(shapesC.length===0){
+                    return reply(Boom.badImplementation());
                 }
-            )
-        	.done(
-        		function(row){
-debugger;
-                    var transformMap = transforms.maps.maps;
-                    var transform    = transforms.transformArray;
 
-                    return reply(transform(row, transformMap));
-        		},
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }   
-        	);
+                var resp         = shapesC.toJSON();
+                var transformMap = transforms.maps.shapes;
+                var transform    = transforms.transformArray;
+
+                return reply(transform(resp, transformMap));
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+
         },
+
         config: {
-			validate: {
-	            params: internals.validateIds,
+            validate: {
+                params: internals.validateIds,
                 payload: internals.validatePayloadForUpdate
-			},
+            },
 
             pre: [
-                pre.abortIfNotAuthenticated
+                pre.abortIfNotAuthenticated,
+                pre.db.getShapesById
             ],
 
             auth: config.get('hapi.auth'),
-
-			description: 'Put (short description)',
-			notes: 'Put (long description)',
-			tags: ['api'],
+            description: 'Put (short description)',
+            notes: 'Put (long description)',
+            tags: ['api'],
         }
     });
-*/
+
+
+    // DELETE (one or more)
+    server.route({
+        method: 'DELETE',
+        path: internals.resourcePath + "/{ids}",
+        handler: function (request, reply) {
+debugger;
+            console.log(utils.logHandlerInfo(request));
+
+            var shapesC = request.pre.shapesById;
+            if(shapesC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
+
+            shapesC.execute({
+                query: {
+                    command: "select * from shapes_delete($1)",
+                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
+                },
+                reset: true
+            })
+            .then(function(){
+                return reply(shapesC.toJSON());
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+        },
+
+        config: {
+            validate: {
+                params: internals.validateIds,
+            },
+
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getShapesById
+            ],
+
+            auth: config.get('hapi.auth'),
+            description: 'Delete (short description)',
+            notes: 'Delete (long description)',
+            tags: ['api'],
+        }
+    });
 
 /*
     // DELETE (one or more)

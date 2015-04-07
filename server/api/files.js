@@ -55,11 +55,8 @@ internals.validatePayloadForCreate = function(value, options, next){
     console.log("validatePayloadForCreate");
 
     var schemaCreate = Joi.object().keys({
-        //tags: Joi.string().regex(/^$|^[-\w\s]+(?:,[-\w\s]+)*$/).allow(""),
-        //newfile: Joi.object().type(stream.Readable).strict()
-        //newfile: Joi.any().strict()
 
-        tags: Joi.string().allow(""),
+
     });
 
     return internals.validatePayload(value, options, next, schemaCreate);

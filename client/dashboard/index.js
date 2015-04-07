@@ -112,7 +112,7 @@ var menuLeftC = new Backbone.Collection([
 
 {
 	panelCode: "maps",
-	panelTitle: {pt: "mapas", en: "Maps"},
+	panelTitle: {pt: "Mapas", en: "Maps"},
 	panelIcon: "glyphicon-map-marker",
 	panelItems: [
 		{

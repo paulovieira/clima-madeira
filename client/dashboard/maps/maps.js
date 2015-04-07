@@ -237,5 +237,8 @@ var MapsListTableCV = Mn.CompositeView.extend({
 	template: "maps/templates/maps-list-table.html",
 	childView: MapsListRowLV,
 	childViewContainer: "tbody",
+	onBeforeShow: function(){
+		console.log("xxx");
+	}
 });
 

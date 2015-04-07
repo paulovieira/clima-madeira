@@ -20,7 +20,7 @@ var menuLeftC = new Backbone.Collection([
 
 {
 	itemCode: "groups",
-	itemTitle: {pt: "Grupos", en: "Grups"},
+	itemTitle: {pt: "Grupos", en: "Groups"},
 	itemIcon: "glyphicon-user"
 },
 
@@ -32,7 +32,7 @@ var menuLeftC = new Backbone.Collection([
 
 {
 	itemCode: "maps",
-	itemTitle: {pt: "mapas", en: "Maps"},
+	itemTitle: {pt: "Mapas", en: "Maps"},
 	itemIcon: "glyphicon-map-marker"	
 }
 
@@ -132,3 +132,28 @@ var FilesC = Backbone.Collection.extend({
 var filesC = new FilesC();
 
 
+
+
+
+
+var ShapeM = Backbone.Model.extend({
+	urlRoot: "/api/shapes",
+
+	parse: function(resp){
+		if(_.isArray(resp)){ resp = resp[0]; }
+
+		resp.createdAt = moment(resp.createdAt).format('YYYY-MM-DD HH:mm:ss');
+
+		// sort the shapeColumnsData array in ascending order
+		resp.shapeColumnsData = _.sortBy(resp.shapeColumnsData, "column_number");
+		
+		return resp;
+	}
+});
+
+var ShapesC = Backbone.Collection.extend({
+	model: ShapeM,
+	url: "/api/shapes"
+});
+
+var shapesC = new ShapesC();

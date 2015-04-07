@@ -241,21 +241,21 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 	command := 'UPDATE shapes SET ';
 
 	-- then add (cumulatively) the fields to be updated; those fields must be present in the input_data json;
-	IF input_row.code IS NOT NULL THEN
-		command = format(command || 'code = %L, ', input_row.code);
-	END IF;
-	IF input_row.srid IS NOT NULL THEN
-		command = format(command || 'srid = %L, ', input_row.srid);
-	END IF;
+	-- IF input_row.code IS NOT NULL THEN
+	-- 	command = format(command || 'code = %L, ', input_row.code);
+	-- END IF;
+	-- IF input_row.srid IS NOT NULL THEN
+	-- 	command = format(command || 'srid = %L, ', input_row.srid);
+	-- END IF;
 	IF input_row.description IS NOT NULL THEN
 		command = format(command || 'description = %L, ', input_row.description);
 	END IF;
-	IF input_row.file_id IS NOT NULL THEN
-		command = format(command || 'file_id = %L, ', input_row.file_id);
-	END IF;
-	IF input_row.schema_name IS NOT NULL THEN
-		command = format(command || 'schema_name = %L, ', input_row.schema_name);
-	END IF;
+	-- IF input_row.file_id IS NOT NULL THEN
+	-- 	command = format(command || 'file_id = %L, ', input_row.file_id);
+	-- END IF;
+	-- IF input_row.schema_name IS NOT NULL THEN
+	-- 	command = format(command || 'schema_name = %L, ', input_row.schema_name);
+	-- END IF;
 	IF input_row.owner_id IS NOT NULL THEN
 		command = format(command || 'owner_id = %L, ', input_row.owner_id);
 	END IF;
@@ -316,6 +316,7 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id_to_delete INT;
+	geotable_name TEXT;
 BEGIN
 
 -- convert the json argument from object to array of (one) objects
@@ -330,6 +331,11 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	SELECT json_extract_path_text(options_row, 'id') INTO id_to_delete;
 	
 	IF id_to_delete IS NOT NULL THEN
+
+		-- drop the associate table in the geo schema (the name is the code)
+		SELECT code FROM shapes WHERE id = id_to_delete INTO geotable_name;
+		EXECUTE 'DROP TABLE geo.' || geotable_name || ';';
+
 		DELETE FROM shapes
 		WHERE id = id_to_delete
 		RETURNING *
