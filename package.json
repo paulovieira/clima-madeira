@@ -16,7 +16,7 @@
     "good-console": "4.1.0",
     "hapi": "8.1.0",
     "hapi-auth-cookie": "2.0.0",
-    "hapi-nunjucks": "^0.0.2",
+    "hapi-nunjucks": "^0.0.5",
     "hapi-swagger": "0.6.0",
     "hoek": "2.11.0",
     "install": "^0.1.8",
