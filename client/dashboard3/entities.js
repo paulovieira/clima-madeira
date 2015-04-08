@@ -157,3 +157,26 @@ var ShapesC = Backbone.Collection.extend({
 });
 
 var shapesC = new ShapesC();
+
+
+
+
+
+var MapM = Backbone.Model.extend({
+	urlRoot: "/api/maps",
+
+	parse: function(resp){
+		if(_.isArray(resp)){ resp = resp[0]; }
+
+		resp.createdAt = moment(resp.createdAt).format('YYYY-MM-DD HH:mm:ss');
+		
+		return resp;
+	}
+});
+
+var MapsC = Backbone.Collection.extend({
+	model: MapM,
+	url: "/api/maps"
+});
+
+var mapsC = new MapsC();

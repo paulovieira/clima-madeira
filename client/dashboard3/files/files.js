@@ -129,20 +129,20 @@ var FileNewLV = Mn.LayoutView.extend({
 
 		$("#new_file").fileinput({
 		    uploadUrl: '/api/files',
-		    maxFileSize: 50000,  // in Kb
+		    maxFileSize: 1000*200,  // in Kb
 		    showUpload: true,
 		    initialCaption: "Click the browse button on the right to choose a file",
 		    showRemove: false,
 		    //overwriteInitial: false,
 		    //showCaption: false
-		    // ajaxSettings: {
-		    // 	success: function(data, status, jqxhr){
-		    // 		debugger;
-		    // 	},
-		    // 	error: function(jqxhr, status, err){
-		    // 		debugger;
-		    // 	}
-		    // },
+		    ajaxSettings: {
+		    	error: function(jqxhr, status, err){
+		    		var msg = jqxhr.responseJSON.message;
+
+					alert("ERROR: " + jqxhr.responseJSON.message);
+					throw new Error(msg);
+		    	}
+		    },
 		    uploadExtraData: function(){
 				return { 
 					tags: $("#new_file_tags").val()
@@ -156,8 +156,8 @@ var FileNewLV = Mn.LayoutView.extend({
 		// });
 
 
-		// $('#js-newfile').on('fileuploaderror', function(event, data, previewId, index) {
-		// debugger;
+		// $('#new_file').on('fileuploaderror', function(event, data, previewId, index) {
+		// 	debugger;
 		// });
 
 		// // $('#js-newfile').on('filebatchuploadcomplete', function(event, files, extra) {

@@ -289,7 +289,7 @@ debugger;
             payload: {
                 output: "stream",
                 parse: true,
-                maxBytes: 1048576*3  // 3 megabytes
+                maxBytes: 1048576*300  // 3 megabytes
             },
 			description: 'Post (short description)',
 			notes: 'Post (long description)',
@@ -361,7 +361,7 @@ debugger;
             ],
 
             payload: {
-                maxBytes: 1048576*3  // 3 megabytes
+//                maxBytes: 1048576*300  // 3 megabytes
             },
 
             auth: config.get('hapi.auth'),

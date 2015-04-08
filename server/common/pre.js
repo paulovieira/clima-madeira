@@ -312,6 +312,45 @@ var preRequisites = {
 			assign: "shapesById",
 		},
 
+		getAllMaps: {
+			method: function(request, reply){
+				console.log("pre: db.getAllMaps");
+		        var mapsC = new BaseC();
+
+		        mapsC
+		            .execute({
+		                query: {
+		                    command: "select * from maps_read()"
+		                },
+		            })
+		            .then(function() {
+	                	return reply(mapsC);
+	                })
+		            .done();
+			},
+			assign: "allMaps"
+		},
+
+		getMapsById: {
+			method: function(request, reply){
+				console.log("pre: db.getMapsById");
+		        var mapsC = new BaseC();
+
+		        mapsC
+		            .execute({
+		                query: {
+		                    command: "select * from maps_read($1)",
+		                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
+		                },
+		            })
+		            .then(function() {
+	                	return reply(mapsC);
+	                })
+		            .done();
+			},
+			assign: "mapsById",
+		},
+
 		// read_files: {
 		// 	method: function(request, reply){
 		// 		console.log("pre: db.read_files");

@@ -9,16 +9,25 @@ window.Behaviors.ShowModal = Marionette.Behavior.extend({
     	return eventsHash;
     },
 
-    showModal: function(){
+    showModal: function(x,y,z){
+debugger;
+        var modalEl = "$modal1",
+        	regionKey = "modal1Region";
+
+        if(this.options.modalEl === "$modal2"){
+			modalEl = "$modal2";
+			regionKey = "modal2Region";
+        }
+
         var view = new this.options.viewClass({
             model: this.view.model
         });
 
         // first set the content of the modal
-        Dashboard.modal1Region.show(view);
+        Dashboard[regionKey].show(view);
 
         // then show the modal 
-        Dashboard.$modal1.modal("show");
+        Dashboard[modalEl].modal("show");
     },
 });
 
@@ -34,11 +43,19 @@ window.Behaviors.CloseModal = Marionette.Behavior.extend({
     },
 
     closeModal: function(){
-		Dashboard.$modal1.modal("hide");
+        var modalEl = "$modal1";
+
+        if(this.options.modalEl === "$modal2"){
+			modalEl = "$modal2";
+        }
+
+		Dashboard[modalEl].modal("hide");
 		this.view.destroy();
     },
 
 });
+
+
 
 
 // deletes the resource, close the modal and destroy the view
@@ -82,7 +99,14 @@ debugger;
 				throw new Error(msg);
 			})
 			.finally(function(){
-				Dashboard.$modal1.modal("hide");
+
+		        var modalEl = "$modal1";
+
+		        if(this.options.modalEl === "$modal2"){
+					modalEl = "$modal2";
+		        }
+
+				Dashboard[modalEl].modal("hide");
 				self.view.destroy();
 			})
 			.done();

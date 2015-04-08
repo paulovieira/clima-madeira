@@ -80,6 +80,17 @@ internals.validatePayloadForCreate = function(value, options, next){
     console.log("validatePayloadForCreate");
 
     var schemaCreate = Joi.object().keys({
+
+        code: Joi.string().required(),
+
+        categoryId: Joi.number().integer().required(),
+
+        title: Joi.object().keys({
+            pt: Joi.string().allow(""),
+            en: Joi.string().allow("")
+        }).required(),
+
+
 /*
         id: Joi.number().integer().min(0),
 
@@ -178,35 +189,24 @@ exports.register = function(server, options, next) {
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-        	var mapsC = new BaseC();
-        	mapsC.execute({
-				query: {
-                    command: "select * from maps_read()"
-				}
-        	})
-        	.done(
-        		function(){
-                    var resp         = mapsC.toJSON();
-                    var transformMap = transforms.maps.maps;
-                    var transform    = transforms.transformArray;
 
-                    return reply(transform(resp, transformMap));
-        		},
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-        	);
+            var mapsC = request.pre.allMaps;
 
+            var resp         = mapsC.toJSON();
+            var transformMap = transforms.maps.maps;
+            var transform    = transforms.transformArray;
 
+            return reply(transform(resp, transformMap));
         },
 
         config: {
 
-            auth: config.get('hapi.auth'),
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getAllMaps
+            ],
 
+            auth: config.get('hapi.auth'),
 			description: 'Get all the resources',
 			notes: 'Returns all the resources (full collection)',
 			tags: ['api'],
@@ -224,43 +224,29 @@ debugger;
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-            var queryOptions = [];
-            request.params.ids.forEach(function(id){
-                queryOptions.push({id: id});
-            });
+            var mapsC = request.pre.mapsById;
+            
+            if(mapsC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
 
-            var mapsC = new BaseC();
-            mapsC.execute({
-                query: {
-                    command: "select * from maps_read($1)",
-                    arguments: [ JSON.stringify(queryOptions) ]
-                }
-            })
-            .done(
-                function(){
-debugger;
-                    var resp         = mapsC.toJSON();
-                    var transformMap = transforms.maps.maps;
-                    var transform    = transforms.transformArray;
+            var resp         = mapsC.toJSON();
+            var transformMap = transforms.maps.maps;
+            var transform    = transforms.transformArray;
 
-                    return reply(transform(resp, transformMap));
-                },
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-            );
-
+            return reply(transform(resp, transformMap));
         },
         config: {
 			validate: {
 	            params: internals.validateIds,
 			},
 
-            auth: config.get('hapi.auth'),
-            pre: [pre.abortIfNotAuthenticated],
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getMapsById
+            ],
 
+            auth: config.get('hapi.auth'),
 			description: 'Get 2 (short description)',
 			notes: 'Get 2 (long description)',
 			tags: ['api'],
@@ -269,6 +255,74 @@ debugger;
     });
 
     // CREATE (one or more)
+    server.route({
+        method: 'POST',
+        path: internals.resourcePath,
+        handler: function (request, reply) {
+            console.log(utils.logHandlerInfo(request));
+debugger;
+
+            request.payload.forEach(function(obj){
+                obj["owner_id"] = request.auth.credentials.id;
+            });
+
+            var mapsC = new BaseC();
+            mapsC.execute({
+                query: {
+                    command: "select * from maps_create($1);",
+                    arguments: [JSON.stringify(request.payload)]
+                }
+            })
+            .then(function(createdData){
+
+                // read the data that was created (to obtain the joined data)
+                return mapsC.execute({
+                    query: {
+                        command: "select * from maps_read($1);",
+                        arguments: [JSON.stringify( {id: createdData[0].id} )]
+                    },
+                    reset: true
+                });
+
+            })
+            .then(function(){
+                // we couldn't read - something went wrong
+                if(mapsC.length===0){
+                    return reply(Boom.badImplementation());
+                }
+
+                var resp         = mapsC.toJSON();
+                var transformMap = transforms.maps.maps;
+                var transform    = transforms.transformArray;
+
+                return reply(transform(resp, transformMap));
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+
+        },
+
+        config: {
+
+            validate: {
+                payload: internals.validatePayloadForCreate
+            },
+
+            pre: [
+                pre.abortIfNotAuthenticated
+            ],
+
+            auth: config.get('hapi.auth'),
+            description: 'Post (short description)',
+            notes: 'Post (long description)',
+            tags: ['api'],
+        }
+    });
+
+
+/*
     server.route({
         method: 'POST',
         path: internals.resourcePath,
@@ -314,28 +368,6 @@ console.log("request.payload: ", JSON.stringify(request.payload));
             }
 
 
-
-/*
-IMPROVE
-2) the name of the database should be based on the map code (use _s in the client)
-*/
-
-/***
-POSSIBLE ERRORS:
-
-step 1
-- at the beggining we try to delete the folder; this might fail for some reason (for instance, if the folder belongs to the root)
-
-step 2
-- after the zip is extracted, we search for a file with .shp extension; if it doesn't exist (or if there 2 or more), an error is thrown
-- the zip extraction might fail (corrupted zip)
-
-step 3 
-- the shp2pgsql fails if there are any table with the given name (which is the same as the map code)
-
-step 5
-- delete the folder - similar to the possible error in step 1 (but it's unlikely, because if we arrived at this point, the folder was created by us, so we can delete it)
-***/
 
             var deferred = Q.defer(),
                 promise = deferred.promise;
@@ -491,6 +523,7 @@ debugger;
 			tags: ['api'],
         }
     });
+*/
 
     // UPDATE (one or more)
     server.route({

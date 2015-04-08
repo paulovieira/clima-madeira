@@ -245,6 +245,224 @@ var ShapesTableCV = Mn.CompositeView.extend({
 
 
 
+var ControlEditModalIV = Mn.ItemView.extend({
+	template: "maps/templates/controls-edit-modal.html",
+
+	ui: {
+		"modalCloseBtn":  "button.js-modal-cancel",
+		"modalSaveBtn":   "button.js-modal-save"
+	},
+
+	events: {
+		"click @ui.modalSaveBtn": "updateResource"
+	},
+
+	behaviors: {
+		CloseModal: {
+			behaviorClass: window.Behaviors.CloseModal,  // will listen for clicks on @ui.modalCloseBtn
+		},
+	},
+
+	updateResource: function(){
+		debugger;
+	}
+});
+
+var ControlRowIV = Mn.ItemView.extend({
+	template: "maps/templates/controls-row.html",
+	tagName: "tr",
+	ui: {
+		"editModalBtn2": "button.js-edit-2",
+		//"deleteModalBtn": "button.js-delete-2"
+	},
+
+	modelEvents: {
+		"change": "render"
+	},
+
+	behaviors: {
+
+		// ShowEditModal: {
+		// 	behaviorClass: window.Behaviors.ShowModal,
+		// 	uiKey: "editModalBtn2",  // will listen for clicks on @ui.editModalBtn
+		// 	viewClass: ControlEditModalIV,  // and will show this view
+		// 	modalEl: "$modal2"
+		// },
+
+		// ShowDeleteModal: {
+		// 	behaviorClass: window.Behaviors.ShowModal,
+		// 	uiKey: "deleteModalBtn",
+		// 	viewClass: ShapeDeleteModalIV 
+		// },
+	}
+
+});
+
+var ControlsTableCV = Mn.CompositeView.extend({
+	template: "maps/templates/controls-table.html",
+	childView: ControlRowIV,
+	childViewContainer: "tbody"
+});
+
+
+var MapEditModalIV = Mn.LayoutView.extend({
+	template: "maps/templates/maps-edit-modal.html",
+
+	regions: {
+		controlsRegion: "#controls-region"
+	},
+
+	ui: {
+		"modalCloseBtn":  "button.js-modal-cancel",
+		"modalSaveBtn":   "button.js-modal-save"
+	},
+
+	events: {
+		"click @ui.modalSaveBtn": "updateResource"
+	},
+
+	behaviors: {
+		CloseModal: {
+			behaviorClass: window.Behaviors.CloseModal,  // will listen for clicks on @ui.modalCloseBtn
+		},
+	},
+
+	onBeforeShow: function(){
+		var controlsC = new Backbone.Collection(this.model.get("controls"));
+
+		var i=0;
+		controlsC.each(function(controlM){
+			controlM.set("id", ++i);
+		});
+
+//		debugger;
+
+		var controlsTableCV = new ControlsTableCV({
+			collection: controlsC
+		})
+
+		this.controlsRegion.show(controlsTableCV);
+	},
+
+	updateResource: function(){
+debugger;
+		var data = Backbone.Syphon.serialize(this);
+/*
+		var attrs = {
+			"description": {
+				"pt": $.trim(data["edit-desc-pt"]),
+				"en": $.trim(data["edit-desc-en"])
+			},
+		};
+
+		if(attrs.description.pt + attrs.description.pt===""){
+			alert("Please fill the missing fields");
+			return;
+		}
+
+		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
+		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
+		// after we get a 200 response from the server (meaning the row has actually been updated)
+
+		this.ui.modalSaveBtn.prop("disabled", true);
+
+		var self = this;
+		Q.delay(150)
+			.then(function(){
+				return self.model.save(attrs, {wait: true});  // returns a promise
+			})
+			.catch(function(err){
+				var msg = err.responseJSON ? err.responseJSON.message : 
+											( err.message ? err.message : "unknown error" );
+
+				// if the model has been deleted in the server in the meantime we get a 404; 
+				// the collection in the client is then outdated so we call destroy to remove 
+				// the deleted model from the collection; we also abort the ajax request immediately 
+				// because we are not interested in the response
+				if(err.responseJSON && err.responseJSON.statusCode === 404){
+					self.model.destroy().abort();
+				}
+				
+				alert("ERROR: " + msg);
+				throw new Error(msg);
+			})
+			.finally(function(){
+				Dashboard.$modal1.modal("hide");
+				self.destroy();
+			})
+			.done();
+*/
+	},
+
+});
+
+
+
+var MapNewLV = Mn.LayoutView.extend({
+	template: "maps/templates/maps-new.html",
+
+	ui: {
+		saveBtn: "button.js-save"
+	},
+
+	events: {
+		"click @ui.saveBtn": "createResource"
+	},
+
+	// regions: {
+	// 	zippedShapesRegion: "#zipped-shapes-region"
+	// },
+
+	// onBeforeShow: function(){
+
+	// 	// NOTE: filesC has been fetched just before this view has been instantiated
+	// 	var zippedShapesTableCV = new ZippedShapesTableCV({
+	// 		collection: filesC
+	// 	});
+
+	// 	this.zippedShapesRegion.show(zippedShapesTableCV);
+	// },
+
+
+
+	createResource: function(){
+
+		var attrs = Backbone.Syphon.serialize(this);
+
+		if(attrs.code===""){
+			alert("To create a new map you must submit a code for the map");
+			return;
+		}			
+
+		this.ui.saveBtn.prop("disabled", true);
+
+		var self = this;
+		Q.delay(150)
+			.then(function(){
+				return self.model.save(attrs, {wait: true});  // returns a promise
+			})
+			.then(function(){
+				alert("O mapa foi criado com sucesso.");
+
+				// the handler for show:all:shapes will trigger a fake click on the correct anchor elem
+				shapesChannel.trigger("show:all:maps");
+			})
+			.catch(function(err){
+				var msg = err.responseJSON ? err.responseJSON.message : 
+											( err.message ? err.message : "unknown error" );
+				
+				alert("ERROR: " + msg);
+				throw new Error(msg);
+			})
+			.finally(function(){
+				self.ui.saveBtn.prop("disabled", false);
+			})
+			.done();
+
+	}
+});
+
+
 var MapRowLV = Mn.LayoutView.extend({
 	template: "maps/templates/maps-row.html",
 	tagName: "tr",
@@ -259,11 +477,11 @@ var MapRowLV = Mn.LayoutView.extend({
 
 	behaviors: {
 
-		// ShowEditModal: {
-		// 	behaviorClass: window.Behaviors.ShowModal,
-		// 	uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
-		// 	viewClass: FileEditModalIV  // and will show this view
-		// },
+		ShowEditModal: {
+			behaviorClass: window.Behaviors.ShowModal,
+			uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
+			viewClass: MapEditModalIV,  // and will show this view
+		},
 
 		// ShowDeleteModal: {
 		// 	behaviorClass: window.Behaviors.ShowModal,
@@ -320,10 +538,10 @@ var MapsTabLV = Mn.LayoutView.extend({
 				this.showNewShape();
 				break;
 			case "maps-all":
-//				this.showAllMaps();
+				this.showAllMaps();
 				break;
 			case "maps-new":
-//				this.showNewMap();
+				this.showNewMap();
 				break;
 			default:
 				throw new Error("unknown tab separator");
@@ -357,12 +575,6 @@ var MapsTabLV = Mn.LayoutView.extend({
 
 	showAllShapes: function(){
 
-		// var x = [];
-		// for(var i=0; i<70000000; i++){
-		// 	x.push(i)
-		// }
-		// console.log(x[70000000-1]);
-
 		var shapesTableCV = new ShapesTableCV({
 			collection: shapesC
 		});
@@ -372,6 +584,66 @@ var MapsTabLV = Mn.LayoutView.extend({
 		Q(shapesC.fetch())
 			.then(function(){ 
 				self.tabContentRegion.show(shapesTableCV); 
+			})
+			.catch(function(err){
+				var msg = err.responseJSON ? err.responseJSON.message : 
+											( err.message ? err.message : "unknown error" );
+
+				alert("ERROR: " + msg);
+				throw new Error(msg);
+			})
+			.done();
+	},
+
+	showNewMap: function(){
+		var mapM = new MapM();
+		var mapNewLV = new MapNewLV({
+			model: mapM
+		});
+
+		var self = this;
+
+		// textsC will be used to obtain the map categories
+		Q(textsC.fetch())
+			.then(function(){ 
+
+				var mapCategories = _.filter(textsC.toJSON(), function(obj){
+					return _.contains(obj.tags, "map_category");
+				})
+				mapM.set("mapCategories", mapCategories);
+
+				self.tabContentRegion.show(mapNewLV); 
+			})
+			.catch(function(err){
+				var msg = err.responseJSON ? err.responseJSON.message : 
+											( err.message ? err.message : "unknown error" );
+
+				alert("ERROR: " + msg);
+				throw new Error(msg);
+			})
+			.done();
+	},
+
+	showAllMaps: function(){
+
+		var mapsTableCV = new MapsTableCV({
+			collection: mapsC
+		});
+
+		var self = this;
+
+		Q.all([mapsC.fetch(), textsC.fetch()])
+			.then(function(){ 
+
+				var mapCategories = _.filter(textsC.toJSON(), function(obj){
+					return _.contains(obj.tags, "map_category");
+				})
+
+				mapsC.each(function(mapM){
+					mapM.set("mapCategories", mapCategories);
+				})
+
+				self.tabContentRegion.show(mapsTableCV); 
 			})
 			.catch(function(err){
 				var msg = err.responseJSON ? err.responseJSON.message : 

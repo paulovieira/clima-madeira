@@ -80,8 +80,8 @@ var transforms = {
 
 		    "ownerData.id": "ownerData.id",
 		    "ownerData.email": "ownerData.email",
-		    "ownerData.first_name": "ownerData.first_name",
-		    "ownerData.last_name": "ownerData.last_name",
+		    "ownerData.firstName": "ownerData.first_name",
+		    "ownerData.lastName": "ownerData.last_name",
 
 		    "shapeColumnsData": "shapeColumnsData"
 		},
@@ -94,14 +94,15 @@ var transforms = {
 		    "description": "description",
 		    "properties": "properties",
 		    "categoryId": "categoryId",
+		    "controls": "controls",
 		    "ownerId": "ownerId",
 		    "createdAt": "createdAt",
 
 		    // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)
 		    "ownerData.id": "ownerData.id",
 		    "ownerData.email": "ownerData.email",
-		    "ownerData.firstName": "ownerData.firstName",
-		    "ownerData.lastName": "ownerData.lastName",
+		    "ownerData.firstName": "ownerData.first_name",
+		    "ownerData.lastName": "ownerData.last_name",
 
 		    "categoryData.id": "categoryData.id",
 		    "categoryData.contents": "categoryData.contents",
