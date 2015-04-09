@@ -260,6 +260,7 @@ var ControlEditModalIV = Mn.ItemView.extend({
 	behaviors: {
 		CloseModal: {
 			behaviorClass: window.Behaviors.CloseModal,  // will listen for clicks on @ui.modalCloseBtn
+			stackLevel: 2
 		},
 	},
 
@@ -272,8 +273,8 @@ var ControlRowIV = Mn.ItemView.extend({
 	template: "maps/templates/controls-row.html",
 	tagName: "tr",
 	ui: {
-		"editModalBtn2": "button.js-edit-2",
-		//"deleteModalBtn": "button.js-delete-2"
+		"editModalBtn": "button.js-edit",
+		"deleteModalBtn": "button.js-delete"
 	},
 
 	modelEvents: {
@@ -282,12 +283,12 @@ var ControlRowIV = Mn.ItemView.extend({
 
 	behaviors: {
 
-		// ShowEditModal: {
-		// 	behaviorClass: window.Behaviors.ShowModal,
-		// 	uiKey: "editModalBtn2",  // will listen for clicks on @ui.editModalBtn
-		// 	viewClass: ControlEditModalIV,  // and will show this view
-		// 	modalEl: "$modal2"
-		// },
+		ShowEditModal: {
+			behaviorClass: window.Behaviors.ShowModal,
+			uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
+			viewClass: ControlEditModalIV,  // and will show this view
+			stackLevel: 2
+		},
 
 		// ShowDeleteModal: {
 		// 	behaviorClass: window.Behaviors.ShowModal,

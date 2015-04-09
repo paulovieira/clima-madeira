@@ -190,7 +190,7 @@ try {
 output += "<td>\n\tControl #";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
 output += "\n</td>\n\n";
-output += "\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit-2\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete-2\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
+output += "\n\n<td class=\"text-right\">\n    <button class=\"btn btn-primary btn-xs js-edit\"><span class=\"glyphicon glyphicon-pencil\"></span>\n    </button>\n    <button class=\"btn btn-danger btn-xs js-delete\"><span class=\"glyphicon glyphicon-trash\"></span>\n    </button>\n</td>\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -256,8 +256,8 @@ output += "\n                </option>\n            ";
 }
 }
 frame = frame.pop();
-output += "\n            \n            </select>\n\n        </div>\n\n        <hr>\n\n        <h4>Controls</h4>\n        \n\t\t<div id=\"controls-region\"></div>\n\n\n\n";
-output += "\n    </form>\n\n";
+output += "\n            \n            </select>\n\n        </div>\n\n        <hr>\n\n        <h4>Controls</h4>\n        \n\n";
+output += "\n    </form>\n\n    <div id=\"controls-region\"></div>\n";
 output += "\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary js-modal-save\">Gravar</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancelar</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
 cb(null, output);
 ;

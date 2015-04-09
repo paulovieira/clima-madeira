@@ -10,11 +10,11 @@ window.Behaviors.ShowModal = Marionette.Behavior.extend({
     },
 
     showModal: function(x,y,z){
-debugger;
+
         var modalEl = "$modal1",
         	regionKey = "modal1Region";
 
-        if(this.options.modalEl === "$modal2"){
+        if(this.options.stackLevel === 2){
 			modalEl = "$modal2";
 			regionKey = "modal2Region";
         }
@@ -43,11 +43,7 @@ window.Behaviors.CloseModal = Marionette.Behavior.extend({
     },
 
     closeModal: function(){
-        var modalEl = "$modal1";
-
-        if(this.options.modalEl === "$modal2"){
-			modalEl = "$modal2";
-        }
+        var modalEl = (this.options.stackLevel === 2 ? "$modal2" : "$modal1");
 
 		Dashboard[modalEl].modal("hide");
 		this.view.destroy();
@@ -99,13 +95,8 @@ debugger;
 				throw new Error(msg);
 			})
 			.finally(function(){
-
-		        var modalEl = "$modal1";
-
-		        if(this.options.modalEl === "$modal2"){
-					modalEl = "$modal2";
-		        }
-
+		        var modalEl = (this.options.stackLevel === 2 ? "$modal2" : "$modal1");
+				
 				Dashboard[modalEl].modal("hide");
 				self.view.destroy();
 			})
