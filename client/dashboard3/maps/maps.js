@@ -1,37 +1,6 @@
 var shapesChannel = Backbone.Radio.channel('shapes');
 
-var ZippedShapeRowLV = Mn.LayoutView.extend({
-
-	template: "maps/templates/zipped-shapes-row.html",
-	tagName: "tr",
-
-	triggers: {
-		"click": "rowClicked"
-	},
-
-	onRowClicked: function(x,y,z){
-		this.$("input").prop("checked", true);
-	}
-});
-
-
-var ZippedShapesTableCV = Mn.CompositeView.extend({
-	template: "maps/templates/zipped-shapes-table.html",
-	childView: ZippedShapeRowLV,
-	childViewContainer: "tbody",
-
-	filter: function(child, index, collection) {
-		return _.contains(child.get("tags"), "map") || 
-				_.contains(child.get("tags"), "maps") ||
-				_.contains(child.get("tags"), "mapa") ||
-				_.contains(child.get("tags"), "mapas") ||
-				_.contains(child.get("tags"), "shape") ||
-				_.contains(child.get("tags"), "shapes");
-	}
-});
-
-
-var ShapeNewLV = Mn.LayoutView.extend({
+var ShapeNewIV = Mn.ItemView.extend({
 	template: "maps/templates/shapes-new.html",
 
 	ui: {
@@ -39,41 +8,25 @@ var ShapeNewLV = Mn.LayoutView.extend({
 	},
 
 	events: {
-		"click @ui.saveBtn": "createResource"
+		"click @ui.saveBtn": "createResource",
+		"click tr.js-shape-row": "shapeRowClicked"
 	},
 
-	regions: {
-		zippedShapesRegion: "#zipped-shapes-region"
-	},
+	shapeRowClicked: function(e){
+		var $el = $(e.target);
 
-	onBeforeShow: function(){
+		// if the click was directly in the radio, return early (there's nothing to do)
+		if($el.is("input")){
+			return;
+		}
 
-		// NOTE: filesC has been fetched just before this view has been instantiated
-		var zippedShapesTableCV = new ZippedShapesTableCV({
-			collection: filesC
-		});
-
-		this.zippedShapesRegion.show(zippedShapesTableCV);
+		// if the click was in some children of <tr>, we have to select the corresponding radio
+		$el.closest("tr").find("input:radio").prop("checked", true);
 	},
 
 	createResource: function(){
 
-		var data = Backbone.Syphon.serialize(this);
-
-		//var checkedFile = this.$("input:checked").parent().find(".js-file-id");
-		var $checkedRow = this.$("tr").filter(function(){
-			return $(this).find("input:checked").length > 0;
-		});
-
-		var attrs = {
-			"code": $.trim(data["new-shape-code"]),
-			"srid": $.trim(data["new-shape-srid"]),
-			"description": {
-				"pt": $.trim(data["new-shape-desc-pt"]),
-				"en": $.trim(data["new-shape-desc-en"])
-			},
-			"fileId": $checkedRow.find("td.js-file-id").html()
-		};
+		var attrs = Backbone.Syphon.serialize(this);
 
 		if(attrs.code===""){
 			alert("To load a new shape file you must submit a code for the shape");
@@ -319,7 +272,24 @@ var MapEditModalIV = Mn.LayoutView.extend({
 	},
 
 	events: {
-		"click @ui.modalSaveBtn": "updateResource"
+		"click @ui.modalSaveBtn": "updateResource",
+		"click tr.js-shape-row": "shapeRowClicked"
+	},
+
+	shapeRowClicked: function(e){
+		var $el = $(e.target);
+
+		// if the click was directly in the checkbox, return early (there's nothing to do)
+		if($el.is("input")){
+			return;
+		}
+
+		// if the click was in some children of <tr>, we have to select the corresponding checkbox
+		var $checkbox = $el.closest("tr").find("input:checkbox"),
+			isChecked = $checkbox.prop("checked");
+
+		// finally, toggle the checkbox
+		$checkbox.prop("checked", !isChecked);
 	},
 
 	behaviors: {
@@ -346,15 +316,27 @@ var MapEditModalIV = Mn.LayoutView.extend({
 	},
 
 	updateResource: function(){
+
+		var attrs = Backbone.Syphon.serialize(this);
+
+		if(attrs.code===""){
+			alert("To create a new map you must submit a code for the map");
+			return;
+		}			
+
+		// the selected shapes are in the form: {"1": true, "3": false, "8": true}; we want an array of objects like
+		// this: [{shapeId: 1}, {shapeId: 8}]
+		var temp = [];
+		_.forEach(attrs.selectedShapes, function(value, key){
+			if(value === true){
+				temp.push({"shapeId": key})
+			}
+		})
+		attrs.selectedShapes = temp;
 debugger;
-		var data = Backbone.Syphon.serialize(this);
+
 /*
-		var attrs = {
-			"description": {
-				"pt": $.trim(data["edit-desc-pt"]),
-				"en": $.trim(data["edit-desc-en"])
-			},
-		};
+
 
 		if(attrs.description.pt + attrs.description.pt===""){
 			alert("Please fill the missing fields");
@@ -364,7 +346,7 @@ debugger;
 		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
 		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
 		// after we get a 200 response from the server (meaning the row has actually been updated)
-
+*/
 		this.ui.modalSaveBtn.prop("disabled", true);
 
 		var self = this;
@@ -392,7 +374,7 @@ debugger;
 				self.destroy();
 			})
 			.done();
-*/
+TODO: after we update the associated shape, it doesn't show immediately
 	},
 
 });
@@ -407,24 +389,25 @@ var MapNewLV = Mn.LayoutView.extend({
 	},
 
 	events: {
-		"click @ui.saveBtn": "createResource"
+		"click @ui.saveBtn": "createResource",
+		"click tr.js-shape-row": "shapeRowClicked"
 	},
 
-	// regions: {
-	// 	zippedShapesRegion: "#zipped-shapes-region"
-	// },
+	shapeRowClicked: function(e){
+		var $el = $(e.target);
 
-	// onBeforeShow: function(){
+		// if the click was directly in the checkbox, return early (there's nothing to do)
+		if($el.is("input")){
+			return;
+		}
 
-	// 	// NOTE: filesC has been fetched just before this view has been instantiated
-	// 	var zippedShapesTableCV = new ZippedShapesTableCV({
-	// 		collection: filesC
-	// 	});
+		// if the click was in some children of <tr>, we have to select the corresponding checkbox
+		var $checkbox = $el.closest("tr").find("input:checkbox"),
+			isChecked = $checkbox.prop("checked");
 
-	// 	this.zippedShapesRegion.show(zippedShapesTableCV);
-	// },
-
-
+		// finally, toggle the checkbox
+		$checkbox.prop("checked", !isChecked);
+	},
 
 	createResource: function(){
 
@@ -434,6 +417,17 @@ var MapNewLV = Mn.LayoutView.extend({
 			alert("To create a new map you must submit a code for the map");
 			return;
 		}			
+
+		// the selected shapes are in the form: {"1": true, "3": false, "8": true}; we want an array of objects like
+		// this: [{shapeId: 1}, {shapeId: 8}]
+		var temp = [];
+		_.forEach(attrs.selectedShapes, function(value, key){
+			if(value === true){
+				temp.push({"shapeId": key})
+			}
+		})
+		attrs.selectedShapes = temp;
+
 
 		this.ui.saveBtn.prop("disabled", true);
 
@@ -551,16 +545,27 @@ var MapsTabLV = Mn.LayoutView.extend({
 
 	showNewShape: function(){
 		var shapeM = new ShapeM();
-		var shapeNewLV = new ShapeNewLV({
+		var shapeNewIV = new ShapeNewIV({
 			model: shapeM
 		});
 
 		var self = this;
 
-		// filesC will be used in a region in shapeNewLV
+		// filesC will be filtered
 		Q(filesC.fetch())
 			.then(function(){ 
-				self.tabContentRegion.show(shapeNewLV); 
+
+				var zipFilesWithShapes = _.filter(filesC.toJSON(), function(obj){
+					return _.contains(obj.tags, "map") || 
+							_.contains(obj.tags, "maps") ||
+							_.contains(obj.tags, "mapa") ||
+							_.contains(obj.tags, "mapas") ||
+							_.contains(obj.tags, "shape") ||
+							_.contains(obj.tags, "shapes");
+				});
+				shapeM.set("zipFilesWithShapes", zipFilesWithShapes)
+
+				self.tabContentRegion.show(shapeNewIV); 
 			})
 			.catch(function(err){
 				var msg = err.responseJSON ? err.responseJSON.message : 
@@ -604,14 +609,18 @@ var MapsTabLV = Mn.LayoutView.extend({
 
 		var self = this;
 
-		// textsC will be used to obtain the map categories
-		Q(textsC.fetch())
+		// textsC will be used to obtain the map categories (which will be shown in the template)
+		Q.all([textsC.fetch(), shapesC.fetch()])
 			.then(function(){ 
 
+				// add the map categories to the model (to be available in the template)
 				var mapCategories = _.filter(textsC.toJSON(), function(obj){
 					return _.contains(obj.tags, "map_category");
 				})
 				mapM.set("mapCategories", mapCategories);
+
+				// do the same with the the shapes collection
+				mapM.set("availableShapes", shapesC.toJSON());
 
 				self.tabContentRegion.show(mapNewLV); 
 			})
@@ -633,16 +642,39 @@ var MapsTabLV = Mn.LayoutView.extend({
 
 		var self = this;
 
-		Q.all([mapsC.fetch(), textsC.fetch()])
+		Q.all([mapsC.fetch(), shapesC.fetch(), textsC.fetch()])
 			.then(function(){ 
 
+				// add the map categories to the all the map models (to be available in the template)
 				var mapCategories = _.filter(textsC.toJSON(), function(obj){
 					return _.contains(obj.tags, "map_category");
-				})
+				});
 
 				mapsC.each(function(mapM){
 					mapM.set("mapCategories", mapCategories);
-				})
+				});
+
+
+
+				// do the same with with the shapes collection; however we also want to 
+				// add a "isSelected" property, indicating if the shape has been
+				// selected or not (for that model)
+
+				mapsC.each(function(mapM){
+
+					// get the shape data for the current model
+					var shapesData = mapM.get("shapesData");
+
+					// get a new copy of all the shapes
+					var availableShapes = shapesC.toJSON();
+
+					_.each(availableShapes, function(shapeObj){
+						shapeObj.isSelected = _.findWhere(shapesData, {id: shapeObj.id}) ? true : false;
+					});
+
+					mapM.set("availableShapes", availableShapes);
+				});
+
 
 				self.tabContentRegion.show(mapsTableCV); 
 			})

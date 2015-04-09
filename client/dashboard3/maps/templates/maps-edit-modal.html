@@ -35,6 +35,40 @@
 
         <hr>
 
+        <h4>Selected shapes (data source)</h4>
+
+        <div class="xtable-responsive">
+            <table class="table table-stripedx table-hover table-condensed table-dashboard">
+
+                <thead>
+                    <tr>
+                        <th style="width: 5%"></th>
+                        <th style="width: 15%">Shape id</th>
+                        <th style="width: 40%">Shape code</th>
+                        <th style="width: 15%">Shape srid</th>
+                        <th style="width: 25%">Owner</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for obj in availableShapes %}
+                        <tr class="js-shape-row">
+                            <td><input type="checkbox" name="selectedShapes[{{ obj.id }}]" {{ "checked" if obj.isSelected == true }}></td>
+                            <td>{{ obj.id }}</td>
+                            <td>{{ obj.code }}</td>
+                            <td>{{ obj.srid }}</td>
+                            <td>{{ obj.ownerData.firstName }} {{ obj.ownerData.lastName }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+        
+
+
+        <hr>
+
         <h4>Controls</h4>
         
 
@@ -77,7 +111,7 @@
         </div>
 #}
     </form>
-
+xx
     <div id="controls-region"></div>
 {#
     <hr>

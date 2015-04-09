@@ -97,6 +97,7 @@ var transforms = {
 		    "controls": "controls",
 		    "ownerId": "ownerId",
 		    "createdAt": "createdAt",
+		    "shapesData": "shapesData",
 
 		    // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)
 		    "ownerData.id": "ownerData.id",
@@ -108,6 +109,8 @@ var transforms = {
 		    "categoryData.contents": "categoryData.contents",
 		    "categoryData.properties": "categoryData.properties",
 		    "categoryData.active": "categoryData.active",
+
+
 
 		    // d) deleted properties: "categoryId", "fileId", "tableName"
 		}

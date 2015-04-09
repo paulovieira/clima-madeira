@@ -95,7 +95,7 @@ debugger;
 				throw new Error(msg);
 			})
 			.finally(function(){
-		        var modalEl = (this.options.stackLevel === 2 ? "$modal2" : "$modal1");
+		        var modalEl = (self.options.stackLevel === 2 ? "$modal2" : "$modal1");
 				
 				Dashboard[modalEl].modal("hide");
 				self.view.destroy();

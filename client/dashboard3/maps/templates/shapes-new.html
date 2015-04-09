@@ -9,14 +9,14 @@
 				<div class="col-sm-6">
 		            <div class="form-group">
 		                <label for="js-new-shape-code">Shape code</label>
-		                <input type="text" id="js-new-shape-code" class="form-control" name="new-shape-code">
+		                <input type="text" id="js-new-shape-code" class="form-control" name="code">
 		            </div>
 				</div>
 
 				<div class="col-sm-6">
 		            <div class="form-group">
 		                <label for="js-new-shape-srid">SRID (projection identifier)</label>
-		                <input type="text" id="js-new-shape-srid" class="form-control" name="new-shape-srid" value="4326">
+		                <input type="text" id="js-new-shape-srid" class="form-control" name="srid" value="4326">
 		            </div>
 				</div>
 
@@ -24,16 +24,48 @@
 
             <div class="form-group">
                 <label for="js-new-shape-desc-pt">Description (portuguese)</label>
-                <input type="text" id="js-new-shape-desc-pt" class="form-control" name="new-shape-desc-pt" >
+                <input type="text" id="js-new-shape-desc-pt" class="form-control" name="description[pt]" >
             </div>
             <div class="form-group">
                 <label for="js-new-shape-desc-en">Description (english)</label>
-                <input type="text" id="js-new-shape-desc-en" class="form-control" name="new-shape-desc-en" >
+                <input type="text" id="js-new-shape-desc-en" class="form-control" name="description[en]" >
+            </div>
+
+
+            <h4>Available zip files containing shapes</h4>
+
+            <div class="xtable-responsive">
+                <table class="table table-condensedx table-hover table-dashboard">
+
+                    <thead>
+                        <tr>
+                            <th style="width: 5%"></th>
+                            <th style="width: 10%">File id</th>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 20%">Owner</th>
+                            <th style="width: 20%">Uploaded at</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for obj in zipFilesWithShapes %}
+                            <tr class="js-shape-row">
+                                <td><input type="radio" name="fileId" value="{{ obj.id }}"></td>
+                                <td class="js-file-id">{{ obj.id }}</td>
+                                <td>{{ obj.name }}</td>
+                                <td>{{ obj.ownerData.firstName }} {{ obj.ownerData.lastName }}</td>
+                                <td>{{ obj.uploadedAt }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
             </div>
 
         </form>
 
-        <div id="zipped-shapes-region"></div>
+
+        <hr>
 
         <div class="row" style="margin-top: 20px;">
         	<div class="col-sm-6 col-sm-offset-3">

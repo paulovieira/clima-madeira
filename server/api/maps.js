@@ -90,6 +90,10 @@ internals.validatePayloadForCreate = function(value, options, next){
             en: Joi.string().allow("")
         }).required(),
 
+        selectedShapes: Joi.array().includes(Joi.object().keys({
+            shapeId: Joi.number().integer().min(0).required()
+        })),
+
 
 /*
         id: Joi.number().integer().min(0),
@@ -121,6 +125,19 @@ internals.validatePayloadForUpdate = function(value, options, next){
 
     var schemaUpdate = Joi.object().keys({
         id: Joi.number().integer().min(0).required(),
+
+        code: Joi.string().required(),
+
+        categoryId: Joi.number().integer().required(),
+
+        title: Joi.object().keys({
+            pt: Joi.string().allow(""),
+            en: Joi.string().allow("")
+        }).required(),
+
+        selectedShapes: Joi.array().includes(Joi.object().keys({
+            shapeId: Joi.number().integer().min(0).required()
+        })),
 /*
         contents: Joi.object().keys({
             pt: Joi.string().allow("").required(),
@@ -266,25 +283,68 @@ debugger;
                 obj["owner_id"] = request.auth.credentials.id;
             });
 
-            var mapsC = new BaseC();
+            var mapsC = request.pre.allMaps,
+                shapesC = request.pre.allShapes,
+                selectedShapes = request.payload[0].selected_shapes,
+                newMapId;
+
+            // verify that the map code is unique
+            if(mapsC.findWhere({code: request.payload[0].code})){
+                return reply(Boom.conflict("The map code must be unique."));
+            }
+
+            // verify that the choosen shapes exists in the server
+            var allShapesExist = true;
+            selectedShapes.forEach(function(obj){
+                if(!shapesC.findWhere({id: obj.shapeId})){
+                    allShapesExist = false;
+                }                
+            });
+
+            if(!allShapesExist){
+                return reply(Boom.conflict("Some of the shape files don't exist anymore. Reload the page and choose again."));   
+            }
+
             mapsC.execute({
                 query: {
                     command: "select * from maps_create($1);",
                     arguments: [JSON.stringify(request.payload)]
-                }
+                },
             })
+
             .then(function(createdData){
+
+                // id to be used in the next handler
+                newMapId = createdData[0].id;
+
+                // now insert the associated shapes into the shapes_maps link table
+                selectedShapes.forEach(function(obj){
+                    obj["mapId"] = newMapId;
+                });
+
+                changeCaseKeys(selectedShapes, "underscored");
+
+                return mapsC.execute({
+                    query: {
+                        command: "select * from shapes_maps_create($1);",
+                        arguments: [JSON.stringify(selectedShapes)]
+                    }
+                })
+            })
+
+            .then(function(){
 
                 // read the data that was created (to obtain the joined data)
                 return mapsC.execute({
                     query: {
                         command: "select * from maps_read($1);",
-                        arguments: [JSON.stringify( {id: createdData[0].id} )]
+                        arguments: [JSON.stringify( {id: newMapId} )]
                     },
                     reset: true
                 });
 
             })
+
             .then(function(){
                 // we couldn't read - something went wrong
                 if(mapsC.length===0){
@@ -297,9 +357,11 @@ debugger;
 
                 return reply(transform(resp, transformMap));
             })
+
             .catch(function(err){
                 return reply(Boom.badImplementation(err.message));
             })
+
             .done();
 
         },
@@ -311,12 +373,146 @@ debugger;
             },
 
             pre: [
-                pre.abortIfNotAuthenticated
+                pre.abortIfNotAuthenticated,
+                [pre.db.getAllMaps, pre.db.getAllShapes]
             ],
 
             auth: config.get('hapi.auth'),
             description: 'Post (short description)',
             notes: 'Post (long description)',
+            tags: ['api'],
+        }
+    });
+
+
+
+    server.route({
+        method: 'PUT',
+        path: internals.resourcePath + "/{ids}",
+        handler: function (request, reply) {
+
+            console.log(utils.logHandlerInfo(request));
+debugger;
+
+
+            var mapsC = request.pre.mapsById,
+                shapesC = request.pre.allShapes,
+                shapesMapsC = request.pre.allShapesMaps,
+                selectedShapes = request.payload[0].selected_shapes,
+                updatedMapId;
+
+console.log("request.payload: ", request.payload);
+
+            if(mapsC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
+
+            // verify that the choosen shapes exists in the server
+            var allShapesExist = true;
+            selectedShapes.forEach(function(obj){
+                if(!shapesC.findWhere({id: obj.shapeId})){
+                    allShapesExist = false;
+                }                
+            });
+
+            if(!allShapesExist){
+                return reply(Boom.conflict("Some of the shape files don't exist anymore. Reload the page and choose again."));   
+            }
+
+
+
+            mapsC.execute({
+                query: {
+                    command: "select * from maps_update($1);",
+                    arguments: [JSON.stringify(request.payload[0])]
+                },
+                reset: true 
+            })
+
+            .then(function(updatedData){
+
+                // id to be used in the next handler
+                updatedMapId = updatedData[0].id;
+
+                // now delete from the shapes_maps link table the associated shapes (to this map)
+                var toBeDeleted = _.where(shapesMapsC.toJSON(), {mapId: updatedMapId})
+                changeCaseKeys(toBeDeleted, "underscored");
+
+                return shapesMapsC.execute({
+                    query: {
+                        command: "select * from shapes_maps_delete($1);",
+                        arguments: [JSON.stringify(toBeDeleted)]
+                    },
+                    reset: true
+                });
+            })
+
+            .then(function(){
+
+                // now insert again the associated shapes into the shapes_maps link table
+                selectedShapes.forEach(function(obj){
+                    obj["mapId"] = updatedMapId;
+                });
+
+                changeCaseKeys(selectedShapes, "underscored");
+
+                return shapesMapsC.execute({
+                    query: {
+                        command: "select * from shapes_maps_create($1);",
+                        arguments: [JSON.stringify(selectedShapes)]
+                    },
+                    reset: true
+                });
+            })
+
+            .then(function(){
+
+                // read the data that was updated (to obtain the joined data)
+                return shapesC.execute({
+                    query: {
+                        command: "select * from shapes_read($1);",
+                        arguments: [JSON.stringify( {id: updatedMapId} )]
+                    },
+                    reset: true
+                });
+
+            })
+
+            .then(function(){
+                // we couldn't read - something went wrong
+                if(mapsC.length===0){
+                    return reply(Boom.badImplementation());
+                }
+
+                var resp         = mapsC.toJSON();
+                var transformMap = transforms.maps.maps;
+                var transform    = transforms.transformArray;
+
+                return reply(transform(resp, transformMap));
+            })
+
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+
+            .done();
+
+        },
+
+        config: {
+            validate: {
+                params: internals.validateIds,
+                payload: internals.validatePayloadForUpdate
+            },
+
+            pre: [
+                pre.abortIfNotAuthenticated,
+                [pre.db.getMapsById, pre.db.getAllShapes, pre.db.getAllShapesMaps]
+            ],
+
+            auth: config.get('hapi.auth'),
+            description: 'Put (short description)',
+            notes: 'Put (long description)',
             tags: ['api'],
         }
     });
@@ -525,6 +721,7 @@ debugger;
     });
 */
 
+/*
     // UPDATE (one or more)
     server.route({
         method: 'PUT',
@@ -592,6 +789,7 @@ debugger;
 			tags: ['api'],
         }
     });
+*/
 
 /*
     // DELETE (one or more)

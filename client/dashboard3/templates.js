@@ -256,8 +256,41 @@ output += "\n                </option>\n            ";
 }
 }
 frame = frame.pop();
-output += "\n            \n            </select>\n\n        </div>\n\n        <hr>\n\n        <h4>Controls</h4>\n        \n\n";
-output += "\n    </form>\n\n    <div id=\"controls-region\"></div>\n";
+output += "\n            \n            </select>\n\n        </div>\n\n        <hr>\n\n        <h4>Selected shapes (data source)</h4>\n\n        <div class=\"xtable-responsive\">\n            <table class=\"table table-stripedx table-hover table-condensed table-dashboard\">\n\n                <thead>\n                    <tr>\n                        <th style=\"width: 5%\"></th>\n                        <th style=\"width: 15%\">Shape id</th>\n                        <th style=\"width: 40%\">Shape code</th>\n                        <th style=\"width: 15%\">Shape srid</th>\n                        <th style=\"width: 25%\">Owner</th>\n                    </tr>\n                </thead>\n\n                <tbody>\n                    ";
+frame = frame.push();
+var t_7 = runtime.contextOrFrameLookup(context, frame, "availableShapes");
+if(t_7) {var t_6 = t_7.length;
+for(var t_5=0; t_5 < t_7.length; t_5++) {
+var t_8 = t_7[t_5];
+frame.set("obj", t_8);
+frame.set("loop.index", t_5 + 1);
+frame.set("loop.index0", t_5);
+frame.set("loop.revindex", t_6 - t_5);
+frame.set("loop.revindex0", t_6 - t_5 - 1);
+frame.set("loop.first", t_5 === 0);
+frame.set("loop.last", t_5 === t_6 - 1);
+frame.set("loop.length", t_6);
+output += "\n                        <tr class=\"js-shape-row\">\n                            <td><input type=\"checkbox\" name=\"selectedShapes[";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"id", env.autoesc), env.autoesc);
+output += "]\" ";
+output += runtime.suppressValue((runtime.memberLookup((t_8),"isSelected", env.autoesc) == true?"checked":""), env.autoesc);
+output += "></td>\n                            <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"id", env.autoesc), env.autoesc);
+output += "</td>\n                            <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"code", env.autoesc), env.autoesc);
+output += "</td>\n                            <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"srid", env.autoesc), env.autoesc);
+output += "</td>\n                            <td>";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_8),"ownerData", env.autoesc)),"firstName", env.autoesc), env.autoesc);
+output += " ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_8),"ownerData", env.autoesc)),"lastName", env.autoesc), env.autoesc);
+output += "</td>\n                        </tr>\n                    ";
+;
+}
+}
+frame = frame.pop();
+output += "\n                </tbody>\n\n            </table>\n        </div>\n        \n\n\n        <hr>\n\n        <h4>Controls</h4>\n        \n\n";
+output += "\n    </form>\nxx\n    <div id=\"controls-region\"></div>\n";
 output += "\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary js-modal-save\">Gravar</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancelar</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
 cb(null, output);
 ;
@@ -298,8 +331,38 @@ output += "\n                            </option>\n                        ";
 }
 }
 frame = frame.pop();
-output += "\n                        \n                        </select>\n\n\t\t            </div>\n\t\t\t\t</div>\n\n            </div>\n\n            <div class=\"form-group\">\n                <label for=\"js-new-map-title-pt\">Map title (portuguese)</label>\n                <input type=\"text\" id=\"js-new-map-title-pt\" class=\"form-control\" name=\"title[pt]\" >\n            </div>\n            <div class=\"form-group\">\n                <label for=\"js-new-map-title-en\">Map title (english)</label>\n                <input type=\"text\" id=\"js-new-map-title-en\" class=\"form-control\" name=\"title[en]\" >\n            </div>\n\n        </form>\n\n";
-output += "\n\n        <div class=\"row\" style=\"margin-top: 20px;\">\n        \t<div class=\"col-sm-6 col-sm-offset-3\">\n            \t<button type=\"button\" class=\"btn btn-primary btn-block js-save\">Create map</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n";
+output += "\n                        \n                        </select>\n\n\t\t            </div>\n\t\t\t\t</div>\n\n            </div>\n\n            <div class=\"form-group\">\n                <label for=\"js-new-map-title-pt\">Map title (portuguese)</label>\n                <input type=\"text\" id=\"js-new-map-title-pt\" class=\"form-control\" name=\"title[pt]\" >\n            </div>\n            <div class=\"form-group\">\n                <label for=\"js-new-map-title-en\">Map title (english)</label>\n                <input type=\"text\" id=\"js-new-map-title-en\" class=\"form-control\" name=\"title[en]\" >\n            </div>\n\n            <hr>\n\n            <h4>Data sources (loaded shapes)</h4>\n\n            <div class=\"xtable-responsive\">\n                <table class=\"table table-stripedx table-hover table-condensed table-dashboard\">\n\n                    <thead>\n                        <tr>\n                            <th style=\"width: 5%\"></th>\n                            <th style=\"width: 15%\">Shape id</th>\n                            <th style=\"width: 40%\">Shape code</th>\n                            <th style=\"width: 15%\">Shape srid</th>\n                            <th style=\"width: 25%\">Owner</th>\n                        </tr>\n                    </thead>\n\n                    <tbody>\n                        ";
+frame = frame.push();
+var t_7 = runtime.contextOrFrameLookup(context, frame, "availableShapes");
+if(t_7) {var t_6 = t_7.length;
+for(var t_5=0; t_5 < t_7.length; t_5++) {
+var t_8 = t_7[t_5];
+frame.set("obj", t_8);
+frame.set("loop.index", t_5 + 1);
+frame.set("loop.index0", t_5);
+frame.set("loop.revindex", t_6 - t_5);
+frame.set("loop.revindex0", t_6 - t_5 - 1);
+frame.set("loop.first", t_5 === 0);
+frame.set("loop.last", t_5 === t_6 - 1);
+frame.set("loop.length", t_6);
+output += "\n                            <tr class=\"js-shape-row\">\n                                <td><input type=\"checkbox\" name=\"selectedShapes[";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"id", env.autoesc), env.autoesc);
+output += "]\"></td>\n                                <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"id", env.autoesc), env.autoesc);
+output += "</td>\n                                <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"code", env.autoesc), env.autoesc);
+output += "</td>\n                                <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"srid", env.autoesc), env.autoesc);
+output += "</td>\n                                <td>";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_8),"ownerData", env.autoesc)),"firstName", env.autoesc), env.autoesc);
+output += " ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_8),"ownerData", env.autoesc)),"lastName", env.autoesc), env.autoesc);
+output += "</td>\n                            </tr>\n                        ";
+;
+}
+}
+frame = frame.pop();
+output += "\n                    </tbody>\n\n                </table>\n            </div>\n\n        </form>\n\n\n \n\n\n\n        <div class=\"row\" style=\"margin-top: 20px;\">\n        \t<div class=\"col-sm-6 col-sm-offset-3\">\n            \t<button type=\"button\" class=\"btn btn-primary btn-block js-save\">Create map</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -456,7 +519,38 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 20px;\">\n\n        <h4 class=\"text-center\">Carregar um novo shape para a base de dados</h4>\n        <form style=\"margin-top: 40px;\">\n\n\t\t\t<div class=\"row\">\n\n\t\t\t\t<div class=\"col-sm-6\">\n\t\t            <div class=\"form-group\">\n\t\t                <label for=\"js-new-shape-code\">Shape code</label>\n\t\t                <input type=\"text\" id=\"js-new-shape-code\" class=\"form-control\" name=\"new-shape-code\">\n\t\t            </div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-sm-6\">\n\t\t            <div class=\"form-group\">\n\t\t                <label for=\"js-new-shape-srid\">SRID (projection identifier)</label>\n\t\t                <input type=\"text\" id=\"js-new-shape-srid\" class=\"form-control\" name=\"new-shape-srid\" value=\"4326\">\n\t\t            </div>\n\t\t\t\t</div>\n\n            </div>\n\n            <div class=\"form-group\">\n                <label for=\"js-new-shape-desc-pt\">Description (portuguese)</label>\n                <input type=\"text\" id=\"js-new-shape-desc-pt\" class=\"form-control\" name=\"new-shape-desc-pt\" >\n            </div>\n            <div class=\"form-group\">\n                <label for=\"js-new-shape-desc-en\">Description (english)</label>\n                <input type=\"text\" id=\"js-new-shape-desc-en\" class=\"form-control\" name=\"new-shape-desc-en\" >\n            </div>\n\n        </form>\n\n        <div id=\"zipped-shapes-region\"></div>\n\n        <div class=\"row\" style=\"margin-top: 20px;\">\n        \t<div class=\"col-sm-6 col-sm-offset-3\">\n            \t<button type=\"button\" class=\"btn btn-primary btn-block js-save\">Carregar shape!</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n";
+output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 20px;\">\n\n        <h4 class=\"text-center\">Carregar um novo shape para a base de dados</h4>\n        <form style=\"margin-top: 40px;\">\n\n\t\t\t<div class=\"row\">\n\n\t\t\t\t<div class=\"col-sm-6\">\n\t\t            <div class=\"form-group\">\n\t\t                <label for=\"js-new-shape-code\">Shape code</label>\n\t\t                <input type=\"text\" id=\"js-new-shape-code\" class=\"form-control\" name=\"code\">\n\t\t            </div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-sm-6\">\n\t\t            <div class=\"form-group\">\n\t\t                <label for=\"js-new-shape-srid\">SRID (projection identifier)</label>\n\t\t                <input type=\"text\" id=\"js-new-shape-srid\" class=\"form-control\" name=\"srid\" value=\"4326\">\n\t\t            </div>\n\t\t\t\t</div>\n\n            </div>\n\n            <div class=\"form-group\">\n                <label for=\"js-new-shape-desc-pt\">Description (portuguese)</label>\n                <input type=\"text\" id=\"js-new-shape-desc-pt\" class=\"form-control\" name=\"description[pt]\" >\n            </div>\n            <div class=\"form-group\">\n                <label for=\"js-new-shape-desc-en\">Description (english)</label>\n                <input type=\"text\" id=\"js-new-shape-desc-en\" class=\"form-control\" name=\"description[en]\" >\n            </div>\n\n\n            <h4>Available zip files containing shapes</h4>\n\n            <div class=\"xtable-responsive\">\n                <table class=\"table table-condensedx table-hover table-dashboard\">\n\n                    <thead>\n                        <tr>\n                            <th style=\"width: 5%\"></th>\n                            <th style=\"width: 10%\">File id</th>\n                            <th style=\"width: 20%\">Name</th>\n                            <th style=\"width: 20%\">Owner</th>\n                            <th style=\"width: 20%\">Uploaded at</th>\n                        </tr>\n                    </thead>\n\n                    <tbody>\n                        ";
+frame = frame.push();
+var t_3 = runtime.contextOrFrameLookup(context, frame, "zipFilesWithShapes");
+if(t_3) {var t_2 = t_3.length;
+for(var t_1=0; t_1 < t_3.length; t_1++) {
+var t_4 = t_3[t_1];
+frame.set("obj", t_4);
+frame.set("loop.index", t_1 + 1);
+frame.set("loop.index0", t_1);
+frame.set("loop.revindex", t_2 - t_1);
+frame.set("loop.revindex0", t_2 - t_1 - 1);
+frame.set("loop.first", t_1 === 0);
+frame.set("loop.last", t_1 === t_2 - 1);
+frame.set("loop.length", t_2);
+output += "\n                            <tr class=\"js-shape-row\">\n                                <td><input type=\"radio\" name=\"fileId\" value=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += "\"></td>\n                                <td class=\"js-file-id\">";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += "</td>\n                                <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"name", env.autoesc), env.autoesc);
+output += "</td>\n                                <td>";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_4),"ownerData", env.autoesc)),"firstName", env.autoesc), env.autoesc);
+output += " ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_4),"ownerData", env.autoesc)),"lastName", env.autoesc), env.autoesc);
+output += "</td>\n                                <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"uploadedAt", env.autoesc), env.autoesc);
+output += "</td>\n                            </tr>\n                        ";
+;
+}
+}
+frame = frame.pop();
+output += "\n                    </tbody>\n\n                </table>\n            </div>\n\n        </form>\n\n\n        <hr>\n\n        <div class=\"row\" style=\"margin-top: 20px;\">\n        \t<div class=\"col-sm-6 col-sm-offset-3\">\n            \t<button type=\"button\" class=\"btn btn-primary btn-block js-save\">Carregar shape!</button>\n            </div>\n        </div>\n\n    </div>\n</div>\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -505,50 +599,6 @@ var output = "";
 try {
 output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n            \n                <th style=\"width: 5%\">id</th>\n                <th style=\"width: 10%\">Code</th>\n                <th style=\"width: 5%\">SRID</th>\n                <th style=\"width: 10%\">File</th>\n                <th style=\"width: 10%\">Owner</th>\n";
 output += "\n                <th style=\"width: 10%\"></th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
-cb(null, output);
-;
-} catch (e) {
-  cb(runtime.handleError(e, lineno, colno));
-}
-}
-return {
-root: root
-};
-})();
-})();
-(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/zipped-shapes-row.html"] = (function() {function root(env, context, frame, runtime, cb) {
-var lineno = null;
-var colno = null;
-var output = "";
-try {
-output += "\n<td>\n \t<input type=\"radio\" name=\"shapes-radios\">\n</td>\n\n<td class=\"js-file-id\">";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
-output += "</td>\n\n<td>\n    ";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "name"), env.autoesc);
-output += "\n</td>\n\n<td>\n\t";
-output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"firstName", env.autoesc), env.autoesc);
-output += " ";
-output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"lastName", env.autoesc), env.autoesc);
-output += "\n</td>\n\n<td>\n\t";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "uploadedAt"), env.autoesc);
-output += "\n</td>\n\n\n";
-cb(null, output);
-;
-} catch (e) {
-  cb(runtime.handleError(e, lineno, colno));
-}
-}
-return {
-root: root
-};
-})();
-})();
-(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["maps/templates/zipped-shapes-table.html"] = (function() {function root(env, context, frame, runtime, cb) {
-var lineno = null;
-var colno = null;
-var output = "";
-try {
-output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-condensed table-hover table-dashboard\">\n\n        <thead>\n            <tr>\n                <th style=\"width: 5%\"></th>\n                <th style=\"width: 10%\">File id</th>\n                <th style=\"width: 20%\">Name</th>\n                <th style=\"width: 20%\">Owner</th>\n                <th style=\"width: 20%\">Uploaded at</th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
 cb(null, output);
 ;
 } catch (e) {

@@ -351,6 +351,25 @@ var preRequisites = {
 			assign: "mapsById",
 		},
 
+		getAllShapesMaps: {
+			method: function(request, reply){
+				console.log("pre: db.getAllShapesMaps");
+		        var shapesMapsC = new BaseC();
+
+		        shapesMapsC
+		            .execute({
+		                query: {
+		                    command: "select * from shapes_maps_read()"
+		                },
+		            })
+		            .then(function() {
+	                	return reply(shapesMapsC);
+	                })
+		            .done();
+			},
+			assign: "allShapesMaps"
+		},
+
 		// read_files: {
 		// 	method: function(request, reply){
 		// 		console.log("pre: db.read_files");
