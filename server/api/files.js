@@ -209,9 +209,10 @@ debugger;
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-//console.log("request.payload: ", request.payload);
+console.log("request.payload: ", request.payload);
 
-            var filename     = request.payload.new_file.hapi.filename;
+            //var filename     = request.payload.new_file.hapi.filename;
+            var filename     = request.payload.filename;
             var logicalPath  = config.get("uploads.logicalPath");
             var physicalPath = config.get("uploads.physicalPath");
 

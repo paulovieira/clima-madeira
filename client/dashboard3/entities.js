@@ -109,7 +109,7 @@ var textsC = new TextsC();
 
 var FileM = Backbone.Model.extend({
 	urlRoot: "/api/files",
-
+	name: "",
 	parse: function(resp){
 		if(_.isArray(resp)){ resp = resp[0]; }
 //debugger;

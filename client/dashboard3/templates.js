@@ -50,12 +50,31 @@ root: root
 };
 })();
 })();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["files/templates/files-new-shape-fields.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"row\">\n\n\t<div class=\"col-sm-6\">\n        <div class=\"form-group\">\n            <label for=\"js-new-shape-code\">Shape code</label>\n            <input type=\"text\" id=\"js-new-shape-code\" class=\"form-control\" name=\"code\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "nameWithoutExt"), env.autoesc);
+output += "\">\n        </div>\n\t</div>\n\n\t<div class=\"col-sm-6\">\n        <div class=\"form-group\">\n            <label for=\"js-new-shape-srid\">SRID (projection identifier)</label>\n            <input type=\"text\" id=\"js-new-shape-srid\" class=\"form-control\" name=\"srid\" value=\"4326\">\n        </div>\n\t</div>\n\n</div>\n\n<div class=\"row\">\n\t<div class=\"col-sm-12\">\n\n\t\t<div class=\"form-group\">\n\t\t    <label for=\"js-new-shape-desc-pt\">Description (portuguese)</label>\n\t\t    <input type=\"text\" id=\"js-new-shape-desc-pt\" class=\"form-control\" name=\"description[pt]\" >\n\t\t</div>\n\t\t<div class=\"form-group\">\n\t\t    <label for=\"js-new-shape-desc-en\">Description (english)</label>\n\t\t    <input type=\"text\" id=\"js-new-shape-desc-en\" class=\"form-control\" name=\"description[en]\" >\n\t\t</div>\n\n\t</div>\n</div>";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
 (function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["files/templates/files-new.html"] = (function() {function root(env, context, frame, runtime, cb) {
 var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 10px;\">\n\n        <h3 class=\"text-center\">Upload de novo ficheiro</h4>\n\n<!--         <form method=\"post\" action=\"/api/files\" enctype=\"multipart/form-data\"> -->\n\t\t<form enctype=\"multipart/form-data\">\n\n\t\t\t <div class=\"form-group\">\n                <label for=\"new_file_tags\">Tags (separar com vírgulas)</label>\n                <input type=\"text\" id=\"new_file_tags\" class=\"form-control\" name=\"tags\">\n\n                <label for=\"new_file\">Choose file</label>\n\t\t\t\t<input id=\"new_file\" name=\"new_file\" type=\"file\" multiple=false class=\"file\">\n\t\t\t</div>\n\n        </form>\n\n\n    </div>\n</div>\n\n";
+output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 10px;\">\n\n        <h3 class=\"text-center\">Upload de novo ficheiro</h4>\n\n<!--         <form method=\"post\" action=\"/api/files\" enctype=\"multipart/form-data\"> -->\n\t\t<form enctype=\"multipart/form-data\">\n\n\t\t\t <div class=\"form-group\">\n                <label for=\"new_file_tags\">Tags (separar com vírgulas)</label>\n                <input type=\"text\" id=\"new_file_tags\" class=\"form-control\" name=\"tags\">\n\n                <label for=\"new_file\" style=\"margin-top: 20px;\">Choose file</label>\n\t\t\t\t<input id=\"new_file\" name=\"new_file\" type=\"file\" multiple=false class=\"file\">\n\t\t\t</div>\n\n            <hr>\n\n            <div class=\"row\" style=\"margin-top: 20px;\">\n                <div class=\"col-sm-3\">\n                    <div class=\"form-group\">\n                        <label for=\"js-is-shape\">Is shape file</label>\n                        <select id=\"js-is-shape\" class=\"form-control\">\n                            <option value=\"false\" selected>No</option>\n                            <option value=\"true\">Yes</option>\n                        </select>\n                    </div>\n                </div>\n                <div id=\"shape-fields-region\" class=\"col-sm-9\">\n                </div>\n            </div>\n        </form>\n\n\n    </div>\n</div>\n\n";
 cb(null, output);
 ;
 } catch (e) {

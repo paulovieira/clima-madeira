@@ -121,9 +121,43 @@ var FilesTableCV = Mn.CompositeView.extend({
 });
 
 
+var FileNewShapeFieldsIV = Mn.ItemView.extend({
+	template: "files/templates/files-new-shape-fields.html",
+})
 
 var FileNewLV = Mn.LayoutView.extend({
 	template: "files/templates/files-new.html",
+
+	ui: {
+		isShapeSelect: "select#js-is-shape"
+	},
+
+	events: {
+		"change @ui.isShapeSelect": "isShapeChanged"
+	},
+
+	regions: {
+		shapeFieldsRegion: "#shape-fields-region"
+	},
+
+	isShapeChanged: function(e){
+		var isSelected = ($(e.target).val() === "true");
+
+		var fileNewShapeFieldsIV;
+		if(isSelected){
+
+			// this subview will share the same model (to access the filename, assuming
+			// the file has already been selected)
+			fileNewShapeFieldsIV = new FileNewShapeFieldsIV({
+				model: this.model
+			});
+			this.shapeFieldsRegion.show(fileNewShapeFieldsIV)	
+		}
+		else{
+			this.shapeFieldsRegion.empty()	
+		}
+		
+	},
 
 	onAttach: function(){
 
@@ -135,6 +169,20 @@ var FileNewLV = Mn.LayoutView.extend({
 		    showRemove: false,
 		    //overwriteInitial: false,
 		    //showCaption: false
+
+		    // use underscore.string to generate the slugged name (the native method is not good)
+		    slugCallback: function(filename) {
+		    	var array = filename.split(".");
+		    	if(array.length===1){
+		    		return s.slugify(array[0]);
+		    	}
+
+		    	var extension = array.pop();
+		    	filename = s(array).toSentence("-", "-").slugify().value() + "." + extension;
+
+		    	return filename;
+			},
+
 		    ajaxSettings: {
 		    	error: function(jqxhr, status, err){
 		    		var msg = jqxhr.responseJSON.message;
@@ -145,13 +193,28 @@ var FileNewLV = Mn.LayoutView.extend({
 		    },
 		    uploadExtraData: function(){
 				return { 
-					tags: $("#new_file_tags").val()
+					tags: $("#new_file_tags").val(),
+					filename: this.slugCallback(this.filestack[0].name)
 				}
 		    }
 
 		});
 
-		// $('#js-newfile').on('fileuploaded', function(event, data, previewId, index) {
+		// self is the view
+		var self = this;
+
+		// this callback will execute after the file is selected (but before the upload button is clicked)
+		$('#new_file').on('fileloaded', function(e, file, previewId, index, reader) {
+			var filename = $(this).data("fileinput").slugCallback(file.name);
+
+			// NOTE: the string returned by slugCallback has already replaced any extra dots by dashes
+			// (it is garanteed that is it of the form "abc_xyz.ext", so the array will either have lenght 1 or 2)
+			self.model.set("name", filename);
+			self.model.set("nameWithoutExt", filename.split(".")[0]);
+			
+		});
+
+		// $('#new_file').on('fileuploaded', function(event, data, previewId, index) {
 		// 	debugger;
 		// });
 
@@ -160,15 +223,15 @@ var FileNewLV = Mn.LayoutView.extend({
 		// 	debugger;
 		// });
 
-		// // $('#js-newfile').on('filebatchuploadcomplete', function(event, files, extra) {
+		// // $('#new_file').on('filebatchuploadcomplete', function(event, files, extra) {
 		// //     debugger;
 		// // });
 
-		// $('#js-newfile').on('filelock', function(event, filestack, extraData) {
+		// $('#new_file').on('filelock', function(event, filestack, extraData) {
 		// 	debugger;
 		// });
 
-		// $('#js-newfile').on('fileunlock', function(event, filestack, extraData) {
+		// $('#new_file').on('fileunlock', function(event, filestack, extraData) {
 		// 	debugger;
 		// });
 
@@ -215,9 +278,9 @@ var FilesTabLV = Mn.LayoutView.extend({
 	},
 
 	showNew: function(){
-		//var fileM = new FileM();
+		var fileM = new FileM();
 		var fileNewLV = new FileNewLV({
-		//	model: fileM
+			model: fileM
 		});
 		this.tabContentRegion.show(fileNewLV); 
 	},

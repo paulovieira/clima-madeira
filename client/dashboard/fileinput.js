@@ -1740,6 +1740,7 @@
 
     //FileInput plugin definition
     $.fn.fileinput = function (option) {
+
         if (!hasFileAPISupport() && !isIE(9)) {
             return;
         }
@@ -1747,6 +1748,7 @@
         var args = Array.apply(null, arguments);
         args.shift();
         return this.each(function () {
+
             var $this = $(this),
                 data = $this.data('fileinput'),
                 options = typeof option === 'object' && option;
