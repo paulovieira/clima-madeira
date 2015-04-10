@@ -8,7 +8,43 @@
 
     <form>
 
-        control
+        <h4>Data columns</h4>
+
+        <p>Choose the columns to be used used for this control</p>
+
+        {% for shape in availableShapes %}
+
+        <h5>{{ shape.code }}</h5>
+    
+        <div class="xtable-responsive">
+            <table class="table table-condensedx table-hover table-dashboard">
+
+                <thead>
+                    <tr>
+                        <th style="width: 10%"></th>
+                        <th style="width: 30%">Column name</th>
+                        <th style="width: 30%">Column type</th>
+                        <th style="width: 30%">Public name</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for column in shape.shapeColumnsData %}
+                        <tr class="js-shape-row">
+                            <td><input type="checkbox" name="{{ shape.id }}[{{ column.column_number }}][isSelected]"></td>
+                            <td class="xjs-file-id">{{ column.column_name }}</td>
+                            <td>{{ column.data_type }}</td>
+                            <td><input type="text" name="{{ shape.id }}[{{ column.column_number }}][publicName]"></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        <hr>
+
+        {% endfor %}
 
     </form>
 

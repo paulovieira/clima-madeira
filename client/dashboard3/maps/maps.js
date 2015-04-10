@@ -218,6 +218,26 @@ var ControlEditModalIV = Mn.ItemView.extend({
 	},
 
 	updateResource: function(){
+		var tempObj = Backbone.Syphon.serialize(this);
+
+		var selectedColumns = [];
+
+		// the key of the outermost object is the shapeId
+		_.each(tempObj, function(columns, shapeId){
+
+			// the key of the inner object is the column number
+			_.each(columns, function(props, columnNumber){
+
+				if(props.isSelected){
+					selectedColumns.push({
+						shapeId: shapeId,
+						columnNumber: columnNumber,
+						publicName: props.publicName
+					});
+				}
+			});
+		});
+
 		debugger;
 	}
 });
@@ -299,14 +319,20 @@ var MapEditModalIV = Mn.LayoutView.extend({
 	},
 
 	onBeforeShow: function(){
-		var controlsC = new Backbone.Collection(this.model.get("controls"));
+		var shapesData = this.model.get("shapesData"),
+			controlsArray = this.model.get("controls"),
+			controlsC = new Backbone.Collection(controlsArray);
+
+		var availableShapes = _.filter(shapesC.toJSON(), function(shapeObj){
+			return _.findWhere(shapesData, {id: shapeObj.id});
+		});
 
 		var i=0;
 		controlsC.each(function(controlM){
 			controlM.set("id", ++i);
+			controlM.set("availableShapes", availableShapes);
+//			debugger;
 		});
-
-//		debugger;
 
 		var controlsTableCV = new ControlsTableCV({
 			collection: controlsC
@@ -333,20 +359,7 @@ var MapEditModalIV = Mn.LayoutView.extend({
 			}
 		})
 		attrs.selectedShapes = temp;
-debugger;
 
-/*
-
-
-		if(attrs.description.pt + attrs.description.pt===""){
-			alert("Please fill the missing fields");
-			return;
-		}
-
-		// NOTE: we should always use model.save(attrs, {wait: true}) instead of 
-		// model.set(attrs) + model.save(); this way the model will be updated (in the client) only 
-		// after we get a 200 response from the server (meaning the row has actually been updated)
-*/
 		this.ui.modalSaveBtn.prop("disabled", true);
 
 		var self = this;
@@ -374,7 +387,7 @@ debugger;
 				self.destroy();
 			})
 			.done();
-TODO: after we update the associated shape, it doesn't show immediately
+//TODO: after we update the associated shape, it doesn't show immediately
 	},
 
 });
@@ -470,13 +483,67 @@ var MapRowLV = Mn.LayoutView.extend({
 		"change": "render"
 	},
 
+	events: {
+		"click @ui.editModalBtn": "showEditModal"
+	},
+
+	showEditModal: function(){
+
+        var mapEditModalIV = new MapEditModalIV({
+            model: this.model
+        });
+
+
+        var self = this;
+		Q.all([shapesC.fetch(), textsC.fetch()])
+			.then(function(){ 
+
+				// add the map categories to the current map models (to be available in the template)
+				var mapCategories = _.filter(textsC.toJSON(), function(obj){
+					return _.contains(obj.tags, "map_category");
+				});
+
+				self.model.set("mapCategories", mapCategories);
+
+				// do the same with with the shapes collection; however we also want to 
+				// add a "isSelected" property, indicating if the shape has been
+				// selected or not (for the current model)
+
+				// get the shape data (seleted shapes for the current model)
+				var shapesData = self.model.get("shapesData");
+
+				// get a new copy of all the shapes
+				var availableShapes = shapesC.toJSON();
+
+				_.each(availableShapes, function(shapeObj){
+					shapeObj.isSelected = _.findWhere(shapesData, {id: shapeObj.id}) ? true : false;
+				});
+
+				self.model.set("availableShapes", availableShapes);
+
+		        // first set the content of the modal
+		        Dashboard.modal1Region.show(mapEditModalIV);
+
+		        // then show the modal 
+		        Dashboard.$modal1.modal("show");
+			})
+			.catch(function(err){
+				var msg = err.responseJSON ? err.responseJSON.message : 
+											( err.message ? err.message : "unknown error" );
+
+				alert("ERROR: " + msg);
+				throw new Error(msg);
+			})
+			.done();
+	},
+
 	behaviors: {
 
-		ShowEditModal: {
-			behaviorClass: window.Behaviors.ShowModal,
-			uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
-			viewClass: MapEditModalIV,  // and will show this view
-		},
+		// ShowEditModal: {
+		// 	behaviorClass: window.Behaviors.ShowModal,
+		// 	uiKey: "editModalBtn",  // will listen for clicks on @ui.editModalBtn
+		// 	viewClass: MapEditModalIV,  // and will show this view
+		// },
 
 		// ShowDeleteModal: {
 		// 	behaviorClass: window.Behaviors.ShowModal,
@@ -642,39 +709,8 @@ var MapsTabLV = Mn.LayoutView.extend({
 
 		var self = this;
 
-		Q.all([mapsC.fetch(), shapesC.fetch(), textsC.fetch()])
+		Q(mapsC.fetch())
 			.then(function(){ 
-
-				// add the map categories to the all the map models (to be available in the template)
-				var mapCategories = _.filter(textsC.toJSON(), function(obj){
-					return _.contains(obj.tags, "map_category");
-				});
-
-				mapsC.each(function(mapM){
-					mapM.set("mapCategories", mapCategories);
-				});
-
-
-
-				// do the same with with the shapes collection; however we also want to 
-				// add a "isSelected" property, indicating if the shape has been
-				// selected or not (for that model)
-
-				mapsC.each(function(mapM){
-
-					// get the shape data for the current model
-					var shapesData = mapM.get("shapesData");
-
-					// get a new copy of all the shapes
-					var availableShapes = shapesC.toJSON();
-
-					_.each(availableShapes, function(shapeObj){
-						shapeObj.isSelected = _.findWhere(shapesData, {id: shapeObj.id}) ? true : false;
-					});
-
-					mapM.set("availableShapes", availableShapes);
-				});
-
 
 				self.tabContentRegion.show(mapsTableCV); 
 			})

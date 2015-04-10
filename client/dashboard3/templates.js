@@ -170,7 +170,59 @@ var output = "";
 try {
 output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Edit control #";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
-output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n\n\n    <form>\n\n        control\n\n    </form>\n\n\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary js-modal-save\">Gravar</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancelar</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
+output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n\n\n    <form>\n\n        <h4>Data columns</h4>\n\n        <p>Choose the columns to be used used for this control</p>\n\n        ";
+frame = frame.push();
+var t_3 = runtime.contextOrFrameLookup(context, frame, "availableShapes");
+if(t_3) {var t_2 = t_3.length;
+for(var t_1=0; t_1 < t_3.length; t_1++) {
+var t_4 = t_3[t_1];
+frame.set("shape", t_4);
+frame.set("loop.index", t_1 + 1);
+frame.set("loop.index0", t_1);
+frame.set("loop.revindex", t_2 - t_1);
+frame.set("loop.revindex0", t_2 - t_1 - 1);
+frame.set("loop.first", t_1 === 0);
+frame.set("loop.last", t_1 === t_2 - 1);
+frame.set("loop.length", t_2);
+output += "\n\n        <h5>";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"code", env.autoesc), env.autoesc);
+output += "</h5>\n    \n        <div class=\"xtable-responsive\">\n            <table class=\"table table-condensedx table-hover table-dashboard\">\n\n                <thead>\n                    <tr>\n                        <th style=\"width: 10%\"></th>\n                        <th style=\"width: 30%\">Column name</th>\n                        <th style=\"width: 30%\">Column type</th>\n                        <th style=\"width: 30%\">Public name</th>\n                    </tr>\n                </thead>\n\n                <tbody>\n                    ";
+frame = frame.push();
+var t_7 = runtime.memberLookup((t_4),"shapeColumnsData", env.autoesc);
+if(t_7) {var t_6 = t_7.length;
+for(var t_5=0; t_5 < t_7.length; t_5++) {
+var t_8 = t_7[t_5];
+frame.set("column", t_8);
+frame.set("loop.index", t_5 + 1);
+frame.set("loop.index0", t_5);
+frame.set("loop.revindex", t_6 - t_5);
+frame.set("loop.revindex0", t_6 - t_5 - 1);
+frame.set("loop.first", t_5 === 0);
+frame.set("loop.last", t_5 === t_6 - 1);
+frame.set("loop.length", t_6);
+output += "\n                        <tr class=\"js-shape-row\">\n                            <td><input type=\"checkbox\" name=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += "[";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"column_number", env.autoesc), env.autoesc);
+output += "][isSelected]\"></td>\n                            <td class=\"xjs-file-id\">";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"column_name", env.autoesc), env.autoesc);
+output += "</td>\n                            <td>";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"data_type", env.autoesc), env.autoesc);
+output += "</td>\n                            <td><input type=\"text\" name=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += "[";
+output += runtime.suppressValue(runtime.memberLookup((t_8),"column_number", env.autoesc), env.autoesc);
+output += "][publicName]\"></td>\n                        </tr>\n                    ";
+;
+}
+}
+frame = frame.pop();
+output += "\n                </tbody>\n\n            </table>\n        </div>\n\n        <hr>\n\n        ";
+;
+}
+}
+frame = frame.pop();
+output += "\n\n    </form>\n\n\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary js-modal-save\">Gravar</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancelar</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
 cb(null, output);
 ;
 } catch (e) {
