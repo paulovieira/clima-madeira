@@ -5,16 +5,35 @@
 
 <div class="modal-body">
 
-
     <form>
+
+        <div class="form-group">
+            <label for="js-select-period">Select the period</label>
+            <select id="js-select-period" name="period" class="form-control">
+                <option value="none">None</option>
+                <option value="reference">Reference</option>
+                <option value="short">Short</option>
+                <option value="medium">Medium</option>
+                <option value="long">Long</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="js-select-play-btn">Show play button in this control (<span class="glyphicon glyphicon-play" aria-hidden="true"></span>)</label>
+            <select id="js-select-play-btn" name="showPlayButton" class="form-control">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+        </div>
+
 
         <h4>Data columns</h4>
 
-        <p>Choose the columns to be used used for this control</p>
+        <p>Choose the columns to be used for this control</p>
 
         {% for shape in availableShapes %}
 
-        <h5>{{ shape.code }}</h5>
+        <strong>Shape #{{ loop.index }}</strong> (code: {{ shape.code }})
     
         <div class="xtable-responsive">
             <table class="table table-condensedx table-hover table-dashboard">
@@ -52,8 +71,8 @@
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-primary js-modal-save">Gravar</button>
-    <button type="button" class="btn btn-default js-modal-cancel">Cancelar</button>
+{#    <button type="button" class="btn btn-primary js-modal-save">Gravar</button>  #}
+    <button type="button" class="btn btn-default js-modal-apply">Apply</button>
 
     <div id="message-status" style="margin-top: 35px;"></div>
     <div id="" style="margin-top: 10px;">

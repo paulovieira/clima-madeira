@@ -21,7 +21,7 @@
         <div class="form-group">
             <label for="js-new-map-category">Map category</label>
 
-            <select name="categoryId" class="form-control">
+            <select id="js-new-map-category" name="categoryId" class="form-control">
 
             {% for obj in mapCategories %}
                 <option value={{ obj.id }} {{ "selected" if obj.id == categoryId }}>

@@ -138,6 +138,12 @@ internals.validatePayloadForUpdate = function(value, options, next){
         selectedShapes: Joi.array().includes(Joi.object().keys({
             shapeId: Joi.number().integer().min(0).required()
         })),
+
+        controls: Joi.array().includes(Joi.object().keys({
+            period: Joi.string(),
+            showPlayButton: Joi.boolean(),
+            selectedColumns: Joi.array()
+        })),
 /*
         contents: Joi.object().keys({
             pt: Joi.string().allow("").required(),
@@ -400,8 +406,6 @@ debugger;
                 shapesMapsC = request.pre.allShapesMaps,
                 selectedShapes = request.payload[0].selected_shapes,
                 updatedMapId;
-
-console.log("request.payload: ", request.payload);
 
             if(mapsC.length===0){
                 return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));

@@ -1,4 +1,4 @@
-var shapesChannel = Backbone.Radio.channel('shapes');
+var mapsChannel = Backbone.Radio.channel('maps');
 
 var ShapeNewIV = Mn.ItemView.extend({
 	template: "maps/templates/shapes-new.html",
@@ -48,8 +48,9 @@ var ShapeNewIV = Mn.ItemView.extend({
 			.then(function(){
 				alert("O shape foi carregado com sucesso.");
 
-				// the handler for show:all:shapes will trigger a fake click on the correct anchor elem
-				shapesChannel.trigger("show:all:shapes");
+				// the handler for show:all:shapes will trigger a fake click on the correct
+				// anchor elem, this showing the list of shapes
+				mapsChannel.trigger("show:all:shapes");
 			})
 			.catch(function(err){
 				var msg = err.responseJSON ? err.responseJSON.message : 
@@ -197,17 +198,23 @@ var ShapesTableCV = Mn.CompositeView.extend({
 
 
 
-
+/*
+The interaction in controls edit modal is:
+1) the user updates the data
+2) the user clicks the apply button
+3) the current control model is updated and the modal (2nd level) is closed
+4) the parent collection view is listening for changes on any model, and where that happens will request "update:controls"
+5) the handler for that request will update the controls property on the underlying map model (using controlsCollection toJSON); it will also remove the extra "availableShapes" property from the controls models
+*/
 var ControlEditModalIV = Mn.ItemView.extend({
 	template: "maps/templates/controls-edit-modal.html",
 
 	ui: {
-		"modalCloseBtn":  "button.js-modal-cancel",
-		"modalSaveBtn":   "button.js-modal-save"
+		"modalCloseBtn":  "button.js-modal-apply",
 	},
 
 	events: {
-		"click @ui.modalSaveBtn": "updateResource"
+		"click @ui.modalCloseBtn": "updateResource"
 	},
 
 	behaviors: {
@@ -238,7 +245,14 @@ var ControlEditModalIV = Mn.ItemView.extend({
 			});
 		});
 
-		debugger;
+		attrs = {
+			selectedColumns: selectedColumns,
+			showPlayButton: tempObj.showPlayButton,
+			period: tempObj.period
+		}
+
+		this.model.set(attrs);
+
 	}
 });
 
@@ -248,10 +262,6 @@ var ControlRowIV = Mn.ItemView.extend({
 	ui: {
 		"editModalBtn": "button.js-edit",
 		"deleteModalBtn": "button.js-delete"
-	},
-
-	modelEvents: {
-		"change": "render"
 	},
 
 	behaviors: {
@@ -275,12 +285,36 @@ var ControlRowIV = Mn.ItemView.extend({
 var ControlsTableCV = Mn.CompositeView.extend({
 	template: "maps/templates/controls-table.html",
 	childView: ControlRowIV,
-	childViewContainer: "tbody"
+	childViewContainer: "tbody",
+
+	collectionEvents: {
+		"change": function(){
+			mapsChannel.request("update:controls", this.collection);
+		}
+	},
 });
 
 
 var MapEditModalIV = Mn.LayoutView.extend({
 	template: "maps/templates/maps-edit-modal.html",
+
+	initialize: function(){
+
+		mapsChannel.reply("update:controls", function(controlsC){
+
+			// remove the extra "availableShapes" attribute (we don't need it in the server)
+			controlsC.each(function(controlM){
+				controlM.unset("availableShapes", {silent:true});
+			});
+
+			this.model.set("controls", controlsC.toJSON());
+		}, this);
+
+	},
+
+	onDestroy: function(){
+		mapsChannel.stopReplying("update:controls");
+	},
 
 	regions: {
 		controlsRegion: "#controls-region"
@@ -327,11 +361,8 @@ var MapEditModalIV = Mn.LayoutView.extend({
 			return _.findWhere(shapesData, {id: shapeObj.id});
 		});
 
-		var i=0;
 		controlsC.each(function(controlM){
-			controlM.set("id", ++i);
 			controlM.set("availableShapes", availableShapes);
-//			debugger;
 		});
 
 		var controlsTableCV = new ControlsTableCV({
@@ -452,8 +483,9 @@ var MapNewLV = Mn.LayoutView.extend({
 			.then(function(){
 				alert("O mapa foi criado com sucesso.");
 
-				// the handler for show:all:shapes will trigger a fake click on the correct anchor elem
-				shapesChannel.trigger("show:all:maps");
+				// the handler for show:all:shapes will trigger a fake click on the correct
+				// anchor elem, this showing the list of maps
+				mapsChannel.trigger("show:all:maps");
 			})
 			.catch(function(err){
 				var msg = err.responseJSON ? err.responseJSON.message : 
@@ -564,8 +596,12 @@ var MapsTableCV = Mn.CompositeView.extend({
 var MapsTabLV = Mn.LayoutView.extend({
 
 	initialize: function(){
-		shapesChannel.on("show:all:shapes", function(){
+		mapsChannel.on("show:all:shapes", function(){
 			this.$("a[data-tab-separator='shapes-all']").trigger("click");
+		}, this);
+
+		mapsChannel.on("show:all:maps", function(){
+			this.$("a[data-tab-separator='maps-all']").trigger("click");
 		}, this);
 	},
 
@@ -582,6 +618,10 @@ var MapsTabLV = Mn.LayoutView.extend({
 	// the initial view will be the list of all files
 	onBeforeShow: function(){
 		this.showAllShapes();
+	},
+
+	onDestroy: function(){
+		mapsChannel.reset();
 	},
 
 	updateView: function(e){

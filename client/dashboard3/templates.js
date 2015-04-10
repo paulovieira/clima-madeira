@@ -170,7 +170,7 @@ var output = "";
 try {
 output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Edit control #";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
-output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n\n\n    <form>\n\n        <h4>Data columns</h4>\n\n        <p>Choose the columns to be used used for this control</p>\n\n        ";
+output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-select-period\">Select the period</label>\n            <select id=\"js-select-period\" name=\"period\" class=\"form-control\">\n                <option value=\"none\">None</option>\n                <option value=\"reference\">Reference</option>\n                <option value=\"short\">Short</option>\n                <option value=\"medium\">Medium</option>\n                <option value=\"long\">Long</option>\n            </select>\n        </div>\n\n        <div class=\"form-group\">\n            <label for=\"js-select-play-btn\">Show play button in this control (<span class=\"glyphicon glyphicon-play\" aria-hidden=\"true\"></span>)</label>\n            <select id=\"js-select-play-btn\" name=\"showPlayButton\" class=\"form-control\">\n                <option value=\"false\">No</option>\n                <option value=\"true\">Yes</option>\n            </select>\n        </div>\n\n\n        <h4>Data columns</h4>\n\n        <p>Choose the columns to be used for this control</p>\n\n        ";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "availableShapes");
 if(t_3) {var t_2 = t_3.length;
@@ -184,9 +184,11 @@ frame.set("loop.revindex0", t_2 - t_1 - 1);
 frame.set("loop.first", t_1 === 0);
 frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
-output += "\n\n        <h5>";
+output += "\n\n        <strong>Shape #";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "loop")),"index", env.autoesc), env.autoesc);
+output += "</strong> (code: ";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"code", env.autoesc), env.autoesc);
-output += "</h5>\n    \n        <div class=\"xtable-responsive\">\n            <table class=\"table table-condensedx table-hover table-dashboard\">\n\n                <thead>\n                    <tr>\n                        <th style=\"width: 10%\"></th>\n                        <th style=\"width: 30%\">Column name</th>\n                        <th style=\"width: 30%\">Column type</th>\n                        <th style=\"width: 30%\">Public name</th>\n                    </tr>\n                </thead>\n\n                <tbody>\n                    ";
+output += ")\n    \n        <div class=\"xtable-responsive\">\n            <table class=\"table table-condensedx table-hover table-dashboard\">\n\n                <thead>\n                    <tr>\n                        <th style=\"width: 10%\"></th>\n                        <th style=\"width: 30%\">Column name</th>\n                        <th style=\"width: 30%\">Column type</th>\n                        <th style=\"width: 30%\">Public name</th>\n                    </tr>\n                </thead>\n\n                <tbody>\n                    ";
 frame = frame.push();
 var t_7 = runtime.memberLookup((t_4),"shapeColumnsData", env.autoesc);
 if(t_7) {var t_6 = t_7.length;
@@ -222,7 +224,8 @@ output += "\n                </tbody>\n\n            </table>\n        </div>\n\
 }
 }
 frame = frame.pop();
-output += "\n\n    </form>\n\n\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary js-modal-save\">Gravar</button>\n    <button type=\"button\" class=\"btn btn-default js-modal-cancel\">Cancelar</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
+output += "\n\n    </form>\n\n\n</div>\n\n<div class=\"modal-footer\">\n";
+output += "\n    <button type=\"button\" class=\"btn btn-default js-modal-apply\">Apply</button>\n\n    <div id=\"message-status\" style=\"margin-top: 35px;\"></div>\n    <div id=\"\" style=\"margin-top: 10px;\">\n        <h5 id=\"message-links\"></h5>\n    </div>\n</div>\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -283,7 +286,7 @@ output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n\n\n    <form>\n\n    
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"pt", env.autoesc), env.autoesc);
 output += "\">\n        </div>\n        <div class=\"form-group\">\n            <label for=\"js-edit-text-en\">Title (english)</label>\n            <input id=\"js-edit-desc-en\" class=\"form-control\" name=\"title[en]\" value=\"";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"en", env.autoesc), env.autoesc);
-output += "\">\n        </div>\n\n\n        <div class=\"form-group\">\n            <label for=\"js-new-map-category\">Map category</label>\n\n            <select name=\"categoryId\" class=\"form-control\">\n\n            ";
+output += "\">\n        </div>\n\n\n        <div class=\"form-group\">\n            <label for=\"js-new-map-category\">Map category</label>\n\n            <select id=\"js-new-map-category\" name=\"categoryId\" class=\"form-control\">\n\n            ";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "mapCategories");
 if(t_3) {var t_2 = t_3.length;
