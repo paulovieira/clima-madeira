@@ -146,6 +146,8 @@ var FileNewLV = Mn.LayoutView.extend({
 		var fileNewShapeFieldsIV;
 		if(isSelected){
 
+			this.model.set("isShape", true);
+
 			// this subview will share the same model (to access the filename, assuming
 			// the file has already been selected)
 			fileNewShapeFieldsIV = new FileNewShapeFieldsIV({
@@ -154,12 +156,29 @@ var FileNewLV = Mn.LayoutView.extend({
 			this.shapeFieldsRegion.show(fileNewShapeFieldsIV)	
 		}
 		else{
+			this.model.set("isShape", false);
 			this.shapeFieldsRegion.empty()	
 		}
 		
 	},
 
+    // use underscore.string to generate the slugged name (the native slug method is not good)
+	slugFilename: function(filename) {
+    	var array = filename.split(".");
+    	if(array.length===1){
+    		return s.slugify(array[0]);
+    	}
+
+    	var extension = array.pop();
+    	filename = s(array).toSentence("-", "-").slugify().replaceAll("-", "_").value() + "." + extension;
+
+    	return filename;
+	},
+
 	onAttach: function(){
+
+		// self is the view
+		var self = this;
 
 		$("#new_file").fileinput({
 		    uploadUrl: '/api/files',
@@ -167,21 +186,9 @@ var FileNewLV = Mn.LayoutView.extend({
 		    showUpload: true,
 		    initialCaption: "Click the browse button on the right to choose a file",
 		    showRemove: false,
-		    //overwriteInitial: false,
-		    //showCaption: false
+		    maxFileCount: 1,
 
-		    // use underscore.string to generate the slugged name (the native method is not good)
-		    slugCallback: function(filename) {
-		    	var array = filename.split(".");
-		    	if(array.length===1){
-		    		return s.slugify(array[0]);
-		    	}
-
-		    	var extension = array.pop();
-		    	filename = s(array).toSentence("-", "-").slugify().value() + "." + extension;
-
-		    	return filename;
-			},
+		    slugCallback: self.slugFilename,
 
 		    ajaxSettings: {
 		    	error: function(jqxhr, status, err){
@@ -191,26 +198,36 @@ var FileNewLV = Mn.LayoutView.extend({
 					throw new Error(msg);
 		    	}
 		    },
+
 		    uploadExtraData: function(){
 				return { 
 					tags: $("#new_file_tags").val(),
-					filename: this.slugCallback(this.filestack[0].name)
+					shapeDescription: JSON.stringify({
+						"pt": $("#js-new-shape-desc-pt").val() || "",
+						"en": $("#js-new-shape-desc-en").val() || ""
+					}),
+					filename:  self.model.get("filename"),
+					shapeCode: (self.model.get("isShape") ? self.model.get("shapeCode") : "")
 				}
 		    }
 
 		});
 
-		// self is the view
-		var self = this;
 
-		// this callback will execute after the file is selected (but before the upload button is clicked)
+		// this callback will execute after the file is selected (and before the upload button is clicked)
 		$('#new_file').on('fileloaded', function(e, file, previewId, index, reader) {
-			var filename = $(this).data("fileinput").slugCallback(file.name);
+			var filename = self.slugFilename(file.name);
 
-			// NOTE: the string returned by slugCallback has already replaced any extra dots by dashes
-			// (it is garanteed that is it of the form "abc_xyz.ext", so the array will either have lenght 1 or 2)
-			self.model.set("name", filename);
-			self.model.set("nameWithoutExt", filename.split(".")[0]);
+			// NOTE: slugFilename replaces any extra dots by dashes, so we know that 
+			// the returned string is of the form "abc_xyz.ext"; when we call .split,
+			// it is garanteed that the array will have either lenght 1 or 2
+
+			self.model.set("filename", filename);
+			self.model.set("shapeCode", filename.split(".")[0]);
+
+			if(self.shapeFieldsRegion.hasView()){
+				self.shapeFieldsRegion.currentView.render();
+			}
 			
 		});
 

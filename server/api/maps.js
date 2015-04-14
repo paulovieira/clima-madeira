@@ -295,11 +295,17 @@ debugger;
                 newMapId;
 
             // verify that the map code is unique
-            if(mapsC.findWhere({code: request.payload[0].code})){
-                return reply(Boom.conflict("The map code must be unique."));
+            var n = mapsC
+                    .filter(function(model){
+                        return _s.startsWith(model.get("code"), request.payload[0].code);
+                    })
+                    .length;
+
+            if(n > 0){
+                request.payload[0].code = request.payload[0].code + "_" + (n+1);
             }
 
-            // verify that the choosen shapes exists in the server
+            // verify that the choosen shapes exist in the server
             var allShapesExist = true;
             selectedShapes.forEach(function(obj){
                 if(!shapesC.findWhere({id: obj.shapeId})){

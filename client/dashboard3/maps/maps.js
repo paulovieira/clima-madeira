@@ -1,5 +1,5 @@
 var mapsChannel = Backbone.Radio.channel('maps');
-
+/*
 var ShapeNewIV = Mn.ItemView.extend({
 	template: "maps/templates/shapes-new.html",
 
@@ -66,7 +66,7 @@ var ShapeNewIV = Mn.ItemView.extend({
 
 	}
 });
-
+*/
 
 var ShapeEditModalIV = Mn.ItemView.extend({
 	template: "maps/templates/shapes-edit-modal.html",
@@ -456,11 +456,7 @@ var MapNewLV = Mn.LayoutView.extend({
 	createResource: function(){
 
 		var attrs = Backbone.Syphon.serialize(this);
-
-		if(attrs.code===""){
-			alert("To create a new map you must submit a code for the map");
-			return;
-		}			
+		attrs.code = moment().format("YYMMDD");
 
 		// the selected shapes are in the form: {"1": true, "3": false, "8": true}; we want an array of objects like
 		// this: [{shapeId: 1}, {shapeId: 8}]
@@ -617,7 +613,7 @@ var MapsTabLV = Mn.LayoutView.extend({
 
 	// the initial view will be the list of all files
 	onBeforeShow: function(){
-		this.showAllShapes();
+		this.showAllMaps();
 	},
 
 	onDestroy: function(){
@@ -636,9 +632,9 @@ var MapsTabLV = Mn.LayoutView.extend({
 			case "shapes-all":
 				this.showAllShapes();
 				break;
-			case "shapes-new":
-				this.showNewShape();
-				break;
+			// case "shapes-new":
+			// 	this.showNewShape();
+			// 	break;
 			case "maps-all":
 				this.showAllMaps();
 				break;
@@ -650,41 +646,41 @@ var MapsTabLV = Mn.LayoutView.extend({
 		}
 	},
 
-	showNewShape: function(){
-		var shapeM = new ShapeM();
-		var shapeNewIV = new ShapeNewIV({
-			model: shapeM
-		});
+	// showNewShape: function(){
+	// 	var shapeM = new ShapeM();
+	// 	var shapeNewIV = new ShapeNewIV({
+	// 		model: shapeM
+	// 	});
 
-		var self = this;
+	// 	var self = this;
 
-		// filesC will be filtered
-		Q(filesC.fetch())
-			.then(function(){ 
+	// 	// filesC will be filtered
+	// 	Q(filesC.fetch())
+	// 		.then(function(){ 
 
-				var zipFilesWithShapes = _.filter(filesC.toJSON(), function(obj){
-					return _.contains(obj.tags, "map") || 
-							_.contains(obj.tags, "maps") ||
-							_.contains(obj.tags, "mapa") ||
-							_.contains(obj.tags, "mapas") ||
-							_.contains(obj.tags, "shape") ||
-							_.contains(obj.tags, "shapes");
-				});
-				shapeM.set("zipFilesWithShapes", zipFilesWithShapes)
+	// 			var zipFilesWithShapes = _.filter(filesC.toJSON(), function(obj){
+	// 				return _.contains(obj.tags, "map") || 
+	// 						_.contains(obj.tags, "maps") ||
+	// 						_.contains(obj.tags, "mapa") ||
+	// 						_.contains(obj.tags, "mapas") ||
+	// 						_.contains(obj.tags, "shape") ||
+	// 						_.contains(obj.tags, "shapes");
+	// 			});
+	// 			shapeM.set("zipFilesWithShapes", zipFilesWithShapes)
 
-				self.tabContentRegion.show(shapeNewIV); 
-			})
-			.catch(function(err){
-				var msg = err.responseJSON ? err.responseJSON.message : 
-											( err.message ? err.message : "unknown error" );
+	// 			self.tabContentRegion.show(shapeNewIV); 
+	// 		})
+	// 		.catch(function(err){
+	// 			var msg = err.responseJSON ? err.responseJSON.message : 
+	// 										( err.message ? err.message : "unknown error" );
 
-				alert("ERROR: " + msg);
-				throw new Error(msg);
-			})
-			.done();
+	// 			alert("ERROR: " + msg);
+	// 			throw new Error(msg);
+	// 		})
+	// 		.done();
 
 
-	},
+	// },
 
 	showAllShapes: function(){
 

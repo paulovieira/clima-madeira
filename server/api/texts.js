@@ -431,26 +431,40 @@ CURL TESTS
 ==============
 
 
-curl  -X GET http://127.0.0.1:3000/api/texts
+curl http://127.0.0.1:3000/api/texts  \
+    --request GET
 
-curl  -X GET http://127.0.0.1:3000/api/texts/1
+curl http://127.0.0.1:3000/api/texts/1  \
+    --request GET
 
-curl  -X GET http://127.0.0.1:3000/api/texts/1,2
-
-
-
-curl -X POST http://127.0.0.1:3000/api/texts  \
-    -H "Content-Type: application/json"  \
-    -d '{ "tags": "aaa,ccc ggg", "contents": { "pt": "abc-pt", "en": "abc-en"} }' 
+curl http://127.0.0.1:3000/api/texts/1,2  \
+    --request GET
 
 
-
-curl -X PUT http://127.0.0.1:3000/api/texts/1001   \
-    -H "Content-Type: application/json"  \
-    -d '{"id": 1001, "tags": "aaa,ccc xxx", "contents": { "pt": "xyz-pt", "en": "xyz-en"}, "description": { "pt": "desc-pt", "en": "desc-en"} }' 
+-------------------------------
 
 
+curl  http://127.0.0.1:3000/api/texts  \
+    --request POST  \
+    --header "Content-Type: application/json"  \
+    --data '{ "tags": "aaa,ccc ggg", "contents": { "pt": "abc-pt", "en": "abc-en"} }' 
 
-curl -X DELETE http://127.0.0.1:3000/api/texts/1002
+
+-------------------------------
+
+
+curl http://127.0.0.1:3000/api/texts/1001   \
+    --request PUT
+    --header "Content-Type: application/json"  \
+    --data '{"id": 1001, "tags": "aaa,ccc xxx", "contents": { "pt": "xyz-pt", "en": "xyz-en"}, "description": { "pt": "desc-pt", "en": "desc-en"} }' 
+
+
+-------------------------------
+
+
+curl http://127.0.0.1:3000/api/texts/1002  \
+    --request DELETE
+
+
 
 */

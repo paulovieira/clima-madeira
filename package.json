@@ -33,6 +33,7 @@
     "pg-native": "^1.7.1",
     "pretty-error": "1.1.1",
     "q": "1.2.0",
+    "request": "^2.55.0",
     "require-directory": "2.0.0",
     "rimraf": "^2.3.2",
     "scooter": "2.0.1",

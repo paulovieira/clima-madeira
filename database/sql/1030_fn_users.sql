@@ -151,7 +151,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		END IF;
 
 		email_like := '%' || email_like || '%';
-		command = format(command || ' u.email LIKE %L', email_like);
+		command = format(command || ' u.email ILIKE %L', email_like);
 		number_conditions := number_conditions + 1;
 	END IF;
 	

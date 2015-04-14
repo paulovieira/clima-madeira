@@ -35,6 +35,8 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id INT;
+	code TEXT;
+	code_starts_with TEXT;
 BEGIN
 
 shape_columns_data_cte := '
@@ -82,7 +84,9 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 			ON s.file_id = f.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
-	SELECT json_extract_path_text(options_row, 'id')         INTO id;
+	SELECT json_extract_path_text(options_row, 'id')   INTO id;
+	SELECT json_extract_path_text(options_row, 'code') INTO code;
+	SELECT json_extract_path_text(options_row, 'code_starts_with') INTO code_starts_with;
 
 	number_conditions := 0;
 
@@ -96,6 +100,26 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 
+	-- criteria: code
+	IF code IS NOT NULL THEN
+		IF number_conditions = 0 THEN  command = command || ' WHERE';
+		ELSE                           command = command || ' AND';
+		END IF;
+
+		command = format(command || ' s.code = %L', code);
+		number_conditions := number_conditions + 1;
+	END IF;
+
+	-- criteria: code starts with
+	IF code_starts_with IS NOT NULL THEN
+		IF number_conditions = 0 THEN  command = command || ' WHERE';
+		ELSE                           command = command || ' AND';
+		END IF;
+
+		code_starts_with := code_starts_with || '%';
+		command = format(command || ' s.code ILIKE %L', code_starts_with);
+		number_conditions := number_conditions + 1;
+	END IF;
 
 	command := command || ' ORDER BY s.id;';
 

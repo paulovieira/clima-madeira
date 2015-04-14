@@ -13,3 +13,5 @@ Dashboard.addRegions({
 var mainLayout = new MainLayout();
 
 Dashboard.mainRegion.show(mainLayout);
+
+

@@ -9,29 +9,41 @@
     <form>
 
         <div class="form-group">
-            <label for="js-edit-text-pt">Title (português)</label>
-            <input id="js-edit-desc-pt" class="form-control" name="title[pt]" value="{{ title.pt }}">
+            <label for="js-edit-map-title-pt">Title (português)</label>
+            <input id="js-edit-map-title-pt" class="form-control" name="title[pt]" value="{{ title.pt }}">
         </div>
         <div class="form-group">
-            <label for="js-edit-text-en">Title (english)</label>
-            <input id="js-edit-desc-en" class="form-control" name="title[en]" value="{{ title.en }}">
+            <label for="js-edit-map-title-en">Title (english)</label>
+            <input id="js-edit-map-title-en" class="form-control" name="title[en]" value="{{ title.en }}">
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label for="js-edit-map-category">Map category</label>
+
+                    <select id="js-edit-map-category" name="categoryId" class="form-control">
+
+                    {% for obj in mapCategories %}
+                        <option value={{ obj.id }} {{ "selected" if obj.id == categoryId }}>
+                            {{ obj.contents.en }}
+                        </option>
+                    {% endfor %}
+                    
+                    </select>
+                </div>
+                
+            </div>
+            <div class="col-sm-6">
+              
+                <label>Code</label>
+                <input class="form-control" value="{{ code }}" disabled>
+
+            </div>
         </div>
 
 
-        <div class="form-group">
-            <label for="js-new-map-category">Map category</label>
-
-            <select id="js-new-map-category" name="categoryId" class="form-control">
-
-            {% for obj in mapCategories %}
-                <option value={{ obj.id }} {{ "selected" if obj.id == categoryId }}>
-                    {{ obj.contents.en }}
-                </option>
-            {% endfor %}
-            
-            </select>
-
-        </div>
 
         <hr>
 

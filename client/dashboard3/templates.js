@@ -55,9 +55,8 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"row\">\n\n\t<div class=\"col-sm-6\">\n        <div class=\"form-group\">\n            <label for=\"js-new-shape-code\">Shape code</label>\n            <input type=\"text\" id=\"js-new-shape-code\" class=\"form-control\" name=\"code\" value=\"";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "nameWithoutExt"), env.autoesc);
-output += "\">\n        </div>\n\t</div>\n\n\t<div class=\"col-sm-6\">\n        <div class=\"form-group\">\n            <label for=\"js-new-shape-srid\">SRID (projection identifier)</label>\n            <input type=\"text\" id=\"js-new-shape-srid\" class=\"form-control\" name=\"srid\" value=\"4326\">\n        </div>\n\t</div>\n\n</div>\n\n<div class=\"row\">\n\t<div class=\"col-sm-12\">\n\n\t\t<div class=\"form-group\">\n\t\t    <label for=\"js-new-shape-desc-pt\">Description (portuguese)</label>\n\t\t    <input type=\"text\" id=\"js-new-shape-desc-pt\" class=\"form-control\" name=\"description[pt]\" >\n\t\t</div>\n\t\t<div class=\"form-group\">\n\t\t    <label for=\"js-new-shape-desc-en\">Description (english)</label>\n\t\t    <input type=\"text\" id=\"js-new-shape-desc-en\" class=\"form-control\" name=\"description[en]\" >\n\t\t</div>\n\n\t</div>\n</div>";
+output += "\n<div class=\"row\">\n\t<div class=\"col-sm-12\">\n\n\t\t<div class=\"form-group\">\n\t\t    <label for=\"js-new-shape-desc-pt\">Description (portuguese)</label>\n\t\t    <input type=\"text\" id=\"js-new-shape-desc-pt\" class=\"form-control\" name=\"description[pt]\" >\n\t\t</div>\n\t\t<div class=\"form-group\">\n\t\t    <label for=\"js-new-shape-desc-en\">Description (english)</label>\n\t\t    <input type=\"text\" id=\"js-new-shape-desc-en\" class=\"form-control\" name=\"description[en]\" >\n\t\t</div>\n\n\t</div>\n</div>\n\n<div class=\"row\">\n\n\t<div class=\"col-sm-6\">\n        <div class=\"form-group\">\n            <label for=\"js-new-shape-srid\">SRID (projection identifier)</label>\n            <input type=\"text\" id=\"js-new-shape-srid\" class=\"form-control\" name=\"srid\" value=\"4326\">\n        </div>\n\t</div>\n";
+output += "\n</div>\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -301,11 +300,11 @@ var output = "";
 try {
 output += "<div class=\"modal-header\">\n    <h4 class=\"modal-title\">Edit map #";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
-output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n\n\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-text-pt\">Title (português)</label>\n            <input id=\"js-edit-desc-pt\" class=\"form-control\" name=\"title[pt]\" value=\"";
+output += "</h4>\n</div>\n\n\n<div class=\"modal-body\">\n\n\n    <form>\n\n        <div class=\"form-group\">\n            <label for=\"js-edit-map-title-pt\">Title (português)</label>\n            <input id=\"js-edit-map-title-pt\" class=\"form-control\" name=\"title[pt]\" value=\"";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"pt", env.autoesc), env.autoesc);
-output += "\">\n        </div>\n        <div class=\"form-group\">\n            <label for=\"js-edit-text-en\">Title (english)</label>\n            <input id=\"js-edit-desc-en\" class=\"form-control\" name=\"title[en]\" value=\"";
+output += "\">\n        </div>\n        <div class=\"form-group\">\n            <label for=\"js-edit-map-title-en\">Title (english)</label>\n            <input id=\"js-edit-map-title-en\" class=\"form-control\" name=\"title[en]\" value=\"";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"en", env.autoesc), env.autoesc);
-output += "\">\n        </div>\n\n\n        <div class=\"form-group\">\n            <label for=\"js-new-map-category\">Map category</label>\n\n            <select id=\"js-new-map-category\" name=\"categoryId\" class=\"form-control\">\n\n            ";
+output += "\">\n        </div>\n\n        <div class=\"row\">\n            <div class=\"col-sm-6\">\n\n                <div class=\"form-group\">\n                    <label for=\"js-edit-map-category\">Map category</label>\n\n                    <select id=\"js-edit-map-category\" name=\"categoryId\" class=\"form-control\">\n\n                    ";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "mapCategories");
 if(t_3) {var t_2 = t_3.length;
@@ -319,18 +318,20 @@ frame.set("loop.revindex0", t_2 - t_1 - 1);
 frame.set("loop.first", t_1 === 0);
 frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
-output += "\n                <option value=";
+output += "\n                        <option value=";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
 output += " ";
 output += runtime.suppressValue((runtime.memberLookup((t_4),"id", env.autoesc) == runtime.contextOrFrameLookup(context, frame, "categoryId")?"selected":""), env.autoesc);
-output += ">\n                    ";
+output += ">\n                            ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_4),"contents", env.autoesc)),"en", env.autoesc), env.autoesc);
-output += "\n                </option>\n            ";
+output += "\n                        </option>\n                    ";
 ;
 }
 }
 frame = frame.pop();
-output += "\n            \n            </select>\n\n        </div>\n\n        <hr>\n\n        <h4>Selected shapes (data source)</h4>\n\n        <div class=\"xtable-responsive\">\n            <table class=\"table table-stripedx table-hover table-condensed table-dashboard\">\n\n                <thead>\n                    <tr>\n                        <th style=\"width: 5%\"></th>\n                        <th style=\"width: 15%\">Shape id</th>\n                        <th style=\"width: 40%\">Shape code</th>\n                        <th style=\"width: 15%\">Shape srid</th>\n                        <th style=\"width: 25%\">Owner</th>\n                    </tr>\n                </thead>\n\n                <tbody>\n                    ";
+output += "\n                    \n                    </select>\n                </div>\n                \n            </div>\n            <div class=\"col-sm-6\">\n              \n                <label>Code</label>\n                <input class=\"form-control\" value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "code"), env.autoesc);
+output += "\" disabled>\n\n            </div>\n        </div>\n\n\n\n        <hr>\n\n        <h4>Selected shapes (data source)</h4>\n\n        <div class=\"xtable-responsive\">\n            <table class=\"table table-stripedx table-hover table-condensed table-dashboard\">\n\n                <thead>\n                    <tr>\n                        <th style=\"width: 5%\"></th>\n                        <th style=\"width: 15%\">Shape id</th>\n                        <th style=\"width: 40%\">Shape code</th>\n                        <th style=\"width: 15%\">Shape srid</th>\n                        <th style=\"width: 25%\">Owner</th>\n                    </tr>\n                </thead>\n\n                <tbody>\n                    ";
 frame = frame.push();
 var t_7 = runtime.contextOrFrameLookup(context, frame, "availableShapes");
 if(t_7) {var t_6 = t_7.length;
@@ -382,7 +383,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 20px;\">\n\n        <h4 class=\"text-center\">Criar um novo mapa</h4>\n        <form style=\"margin-top: 40px;\">\n\n\t\t\t<div class=\"row\">\n\n\t\t\t\t<div class=\"col-sm-5\">\n\t\t            <div class=\"form-group\">\n\t\t                <label for=\"js-new-map-code\">Map code</label>\n\t\t                <input type=\"text\" id=\"js-new-map-code\" class=\"form-control\" name=\"code\">\n\t\t            </div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"col-sm-7\">\n\t\t            <div class=\"form-group\">\n\t\t                <label for=\"js-new-map-category\">Map category</label>\n\n                        <select name=\"categoryId\" class=\"form-control\">\n\n                        ";
+output += "<div class=\"row\">\n    <div class=\"col-sm-10 col-sm-offset-1\" style=\"padding-top: 20px;\">\n\n        <h4 class=\"text-center\">Criar um novo mapa</h4>\n        <form style=\"margin-top: 40px;\">\n\n            <div class=\"form-group\">\n                <label for=\"js-new-map-title-pt\">Map title (portuguese)</label>\n                <input type=\"text\" id=\"js-new-map-title-pt\" class=\"form-control\" name=\"title[pt]\" >\n            </div>\n            <div class=\"form-group\">\n                <label for=\"js-new-map-title-en\">Map title (english)</label>\n                <input type=\"text\" id=\"js-new-map-title-en\" class=\"form-control\" name=\"title[en]\" >\n            </div>\n\n            <div class=\"row\">\n\n                <div class=\"col-sm-6\">\n                    <div class=\"form-group\">\n                        <label for=\"js-new-map-category\">Map category</label>\n\n                        <select name=\"categoryId\" class=\"form-control\">\n\n                        ";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "mapCategories");
 if(t_3) {var t_2 = t_3.length;
@@ -405,7 +406,7 @@ output += "\n                            </option>\n                        ";
 }
 }
 frame = frame.pop();
-output += "\n                        \n                        </select>\n\n\t\t            </div>\n\t\t\t\t</div>\n\n            </div>\n\n            <div class=\"form-group\">\n                <label for=\"js-new-map-title-pt\">Map title (portuguese)</label>\n                <input type=\"text\" id=\"js-new-map-title-pt\" class=\"form-control\" name=\"title[pt]\" >\n            </div>\n            <div class=\"form-group\">\n                <label for=\"js-new-map-title-en\">Map title (english)</label>\n                <input type=\"text\" id=\"js-new-map-title-en\" class=\"form-control\" name=\"title[en]\" >\n            </div>\n\n            <hr>\n\n            <h4>Data sources (loaded shapes)</h4>\n\n            <div class=\"xtable-responsive\">\n                <table class=\"table table-stripedx table-hover table-condensed table-dashboard\">\n\n                    <thead>\n                        <tr>\n                            <th style=\"width: 5%\"></th>\n                            <th style=\"width: 15%\">Shape id</th>\n                            <th style=\"width: 40%\">Shape code</th>\n                            <th style=\"width: 15%\">Shape srid</th>\n                            <th style=\"width: 25%\">Owner</th>\n                        </tr>\n                    </thead>\n\n                    <tbody>\n                        ";
+output += "\n                        \n                        </select>\n\n                    </div>\n                </div>\n\n            </div>\n\n\n            <hr>\n\n            <h4>Data sources (previously loaded shapes)</h4>\n\n            <div class=\"xtable-responsive\">\n                <table class=\"table table-stripedx table-hover table-condensed table-dashboard\">\n\n                    <thead>\n                        <tr>\n                            <th style=\"width: 5%\"></th>\n                            <th style=\"width: 25%\">Shape code</th>\n                            <th style=\"width: 45%\">Shape description</th>\n                            <th style=\"width: 25%\">Owner</th>\n                        </tr>\n                    </thead>\n\n                    <tbody>\n                        ";
 frame = frame.push();
 var t_7 = runtime.contextOrFrameLookup(context, frame, "availableShapes");
 if(t_7) {var t_6 = t_7.length;
@@ -422,11 +423,9 @@ frame.set("loop.length", t_6);
 output += "\n                            <tr class=\"js-shape-row\">\n                                <td><input type=\"checkbox\" name=\"selectedShapes[";
 output += runtime.suppressValue(runtime.memberLookup((t_8),"id", env.autoesc), env.autoesc);
 output += "]\"></td>\n                                <td>";
-output += runtime.suppressValue(runtime.memberLookup((t_8),"id", env.autoesc), env.autoesc);
-output += "</td>\n                                <td>";
 output += runtime.suppressValue(runtime.memberLookup((t_8),"code", env.autoesc), env.autoesc);
 output += "</td>\n                                <td>";
-output += runtime.suppressValue(runtime.memberLookup((t_8),"srid", env.autoesc), env.autoesc);
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_8),"description", env.autoesc)),"pt", env.autoesc), env.autoesc);
 output += "</td>\n                                <td>";
 output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_8),"ownerData", env.autoesc)),"firstName", env.autoesc), env.autoesc);
 output += " ";
@@ -453,12 +452,12 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<td>\n\t";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
-output += "\n</td>\n\n<td>\n    ";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "code"), env.autoesc);
+output += "\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "title")),"pt", env.autoesc), env.autoesc);
 output += "\n</td>\n\n<td>\n    ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "categoryData")),"contents", env.autoesc)),"en", env.autoesc), env.autoesc);
+output += "\n</td>\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "code"), env.autoesc);
 output += "\n</td>\n\n<td>\n    ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"firstName", env.autoesc), env.autoesc);
 output += " ";
@@ -481,7 +480,8 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<ul class=\"nav nav-tabs\">\n    <li role=\"presentation\" class=\"active\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"shapes-all\">Todos os shapes</a>\n    </li>\n    <li role=\"presentation\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"shapes-new\">Carregar novo shape</a>\n    </li>\n\n    <li role=\"presentation\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"maps-all\">Todos os mapas</a>\n    </li>\n    <li role=\"presentation\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"maps-new\">Criar novo mapa</a>\n    </li>\n</ul>\n\n<div id=\"maps-region\"></div>";
+output += "<ul class=\"nav nav-tabs\">\n\n";
+output += "\n\n    <li role=\"presentation\" class=\"active\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"maps-all\">Todos os mapas</a>\n    </li>\n\n    <li role=\"presentation\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"maps-new\">Criar novo mapa</a>\n    </li>\n\n    <li role=\"presentation\">\n        <a href=\"#\" class=\"js-dashboard-sep\" data-tab-separator=\"shapes-all\">Todos os shapes</a>\n    </li>\n\n</ul>\n\n<div id=\"maps-region\"></div>";
 cb(null, output);
 ;
 } catch (e) {
@@ -498,7 +498,8 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n            \n                <th style=\"width: 5%\">id</th>\n                <th style=\"width: 10%\">Code</th>\n                <th style=\"width: 15%\">Category</th>\n                <th style=\"width: 15%\">Owner</th>\n";
+output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n            \n";
+output += "\n                 <th style=\"width: 50%\">Title</th>\n                <th style=\"width: 20%\">Category</th>\n               <th style=\"width: 10%\">Code</th>\n                <th style=\"width: 20%\">Owner</th>\n";
 output += "\n                <th style=\"width: 10%\"></th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
 cb(null, output);
 ;
@@ -641,15 +642,13 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<td>";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "id"), env.autoesc);
-output += "</td>\n\n<td>\n    ";
+output += "\n<td>\n    ";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "code"), env.autoesc);
-output += "\n</td>\n\n<td>\n    ";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "srid"), env.autoesc);
 output += "\n</td>\n\n<td>\n    ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "fileData")),"name", env.autoesc), env.autoesc);
 output += "\n</td>\n\n<td>\n    ";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "description")),"pt", env.autoesc), env.autoesc);
+output += "\n</td>\n\n\n<td>\n    ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"firstName", env.autoesc), env.autoesc);
 output += " ";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "ownerData")),"lastName", env.autoesc), env.autoesc);
@@ -671,7 +670,8 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n            \n                <th style=\"width: 5%\">id</th>\n                <th style=\"width: 10%\">Code</th>\n                <th style=\"width: 5%\">SRID</th>\n                <th style=\"width: 10%\">File</th>\n                <th style=\"width: 10%\">Owner</th>\n";
+output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n            \n";
+output += "\n                <th style=\"width: 15%\">Code</th>\n                <th style=\"width: 30%\">File</th>\n                <th style=\"width: 30%\">Description</th>\n                <th style=\"width: 15%\">Owner</th>\n";
 output += "\n                <th style=\"width: 10%\"></th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n";
 cb(null, output);
 ;

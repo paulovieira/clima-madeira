@@ -6,6 +6,7 @@ var config = require('config');
 var fs = require('fs');
 var Q = require("q");
 var rimraf = require("rimraf");
+var requestClient = require("request");
 
 //var ent = require("ent");
 var _ = require('underscore');
@@ -55,8 +56,7 @@ internals.validatePayloadForCreate = function(value, options, next){
     console.log("validatePayloadForCreate");
 
     var schemaCreate = Joi.object().keys({
-
-
+        // NONE! (because it messes with the readable stream)
     });
 
     return internals.validatePayload(value, options, next, schemaCreate);
@@ -209,12 +209,18 @@ debugger;
             console.log(utils.logHandlerInfo(request));
 debugger;
 
-console.log("request.payload: ", request.payload);
+//console.log("request.payload: ", JSON.stringify(request.payload));
+//console.log("request.payload: ", JSON.stringify(request.payload.shapeDescription));
 
             //var filename     = request.payload.new_file.hapi.filename;
             var filename     = request.payload.filename;
+            var shapeCode    = request.payload.shapeCode;
             var logicalPath  = config.get("uploads.logicalPath");
             var physicalPath = config.get("uploads.physicalPath");
+
+            if(typeof physicalPath!=="string" || typeof filename!=="string"){
+                return reply(Boom.badRequest("filename and physical path must be strings"));
+            }
 
             var ws = fs.createWriteStream(Path.join(global.rootPath, physicalPath, filename));
             request.payload.new_file.pipe(ws);
@@ -229,7 +235,9 @@ console.log("request.payload: ", request.payload);
                     ownerId: request.auth.credentials.id
                 };
 
-                var filesC = new BaseC();
+                var filesC = new BaseC(),
+                    shapesC = new BaseC();
+
                 filesC.execute({
                     query: {
                         command: "select * from files_create($1);",
@@ -249,10 +257,59 @@ console.log("request.payload: ", request.payload);
 
                 })
                 .then(function(){
-                    // we couldn't read - something went wrong
+
+                   // we couldn't read - something went wrong
                     if(filesC.length===0){
                         return reply(Boom.badImplementation());
                     }
+
+                    // if the file is not a shape, go immediately to the next fn in the chain
+                    if(shapeCode===""){ return; }
+
+                    // otherwise, return a promise
+                    return shapesC.execute({
+                        query: {
+                            command: "select * from shapes_read($1);",
+                            arguments: [JSON.stringify( {code_starts_with: shapeCode} )]
+                        }
+                    });
+                })
+                .then(function(){
+                    // if the file is not a shape, return to the next fn in the chain
+                    if(shapeCode===""){ return; }
+
+
+                    if(shapesC.length > 0){
+                        shapeCode = shapeCode + "_" + (shapesC.length + 1);
+                    }
+
+                    var deferred = Q.defer();
+
+                    // make post request to create the shape
+                    requestClient({
+                            method: 'POST',
+                            uri: 'http://127.0.0.1:' + config.get("port") + '/api/shapes',
+                            json: true,
+                            body: {
+                                code: shapeCode,
+                                description: request.payload.shapeDescription,
+                                fileId: filesC.at(0).get("id"),
+                                srid: 4326
+                            }
+                        },
+                        function(error, response, body) {
+                            if (response.statusCode == 201 || response.statusCode == 200) {
+                                console.log('body: ', body);
+                                return deferred.resolve(body)
+                            } else {
+                                return deferred.reject(response.body)
+                            }
+                        }
+                    )
+
+                    return deferred.promise;
+                })
+                .then(function(){
 
                     var resp         = filesC.toJSON();
                     var transformMap = transforms.maps.files;
@@ -467,34 +524,50 @@ CURL TESTS
 ==============
 
 
-curl  -X GET http://127.0.0.1:3000/api/files
-
-curl  -X GET http://127.0.0.1:3000/api/files/1
-
-curl  -X GET http://127.0.0.1:3000/api/files/1,2
+curl http://127.0.0.1:3000/api/files  \
+    --request GET
 
 
-
-curl -X POST http://127.0.0.1:3000/api/files  \
-    -H "Content-Type: application/json"  \
-    -d '{ "first_name": "paulo" }' 
+curl http://127.0.0.1:3000/api/files/1  \
+    --request GET
 
 
-
-curl -X PUT http://127.0.0.1:3000/api/files/42   \
-    -H "Content-Type: application/json"  \
-    -d '{"id": 42, "name": "relatório2.pdf", "logicalPath": "/uploads/public", "tags": "tag5, tag6" }' 
+curl http://127.0.0.1:3000/api/files/1,2  \
+    --request GET
 
 
+-------------------------------
 
 
-curl -X PUT http://127.0.0.1:3000/api/files/3   \
-    -H "Content-Type: application/json"  \
-    -d '{"id": 3, "firstName": "userx", "lastName": "yenergia", "email": "user_energia@gmail.com", "currentPw": "abc", "newPw": "xyz" }' 
+curl http://127.0.0.1:3000/api/files  \
+    --request POST  \
+    --header "Content-Type: application/json"  \
+    --data '{ "first_name": "paulo" }' 
 
 
+-------------------------------
 
-curl -X DELETE http://127.0.0.1:3000/api/files/4
+
+curl http://127.0.0.1:3000/api/files/42  \
+    --request PUT  \
+    --header "Content-Type: application/json"  \
+    --data '{"id": 42, "name": "relatório2.pdf", "logicalPath": "/uploads/public", "tags": "tag5, tag6" }' 
+
+
+-------------------------------
+
+
+curl http://127.0.0.1:3000/api/files/3  \
+    --request PUT  \
+    --header "Content-Type: application/json"  \
+    --data '{"id": 3, "firstName": "userx", "lastName": "yenergia", "email": "user_energia@gmail.com", "currentPw": "abc", "newPw": "xyz" }' 
+
+
+-------------------------------
+
+
+curl http://127.0.0.1:3000/api/files/4  \
+    --request DELETE
 
 
 ***/

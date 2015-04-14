@@ -640,27 +640,43 @@ exports.register.attributes = {
 /*
 
 CURL TESTS
-
-curl  -X GET http://127.0.0.1:3000/api/maps
-
-curl  -X GET http://127.0.0.1:3000/api/maps/1
-
-curl  -X GET http://127.0.0.1:3000/api/maps/1,2
+====================
 
 
+curl http://127.0.0.1:3000/api/shapes  \
+    --request GET
 
-curl -X POST http://127.0.0.1:3000/api/maps  \
-    -H "Content-Type: application/json"  \
-    -d '{ "code": "fwefwefwefweyyxx", "title": { "pt": "uuu", "en": "ttt"}, "file_id": 48, "category_id": 105 }' 
+curl http://127.0.0.1:3000/api/shapes/1  \
+    --request GET
 
-
-
-curl -X PUT http://127.0.0.1:3000/api/maps/1001   \
-    -H "Content-Type: application/json"  \
-    -d '{"id": 1001, "title": { "pt": "yabcx", "en": "zdefy"}}'
+curl http://127.0.0.1:3000/api/shapes/1,2  \
+    --request GET
 
 
+-------------------------------
 
-curl-X DELETE http://127.0.0.1:3000/api/maps/1
+
+curl http://127.0.0.1:3000/api/shapes  \
+    --request POST  \
+    --header "Content-Type: application/json"  \
+    --data '{ "code": "fwefwefwefweyyxx", "description": { "pt": "uuu", "en": "ttt"}, "fileId": 48, "srid": 4326 }' 
+
+
+-------------------------------
+
+
+curl http://127.0.0.1:3000/api/shapes/1021  \
+    --request PUT  \
+    --header "Content-Type: application/json"  \
+    --data '{ "id": 1021, "description": { "pt": "yabcx", "en": "zdefy"} }'
+
+
+-------------------------------
+
+
+curl http://127.0.0.1:3000/api/shapes/1  \
+    --request DELETE
+
+
 
 */
