@@ -278,12 +278,29 @@ debugger;
                     // if the file is not a shape, return to the next fn in the chain
                     if(shapeCode===""){ return; }
 
+                    var deferred = Q.defer();
 
                     if(shapesC.length > 0){
-                        shapeCode = shapeCode + "_" + (shapesC.length + 1);
+                        var n = _.last(shapesC.last().get("code").split("_"));
+                        n = parseInt(n, 10);
+
+// console.log(JSON.stringify(lastSuffix))
+// console.log(JSON.stringify(lastNumber))
+
+                        if(_.isNaN(n)){
+                            //deferred.reject(new Error("Problems with the code"));
+                            n = 1;
+                        }
+
+                        //request.payload[0].code = request.payload[0].code + "_" + (n+1);
+                        shapeCode = shapeCode + "_" + (n + 1);
                     }
 
-                    var deferred = Q.defer();
+
+                    //shapeCode = shapeCode + "_" + (shapesC.length + 1);
+                    
+
+
 
                     // make post request to create the shape
                     requestClient({

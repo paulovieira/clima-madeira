@@ -52,7 +52,7 @@
                     </thead>
 
                     <tbody>
-                        {% for obj in availableShapes %}
+                        {% for obj in allShapes %}
                             <tr class="js-shape-row">
                                 <td><input type="checkbox" name="selectedShapes[{{ obj.id }}]"></td>
                                 <td>{{ obj.code }}</td>

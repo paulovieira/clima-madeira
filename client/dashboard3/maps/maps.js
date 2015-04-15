@@ -133,7 +133,6 @@ var ShapeEditModalIV = Mn.ItemView.extend({
 				self.destroy();
 			})
 			.done();
-
 	},
 
 });
@@ -193,28 +192,48 @@ var ShapeRowLV = Mn.LayoutView.extend({
 var ShapesTableCV = Mn.CompositeView.extend({
 	template: "maps/templates/shapes-table.html",
 	childView: ShapeRowLV,
-	childViewContainer: "tbody"
+	childViewContainer: "tbody",
+
+	// ui: {
+	// 	"addModalBtn": "button.js-add-control",
+	// },
+
+	behaviors: {
+
+		// ShowEditModal: {
+		// 	behaviorClass: window.Behaviors.ShowModal,
+		// 	uiKey: "addModalBtn",  // will listen for clicks on @ui.addModalBtn
+		// 	viewClass: ShapeEditModalIV  // and will show this view
+		// },
+
+		// ShowDeleteModal: {
+		// 	behaviorClass: window.Behaviors.ShowModal,
+		// 	uiKey: "deleteModalBtn",
+		// 	viewClass: ShapeDeleteModalIV 
+		// },
+	}
 });
 
 
 
 /*
 The interaction in controls edit modal is:
-1) the user updates the data
-2) the user clicks the apply button
-3) the current control model is updated and the modal (2nd level) is closed
-4) the parent collection view is listening for changes on any model, and where that happens will request "update:controls"
-5) the handler for that request will update the controls property on the underlying map model (using controlsCollection toJSON); it will also remove the extra "availableShapes" property from the controls models
+1) the user updates the data and clicks the apply button
+2) the current control model is updated (updateResource method) and the modal (2nd level) is closed
+3) the parent collectionView for controls is listening for changes on any model, and when that happens it will execute the "update:controls" command
+4) the handler for that command will update the controls property on the underlying map model (using controlsCollection's toJSON); it will also remove the extra "availableShapes" property from the controls model
 */
+
 var ControlEditModalIV = Mn.ItemView.extend({
 	template: "maps/templates/controls-edit-modal.html",
 
 	ui: {
-		"modalCloseBtn":  "button.js-modal-apply",
+		"modalApplyBtn":  "button.js-modal-apply",
+		"modalCloseBtn":  "button.js-modal-close"
 	},
 
 	events: {
-		"click @ui.modalCloseBtn": "updateResource"
+		"click @ui.modalApplyBtn": "updateResource"
 	},
 
 	behaviors: {
@@ -250,10 +269,47 @@ var ControlEditModalIV = Mn.ItemView.extend({
 			showPlayButton: tempObj.showPlayButton,
 			period: tempObj.period
 		}
-
+debugger;
 		this.model.set(attrs);
 
+		Dashboard.$modal2.modal("hide");
+		this.destroy();
+
 	}
+});
+
+var ControlDeleteModalIV = Mn.ItemView.extend({
+	template: "maps/templates/controls-delete-modal.html",
+
+	ui: {
+		"modalCloseBtn":  "button.js-modal-cancel",
+		"modalDeleteBtn": "button.js-modal-delete",
+	},
+
+    events: {
+        "click @ui.modalDeleteBtn": "deleteResource"
+    },
+
+	behaviors: {
+		CloseModal: {
+			// will listen for clicks on @ui.modalCloseBtn
+			behaviorClass: window.Behaviors.CloseModal,  
+			stackLevel: 2
+		},
+
+		// DeleteResourceAndCloseModal: {
+		// 	// will listen for clicks on @ui.modalDeleteBtn
+		// 	behaviorClass: window.Behaviors.DeleteResourceAndCloseModal,  
+		// },
+	},
+
+	deleteResource: function(){
+		debugger;
+		this.model.destroy().abort();
+		Dashboard.$modal2.modal("hide");
+		this.destroy();
+	}
+
 });
 
 var ControlRowIV = Mn.ItemView.extend({
@@ -264,6 +320,7 @@ var ControlRowIV = Mn.ItemView.extend({
 		"deleteModalBtn": "button.js-delete"
 	},
 
+
 	behaviors: {
 
 		ShowEditModal: {
@@ -273,11 +330,12 @@ var ControlRowIV = Mn.ItemView.extend({
 			stackLevel: 2
 		},
 
-		// ShowDeleteModal: {
-		// 	behaviorClass: window.Behaviors.ShowModal,
-		// 	uiKey: "deleteModalBtn",
-		// 	viewClass: ShapeDeleteModalIV 
-		// },
+		ShowDeleteModal: {
+			behaviorClass: window.Behaviors.ShowModal,
+			uiKey: "deleteModalBtn",
+			viewClass: ControlDeleteModalIV,
+			stackLevel: 2
+		},
 	}
 
 });
@@ -288,9 +346,17 @@ var ControlsTableCV = Mn.CompositeView.extend({
 	childViewContainer: "tbody",
 
 	collectionEvents: {
-		"change": function(){
-			mapsChannel.request("update:controls", this.collection);
-		}
+		"remove change": function(){
+//			debugger;
+			var controlsArray = this.collection.toJSON();
+
+			_.each(controlsArray, function(obj){
+				delete obj.selectedShapes;
+			});
+
+			mapsChannel.command("update:controls", controlsArray);
+		},
+
 	},
 });
 
@@ -300,20 +366,15 @@ var MapEditModalIV = Mn.LayoutView.extend({
 
 	initialize: function(){
 
-		mapsChannel.reply("update:controls", function(controlsC){
-
-			// remove the extra "availableShapes" attribute (we don't need it in the server)
-			controlsC.each(function(controlM){
-				controlM.unset("availableShapes", {silent:true});
-			});
-
-			this.model.set("controls", controlsC.toJSON());
+		mapsChannel.comply("update:controls", function(controlsArray){
+//			debugger;
+			this.model.set("controls", controlsArray);
 		}, this);
 
 	},
 
 	onDestroy: function(){
-		mapsChannel.stopReplying("update:controls");
+		mapsChannel.stopComplying("update:controls");
 	},
 
 	regions: {
@@ -322,12 +383,14 @@ var MapEditModalIV = Mn.LayoutView.extend({
 
 	ui: {
 		"modalCloseBtn":  "button.js-modal-cancel",
-		"modalSaveBtn":   "button.js-modal-save"
+		"modalSaveBtn":   "button.js-modal-save",
+		"modalAddControlBtn":    "button.js-add-control",
 	},
 
 	events: {
 		"click @ui.modalSaveBtn": "updateResource",
-		"click tr.js-shape-row": "shapeRowClicked"
+		"click tr.js-shape-row": "shapeRowClicked",
+		"click @ui.modalAddControlBtn": "addControl"
 	},
 
 	shapeRowClicked: function(e){
@@ -350,6 +413,7 @@ var MapEditModalIV = Mn.LayoutView.extend({
 		CloseModal: {
 			behaviorClass: window.Behaviors.CloseModal,  // will listen for clicks on @ui.modalCloseBtn
 		},
+
 	},
 
 	onBeforeShow: function(){
@@ -357,12 +421,42 @@ var MapEditModalIV = Mn.LayoutView.extend({
 			controlsArray = this.model.get("controls"),
 			controlsC = new Backbone.Collection(controlsArray);
 
-		var availableShapes = _.filter(shapesC.toJSON(), function(shapeObj){
-			return _.findWhere(shapesData, {id: shapeObj.id});
-		});
 
+		// TODO: improve this pre-processing
+		var controlId = 0;
 		controlsC.each(function(controlM){
-			controlM.set("availableShapes", availableShapes);
+//debugger;
+			controlM.set("id", ++controlId);
+			controlM.url = "/api/maps/controls";  // fake url!
+
+			// make a new deep clone of shapesC.toJSON()
+			var shapesArray = $.extend(true, {}, shapesC.toJSON());
+
+			// NOTE: selectedShapes will be a new (distinct) array for each control model (because
+			//	shapesArray is also a new object for each model)
+			var selectedShapes = _.filter(shapesArray, function(shapeObj){
+				return _.findWhere(shapesData, {id: shapeObj.id});
+			});
+
+			var selectedColumns = controlM.get("selectedColumns");
+
+			_.each(selectedColumns, function(columnObj){
+				var shapeObj = _.findWhere(selectedShapes, {id: Number(columnObj.shapeId)});
+//				debugger;
+				if(shapeObj){
+					for(var i=0, l=shapeObj.shapeColumnsData.length; i<l; i++){
+
+						if(shapeObj.shapeColumnsData[i].column_number === Number(columnObj.columnNumber)){
+
+							shapeObj.shapeColumnsData[i].isSelected = true;
+							shapeObj.shapeColumnsData[i].publicName = columnObj.publicName;
+						}
+					}
+				}
+			})
+//debugger;
+			controlM.set("selectedShapes", selectedShapes);
+//			debugger;
 		});
 
 		var controlsTableCV = new ControlsTableCV({
@@ -370,6 +464,22 @@ var MapEditModalIV = Mn.LayoutView.extend({
 		})
 
 		this.controlsRegion.show(controlsTableCV);
+	},
+
+	addControl: function(){
+		debugger;
+
+		// TODO: prepara de controlM
+		var controlM = new Backbone.Model();
+		var view = new ControlEditModalIV({
+			model: controlM
+		});
+
+        // first set the content of the modal
+        Dashboard["modal2Region"].show(view);
+
+        // then show the modal 
+        Dashboard["$modal2"].modal("show");
 	},
 
 	updateResource: function(){
@@ -423,7 +533,27 @@ var MapEditModalIV = Mn.LayoutView.extend({
 
 });
 
+var MapDeleteModalIV = Mn.ItemView.extend({
+	template: "maps/templates/maps-delete-modal.html",
 
+	ui: {
+		"modalCloseBtn":  "button.js-modal-cancel",
+		"modalDeleteBtn": "button.js-modal-delete",
+	},
+
+	behaviors: {
+		CloseModal: {
+			// will listen for clicks on @ui.modalCloseBtn
+			behaviorClass: window.Behaviors.CloseModal,  
+		},
+
+		DeleteResourceAndCloseModal: {
+			// will listen for clicks on @ui.modalDeleteBtn
+			behaviorClass: window.Behaviors.DeleteResourceAndCloseModal,  
+		},
+	},
+
+});
 
 var MapNewLV = Mn.LayoutView.extend({
 	template: "maps/templates/maps-new.html",
@@ -540,14 +670,14 @@ var MapRowLV = Mn.LayoutView.extend({
 				// get the shape data (seleted shapes for the current model)
 				var shapesData = self.model.get("shapesData");
 
-				// get a new copy of all the shapes
-				var availableShapes = shapesC.toJSON();
+				// get a new copy of all the shapes (array)
+				var allShapes = shapesC.toJSON();
 
-				_.each(availableShapes, function(shapeObj){
+				_.each(allShapes, function(shapeObj){
 					shapeObj.isSelected = _.findWhere(shapesData, {id: shapeObj.id}) ? true : false;
 				});
 
-				self.model.set("availableShapes", availableShapes);
+				self.model.set("allShapes", allShapes);
 
 		        // first set the content of the modal
 		        Dashboard.modal1Region.show(mapEditModalIV);
@@ -573,11 +703,11 @@ var MapRowLV = Mn.LayoutView.extend({
 		// 	viewClass: MapEditModalIV,  // and will show this view
 		// },
 
-		// ShowDeleteModal: {
-		// 	behaviorClass: window.Behaviors.ShowModal,
-		// 	uiKey: "deleteModalBtn",
-		// 	viewClass: FileDeleteModalIV 
-		// },
+		ShowDeleteModal: {
+			behaviorClass: window.Behaviors.ShowModal,
+			uiKey: "deleteModalBtn",
+			viewClass: MapDeleteModalIV 
+		},
 	}
 
 });
@@ -723,7 +853,7 @@ var MapsTabLV = Mn.LayoutView.extend({
 				mapM.set("mapCategories", mapCategories);
 
 				// do the same with the the shapes collection
-				mapM.set("availableShapes", shapesC.toJSON());
+				mapM.set("allShapes", shapesC.toJSON());
 
 				self.tabContentRegion.show(mapNewLV); 
 			})

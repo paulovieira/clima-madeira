@@ -295,13 +295,23 @@ debugger;
                 newMapId;
 
             // verify that the map code is unique
-            var n = mapsC
+            var array = mapsC
                     .filter(function(model){
                         return _s.startsWith(model.get("code"), request.payload[0].code);
-                    })
-                    .length;
+                    });
 
-            if(n > 0){
+
+console.log("array.length: ", array.length);
+            if(array.length > 0){
+                var lastSuffix = array[array.length-1].get("code").split("_"),
+                    lastNumber = lastSuffix[lastSuffix.length-1].split(".");
+
+                if(lastNumber.length!=2){
+                    return reply(Boom.conflict("Problems with the code"));   
+                }
+
+                var n = Number(lastNumber[0]);
+                console.log("n: ", n);
                 request.payload[0].code = request.payload[0].code + "_" + (n+1);
             }
 
@@ -528,57 +538,55 @@ debugger;
     });
 
 
-/*
+
     // DELETE (one or more)
     server.route({
         method: 'DELETE',
         path: internals.resourcePath + "/{ids}",
         handler: function (request, reply) {
 debugger;
+            console.log(utils.logHandlerInfo(request));
 
-            var queryOptions = [];
-            request.params.ids.forEach(function(id){
-                queryOptions.push({id: id});
-            });
+            var mapsC = request.pre.mapsById;
+            if(mapsC.length===0){
+                return reply(Boom.notFound("The resource with id " + request.params.ids[0] + " does not exist."));
+            }
 
-                    // var boomErr = internals.parseError(err);
-                    // return reply(boomErr);
-
-            var filesC = new FilesC();
-            filesC.execute({
+            mapsC.execute({
                 query: {
-                    command: "select * from files_delete($1)",
-                    arguments: [ JSON.stringify(queryOptions) ]
+                    command: "select * from maps_delete($1)",
+                    arguments: [JSON.stringify( {id: request.params.ids[0]} )]
                 },
                 reset: true
             })
-            .done(
-                function(){
-debugger;
-                    return reply(filesC.toJSON());
-                },
-                function(err){
-debugger;
-                    var boomErr = internals.parseError(err);
-                    return reply(boomErr);
-                }
-            );
+            .then(function(){
+                return reply(mapsC.toJSON());
+            })
+            .catch(function(err){
+                return reply(Boom.badImplementation(err.message));
+            })
+            .done();
+
         },
 
         config: {
-			validate: {
-	            params: internals.validateIds,
-			},
-            pre: [pre.abortIfNotAuthenticated],
+
+            validate: {
+                params: internals.validateIds,
+            },
+
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.db.getMapsById
+            ],
+
             auth: config.get('hapi.auth'),
-
-			description: 'Delete (short description)',
-			notes: 'Delete (long description)',
-			tags: ['api'],
-
+            description: 'Delete (short description)',
+            notes: 'Delete (long description)',
+            tags: ['api'],
         }
     });
-*/
+
     // any other request will receive a 405 Error
     server.route({
         method: '*',
