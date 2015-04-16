@@ -366,6 +366,8 @@ var MapEditModalIV = Mn.LayoutView.extend({
 
 	initialize: function(){
 
+		this.controlsC = new Backbone.Collection(this.model.get("controls"));
+
 		mapsChannel.comply("update:controls", function(controlsArray){
 //			debugger;
 			this.model.set("controls", controlsArray);
@@ -417,14 +419,14 @@ var MapEditModalIV = Mn.LayoutView.extend({
 	},
 
 	onBeforeShow: function(){
-		var shapesData = this.model.get("shapesData"),
-			controlsArray = this.model.get("controls"),
-			controlsC = new Backbone.Collection(controlsArray);
+		var shapesData = this.model.get("shapesData");
+//			controlsArray = this.model.get("controls"),
+//			controlsC = new Backbone.Collection(controlsArray);
 
 
 		// TODO: improve this pre-processing
 		var controlId = 0;
-		controlsC.each(function(controlM){
+		this.controlsC.each(function(controlM){
 //debugger;
 			controlM.set("id", ++controlId);
 			controlM.url = "/api/maps/controls";  // fake url!
@@ -460,26 +462,41 @@ var MapEditModalIV = Mn.LayoutView.extend({
 		});
 
 		var controlsTableCV = new ControlsTableCV({
-			collection: controlsC
+			collection: this.controlsC
 		})
 
 		this.controlsRegion.show(controlsTableCV);
 	},
 
 	addControl: function(){
-		debugger;
+		// make a new deep clone of shapesC.toJSON()
+		var shapesArray = $.extend(true, {}, shapesC.toJSON()),
+			shapesData = this.model.get("shapesData");
 
-		// TODO: prepara de controlM
-		var controlM = new Backbone.Model();
-		var view = new ControlEditModalIV({
-			model: controlM
+		// NOTE: selectedShapes will be a new (distinct) array for each control model (because
+		//	shapesArray is also a new object for each model)
+		var selectedShapes = _.filter(shapesArray, function(shapeObj){
+			return _.findWhere(shapesData, {id: shapeObj.id});
 		});
 
-        // first set the content of the modal
-        Dashboard["modal2Region"].show(view);
 
-        // then show the modal 
-        Dashboard["$modal2"].modal("show");
+		// TODO: prepara de controlM
+		var controlM = new Backbone.Model({
+			id: _.max(this.controlsC.pluck("id")) + 1,
+			selectedShapes: selectedShapes
+		});
+
+		this.controlsC.push(controlM);
+
+		// var view = new ControlEditModalIV({
+		// 	model: controlM
+		// });
+
+        // first set the content of the modal
+        // Dashboard["modal2Region"].show(view);
+
+        // // then show the modal 
+        // Dashboard["$modal2"].modal("show");
 	},
 
 	updateResource: function(){
