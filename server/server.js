@@ -35,6 +35,10 @@ Nunjucks.addFilter('stringify', function(str) {
 utils.registerPlugins(server);
 
 
+// 3.5 require the db module to initialize the db instance
+require(global.rootPath + 'server/common/db.js');
+
+
 // 4. add the routes (for views and files)
 server.route(require(global.rootPath + 'server/routes/assets-routes.js'));
 server.route(require(global.rootPath + 'server/routes/base-routes.js'));

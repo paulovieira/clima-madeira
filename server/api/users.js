@@ -7,6 +7,7 @@ var changeCaseKeys = require('change-case-keys');
 var UUID = require('node-uuid');
 var Q = require('q');
 var Bcrypt = require("bcrypt");
+var db = require(global.rootPath + 'server/common/db.js');
 
 var UsersC = require(global.rootPath + "server/models/base-model.js").collection;
 var BaseC = require(global.rootPath + "server/models/base-model.js").collection;
@@ -153,6 +154,64 @@ debugger;
             tags: ['api'],
         }
     });
+    
+
+
+    // READ (all)
+    server.route({
+        method: 'GET',
+        path: "/users_test",
+        handler: function (request, reply) {
+            console.log(utils.logHandlerInfo(request));
+debugger;
+            // if the user is not admin, he/she can't read data about other users
+            if(!request.auth.credentials.isAdmin){
+                return reply(Boom.forbidden("You cannot request the personal data of other users."));
+            }
+
+Q.delay(500)
+    .then(function(){
+        return db.func('users_read', {id: 2}, db.queryResult.one);
+        //return db.func('users_read', JSON.stringify([{id: 2}, {id: 3}]));
+        //return db.func('users_read', [{id: 2}, {id: 3}]);
+    })
+    .then(function(data){
+        debugger;
+        console.log("           success handler (then)")
+        return reply(data);
+    })
+    .catch(function(errMsg){
+        debugger;
+        console.log("           error handler (catch)")
+        return reply(Boom.badImplementation(errMsg));
+    })
+
+
+
+
+            // var usersC = request.pre.allUsers;
+
+            // var resp         = usersC.toJSON();
+            // var transformMap = transforms.maps.users;
+            // var transform    = transforms.transformArray;
+
+            // return reply(transform(resp, transformMap));
+        },
+
+        config: {
+
+            pre: [
+                pre.abortIfNotAuthenticated,
+                //pre.db.getAllUsers
+            ],
+
+            auth: config.get('hapi.auth'),
+            description: 'Get all the resources',
+            notes: 'Returns all the resources (full collection)',
+            tags: ['api'],
+        }
+    });
+
     
     // READ (one or more, but not all)
     server.route({
