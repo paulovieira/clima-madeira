@@ -196,7 +196,10 @@ var routes = [
         path: "/{lang}/logout",
         handler: baseHandlers.logout,
         config: {
-            auth: false,
+            //auth: false,
+            auth: {
+                mode: "try"
+            },
 
             validate: {
                 params: validate.params.lang

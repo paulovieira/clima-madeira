@@ -302,10 +302,46 @@ debugger;
         console.log(utils.logHandlerInfo(request));
         debugger;
 
+        if(!request.auth.isAuthenticated){
+            console.log("    not authenticated, will now redirect to /lang");
+            return reply.redirect("/" + request.params.lang);
+        }
+
+        var sessionKey;
+        if(request.auth.artifacts && request.auth.artifacts.sid){
+            sessionKey = request.auth.artifacts.sid;
+        }
+
+        /// ??? - look better at this (calling clear with no arguments is working, but the session is not cleared in the server)
+        // we must clear the session from catbox somehow
+
+        // the example in https://github.com/hapijs/hapi-auth-cookie/blob/master/example/index.js
+        // should be doing that as well
+
+        // if(sessionKey){
+        //     request.auth.session.clear(sessionKey);
+        // }
+        // else{
+        //     request.auth.session.clear();
+        // }
+
         request.auth.session.clear();
 
-        console.log("   session was cleared, will now redirect to /lang");
-        return reply.redirect("/" + request.params.lang);
+
+        request.server.app.cache.drop(sessionKey || "1234", function(err){
+            debugger;
+            if(err){
+                console.log("   session was cleared in the browser but not in the server, will now redirect to /lang");
+            }
+            else{
+                console.log("   session was cleared in the browser and in the server, will now redirect to /lang");    
+            }
+
+            
+            return reply.redirect("/" + request.params.lang);
+        })
+
+
     },
 
 };
