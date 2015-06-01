@@ -57,17 +57,20 @@ debugger;
         }
 
         var context = {
-            texts: request.pre.texts,
-            textsArray: request.pre.textsArray,
-            files: request.pre.files,
-            images: request.pre.images,
-            
             urlParam1: request.params.level1,
             urlParam2: request.params.level2,
             urlParam3: request.params.level3,
             urlWithoutLang: utils.getUrlWithoutLang(request.params),
             auth: request.auth,
         };
+
+        // add the data available in request.pre that has been treated and ready to be used
+        // in the nunjucks template: texts, textArray, files, etc
+        for(var key in request.pre){
+            if(request.pre.hasOwnProperty(key)){
+                context[key] = request.pre[key];
+            }
+        }
 
         return reply.view(viewFile, {
             ctx: context
@@ -148,7 +151,7 @@ debugger;
                     }
 
                     // if we get here, the username and password match
-                    console.log( chalk.bgGreen("    ") + chalk.bgYellow(" authentication succeeded for " + usersC.at(0).get("email") ) + chalk.bgGreen("    "));
+                    console.log( Chalk.bgGreen("    ") + Chalk.bgYellow(" authentication succeeded for " + usersC.at(0).get("email") ) + Chalk.bgGreen("    "));
 debugger;
                     var usersGroups = usersC.at(0).get("userGroups");
 console.log("usersC.at(0)", usersC.at(0).toJSON());
@@ -190,7 +193,7 @@ console.log("usersGroups", usersGroups);
                                 sid: uuid
                             });
 
-                            console.log(chalk.bgGreen("    ") + chalk.bgYellow(" session was set in catbox ") + chalk.bgGreen("    "));
+                            console.log(Chalk.bgGreen("    ") + Chalk.bgYellow(" session was set in catbox ") + Chalk.bgGreen("    "));
                             console.log("    credentials:\n", credentials);
                             console.log("    will now redirect to /lang/dashboard");
 

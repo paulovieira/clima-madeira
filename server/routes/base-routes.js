@@ -25,9 +25,6 @@ var routes = [
         handler: baseHandlers.generalPage,
 
         config: {
-            auth: {
-                mode: "try"
-            },
 
             validate: {
                 params: validate.params.lang
@@ -49,9 +46,6 @@ var routes = [
         handler: baseHandlers.generalPage,
 
         config: {
-            auth: {
-                mode: "try"
-            },
 
             validate: {
                 params: validate.params.lang
@@ -72,9 +66,6 @@ var routes = [
         handler: baseHandlers.generalPage,
 
         config: {
-            auth: {
-                mode: "try"
-            },
 
             validate: {
                 params: validate.params.lang
@@ -95,9 +86,6 @@ var routes = [
         handler: baseHandlers.generalPage,
 
         config: {
-            auth: {
-                mode: "try"
-            },
 
             validate: {
                 params: validate.params.lang
@@ -160,10 +148,6 @@ var routes = [
         handler: baseHandlers.login,
 
         config: {
-            auth: {
-                mode: "try"
-            },
-
             validate: {
                 params: validate.params.lang
             },
@@ -181,9 +165,6 @@ var routes = [
         handler: baseHandlers.loginAuthenticate,
 
         config: {
-            auth: {
-                mode: "try"
-            },
 
             validate: {
                 params: validate.params.lang
@@ -196,10 +177,6 @@ var routes = [
         path: "/{lang}/logout",
         handler: baseHandlers.logout,
         config: {
-            //auth: false,
-            auth: {
-                mode: "try"
-            },
 
             validate: {
                 params: validate.params.lang
@@ -235,9 +212,6 @@ var routes = [
         handler: baseHandlers.catchAll,
 
         config: {
-            auth: {
-                mode: "try"
-            },
 
             validate: {
                 params: validate.params.lang

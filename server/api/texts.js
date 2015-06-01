@@ -1,4 +1,5 @@
 var Boom = require('boom');
+var Hoek = require('hoek');
 var Joi = require('joi');
 var config = require('config');
 var _ = require('underscore');
@@ -151,7 +152,10 @@ debugger;
             var transformMap = transforms.maps.texts;
             var transform    = transforms.transformArray;
 
-            return reply(transform(resp, transformMap));
+            //return reply(transform(resp, transformMap));
+            return reply(resp.map(function(o){ 
+                return Hoek.transform(o, transformMap); 
+            } ));
         },
 
         config: {

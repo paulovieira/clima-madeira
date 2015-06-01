@@ -398,13 +398,13 @@ var preRequisites = {
 		saveUserAgent: {
 			method: function(request, reply){
 				console.log("user-agent:", request.plugins.scooter.toJSON());
-				
+
 				//console.log("common log: ", toCommonLogFormat(request));
 			    var userAgentC = new BaseC();
 
 				//console.log("common log: ", request.plugins.scooter.toCommonLogFormat(request));
 				return reply();
-		    
+
 
 		        // textsC
 		        //     .execute({
@@ -524,7 +524,7 @@ var preRequisites = {
 		extractTags: {
 			method: function(request, reply){
 				console.log("pre: extractTags");
-				
+
 				var payloadObj, tagsArray = [];
 
 				if(request.payload){
@@ -544,7 +544,7 @@ var preRequisites = {
 							tagsArray[i] = _s.slugify(tagsArray[i]);
 						}
 
-						// if the original tags string is the empty string, we end up with an array with 1 element 
+						// if the original tags string is the empty string, we end up with an array with 1 element
 						// (the empty string); we want the empty array instead
 						if(tagsArray.length===1 && tagsArray[0]===""){
 							tagsArray = [];
@@ -680,23 +680,25 @@ module.exports = preRequisites;
 
 /*
 
-The redirectOnInvalidLang pre-requisite method has been added to all the routes such that the path contains a lang parameter 
+The redirectOnInvalidLang pre-requisite method has been added to all the routes such that the path contains a lang parameter
 (this should happen for all the routes that reply with a view).
 
-The lang param has already been validated. If it is not valid, the validation method change the param 
+The lang param has already been validated. If it is not valid, the validation method change the param
 to undefined. If that happens, we redirect immediately to the general 404 page (using
-the default language). 
+the default language).
 
 However the redirection to the 404 page can happen in 2 ways:
-	        
+
 EXAMPLE 1: /fr or /fr/fuiwebfw or /zzz/fwiebfwie: the pre-requisite will detect that the language
-is not valid (it has been set to undefined in the validation) and will immediately redirect (bypassing the handler, 
+is not valid (it has been set to undefined in the validation) and will immediately redirect (bypassing the handler,
 because of the call to .takeover())
 
 EXAMPLE 2: /pt/fiwebfiwuef: here the language is valid, so the control is given back to the handler;
 It will end up in the  handler for the /{lang}/{anyPath*} route. This handler also redirects to the 404 page, because
-it detects that "fiwebfiwuef" is not associated with any view (it's a simple custom handler). 
+it detects that "fiwebfiwuef" is not associated with any view (it's a simple custom handler).
 
 The difference is that in this case we know the language, so we show the 404 page in the requested language.
 
 */
+
+   
