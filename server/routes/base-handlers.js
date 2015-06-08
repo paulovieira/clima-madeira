@@ -5,7 +5,7 @@ var UUID = require('node-uuid');
 var Bcrypt = require("bcrypt");
 var Q = require("q");
 var Moment = require("moment");
-var chalk = require("chalk");
+var Chalk = require("chalk");
 
 var config = require("config");
 var utils = require(global.rootPath + 'server/common/utils');

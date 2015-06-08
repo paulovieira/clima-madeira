@@ -463,6 +463,17 @@ curl http://127.0.0.1:3000/api/texts/1001   \
     --data '{"id": 1001, "tags": "aaa,ccc xxx", "contents": { "pt": "xyz-pt", "en": "xyz-en"}, "description": { "pt": "desc-pt", "en": "desc-en"} }' 
 
 
+curl http://127.0.0.1:3000/api/texts/1,2   \
+    --request PUT \
+    --header "Content-Type: application/json"  \
+    --data '[{"id": 1, "tags": "aaa,ccc xxx", "contents": { "pt": "xyz-pt", "en": "xyz-en"}, "description": { "pt": "desc-pt", "en": "desc-en"} }, {"id": 2, "tags": "yyy", "contents": { "pt": "qqqxyz-pt", "en": "wwwxyz-en"}, "description": { "pt": "desc-pt", "en": "desc-en"} }]' 
+
+
+curl http://127.0.0.1:3000/api/texts/1   \
+    --request PUT \
+    --header "Content-Type: application/json"  \
+    --data '{"id": 1, "tags": "aaa,ccc xxx", "contents": { "pt": "xyz-pt", "en": "xyz-en"}, "description": { "pt": "desc-pt", "en": "desc-en"} }' 
+
 -------------------------------
 
 
